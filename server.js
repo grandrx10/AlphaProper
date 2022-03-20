@@ -24,7 +24,7 @@ var entities = {};
 var rooms = []
 entities[-1] = new Entity("Enemy", "npc", 40, 100, 20, 30, 100, "pistol", "purple", -1, gameTime,-1, 0.5,3);
 var walls = []
-createSection("dungeon01", 0, 0, 3200, 500)
+createSection("lobby", 0, 0, 3200, 500)
 var bullets = []
 var gameTime = 0;
 var n = 0;
@@ -116,10 +116,6 @@ function distance(x1, y1, x2, y2){
 
 function createSection(name, x, y, length, width){
     rooms.push(new Room(name, x, y, length, width));
-    walls.push(new Wall("wall", x, y, length, 20,"silver"));
-    walls.push(new Wall("wall", x, y, 20, width,"silver"));
-    walls.push(new Wall("wall", x, y + width, length, 20,"silver"));
-    walls.push(new Wall("wall", x+ length, y, 20, width,"silver"));
     
     if (name == "lobby"){
         walls.push(new Wall("wall", x, y+300, 1600, 50, "silver"));
@@ -143,6 +139,11 @@ function generateLevel(levelName, x, y, length){
         segmentLength = 800;
         listOfRooms = ["empty", "house"];
     }
+
+    walls.push(new Wall("wall", x, y, length, 20,"silver"));
+    walls.push(new Wall("wall", x, y, 20, width,"silver"));
+    walls.push(new Wall("wall", x, y + width, length, 20,"silver"));
+    walls.push(new Wall("wall", x+ length, y, 20, width,"silver"));
 
     for (var i = 0; i < length/segmentLength; i ++){
         var roomToGenerate = listOfRooms[randint(0, listOfRooms.length-1)];
