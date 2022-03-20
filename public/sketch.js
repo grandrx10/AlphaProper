@@ -25,7 +25,7 @@ let dev2 = [-1,0]
 
 function setup(){
     createCanvas(1400, 600);
-    socket = io.connect('http://localhost:3000');
+    socket = io();
 }
 
 function draw(){
