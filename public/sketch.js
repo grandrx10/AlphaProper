@@ -1,18 +1,9 @@
-
 var socket;
 
 var gameStart = false;
 var gameTime;
 
 var entities = {}
-//[new Entity("Player", "Player", 100, 100, 20, 30, 100, "smg", "purple", 0)];
-// entities.push(new Entity("Enemy","npc", 500, 100, 20, 30, 100, "pistol", "red", 1))
-// entities.push(new Entity("Enemy","npc", 800, 100, 20, 30, 100, "pistol", "red", 1))
-// entities.push(new Entity("Enemy","npc", 870, 100, 20, 30, 100, "pistol", "red", 1))
-// entities.push(new Entity("Enemy","npc", 1200, -60, 20, 30, 100, "pistol", "red", 1))
-// entities.push(new Entity("Enemy","npc", 1300, 180, 20, 30, 100, "pistol", "red", 1))
-// entities.push(new Entity("Enemy","npc", 1850, 25, 20, 30, 100, "pistol", "red", 1))
-// entities.push(new Entity("Enemy","npc", 2200, 220, 20, 30, 100, "pistol", "red", 1))
 var walls = []
 var bullets = []
 
@@ -53,7 +44,6 @@ function draw(){
             if (bullets[i] != null){
                 fill(255)
                 ellipse(bullets[i].x -xRange, bullets[i].y -yRange, bullets[i].r, bullets[i].r)
-                // bullets[i].updateBulletLocation();
             }
         }
 
@@ -78,41 +68,30 @@ function draw(){
             }
         }
 
-    if (entities[socket.id] != null){
-        fill("white")
-        textSize(20);
-        text("Location: " + entities[socket.id].location, 150, 50);
+        if (entities[socket.id] != null){
+            fill("white")
+            textSize(20);
+            text("Location: " + entities[socket.id].location, 150, 50);
 
 
-        if (keyIsDown(68)){ // go right (D)
-            var key = "right"
-            socket.emit('key', key);
-        } 
-        else if (keyIsDown(65)){ // go left (A)
-            var key = "left"
-            socket.emit('key', key);
+            if (keyIsDown(68)){ // go right (D)
+                var key = "right"
+                socket.emit('key', key);
+            } 
+            else if (keyIsDown(65)){ // go left (A)
+                var key = "left"
+                socket.emit('key', key);
+            }
+
+            if (keyIsDown(87)){ // go up (w)
+                var key = "jump"
+                socket.emit('key', key);
+            }
         }
 
-        if (keyIsDown(87)){ // go up (w)
-            var key = "jump"
-            socket.emit('key', key);
+        if (mouseIsPressed){
+            socket.emit('shoot', [mouseX + xRange, mouseY + yRange]);
         }
-    }
-
-    if (mouseIsPressed){
-        socket.emit('shoot', [mouseX + xRange, mouseY + yRange]);
-    }
-
-
-    // // dev tools ----------------------
-
-    // if (dev1[0] != -1 && dev2[0] != -1){
-    //     walls.push(new Wall("wall", dev1[0],dev1[1], dev2[0] - dev1[0], dev2[1] - dev1[1], "white"))
-    //     console.log('walls.push(new Wall("wall", '+ dev1[0] + ','+ dev1[1] + ','+ (dev2[0] - dev1[0]) + ', '+ (dev2[1] - dev1[1]) + ', "white"))')
-    //     dev1[0] = -1
-    //     dev2[0] = -1
-    // }
-    // // -------------------------------
     }
 
 };

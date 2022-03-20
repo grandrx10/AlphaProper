@@ -9,7 +9,7 @@ import { Room } from "./room.js"
 // var express = require('express');
 
 var app = express();
-var server = app.listen(3000);
+var server = app.listen(process.env.PORT || 3000);
 
 app.use(express.static('public'));
 console.log("MY server is running!");
