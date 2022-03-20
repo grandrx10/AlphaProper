@@ -3,5 +3,8 @@
     "express": "^4.17.3",
     "socket.io": "^4.4.1"
   },
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "start" : "node server.js"
+  }
 }
