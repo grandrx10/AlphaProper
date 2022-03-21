@@ -24,8 +24,23 @@ export class Entity {
         this.creationTime = gameTime;
         this.id = id;
         this.location = "";
+        this.interact;
         this.expireTime = -1;
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1};
+    }
+
+    checkInteract(portals){
+        var detected = false;
+        for (var portal = 0; portal< portals.length; portal++){
+            if (this.rectRectDetect(portals[portal], this)){
+                this.interact = portals[portal]
+                detected = true;
+            }
+        }
+        
+        if (!detected){
+            this.interact = null
+        }
     }
 
     aiMovement(entities, entity, bullets, gameTime){
@@ -46,8 +61,7 @@ export class Entity {
                 this.xAccel = -this.xOrigA;
             }
 
-
-            if (this.y + this.width/2> this.travelMap.y && this.canJump){
+            if ((this.xSpeed == 0||this.y + this.width/2> this.travelMap.y) && this.canJump && this.randint(1,20) == 1){
                 this.yAccel = -this.yOrigA;
                 this.canJump = false
             }
@@ -87,7 +101,7 @@ export class Entity {
                 entities[n].xAccel = this.randint(-10, 10);
                 entities[n].yAccel = this.randint(-10, 10);
                 entities[n].expireTime = 100;
-                n++;
+                n ++ ;
             }
 
             delete entities[this.id];

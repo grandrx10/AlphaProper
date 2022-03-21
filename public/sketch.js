@@ -6,6 +6,7 @@ var gameTime;
 var entities = {}
 var walls = []
 var bullets = []
+var portals = []
 
 var xRange;
 var yRange;
@@ -29,6 +30,7 @@ function setup(){
 }
 
 function draw(){
+    frameRate(144)
     background(28, 28, 28);
     //cameraShake();
     
@@ -53,6 +55,15 @@ function draw(){
             rect(walls[wall].x - xRange + shake.x, walls[wall].y - yRange + shake.y, walls[wall].length, walls[wall].width);
         }
 
+        for (portal in portals){
+            fill(portals[portal].colour);
+            rect(portals[portal].x - xRange + shake.x, portals[portal].y - yRange + shake.y, portals[portal].length, portals[portal].width);
+            textAlign(CENTER);
+            fill("white")
+            textSize(12);
+            text(portals[portal].name, portals[portal].x +portals[portal].length/2- xRange, portals[portal].y - yRange - 30)
+        }
+
         for (entity in entities){
             fill(entities[entity].colour);
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
@@ -65,6 +76,9 @@ function draw(){
                 textAlign(CENTER);
                 textSize(12);
                 text(entities[entity].name, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 30)
+                if (entities[entity].interact != null){
+                    text("Press E to enter: " + entities[entity].interact.name, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 50)
+                }
             }
         }
 
@@ -87,6 +101,10 @@ function draw(){
                 var key = "jump"
                 socket.emit('key', key);
             }
+
+            if (keyIsDown(69) && entities[entity].interact != null){ // enter portal (e) 
+                socket.emit('enterPortal', socket.id);
+            }
         }
 
         if (mouseIsPressed){
@@ -98,13 +116,7 @@ function draw(){
 
 function keyPressed() {
     if (keyCode == 90){ // (z)
-        dev1[0] = Math.round(mouseX+xRange)
-        dev1[1] = Math.round(mouseY+yRange)
-    } else if (keyCode == 88){ // (x)
-        dev2[0] = Math.round(mouseX+xRange)
-        dev2[1] = Math.round(mouseY+yRange)
-    } else if (keyCode == 67){ // (x)
-        console.log(Math.round(mouseX + xRange), Math.round(mouseY + yRange))
+        console.log(mouseX+xRange, mouseY+yRange)
     }
 }
 
@@ -125,4 +137,5 @@ function update(returnList){
     walls = returnList[2];
     bullets = returnList[3];
     gameStart = true;
+    portals = returnList[4];
 }
