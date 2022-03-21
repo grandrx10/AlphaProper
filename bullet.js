@@ -1,6 +1,6 @@
 // This is the start of combat program
 export class Bullet {
-    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime) {
+    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id) {
         this.x = x;
         this.y = y;
         this.aimX = aimX;
@@ -13,6 +13,7 @@ export class Bullet {
         this.duration = duration;
         this.type = type;
         this.team = team;
+        this.id = id;
     }
 
     updateBulletLocation (entities, walls, bullets){
@@ -47,6 +48,7 @@ export class Bullet {
             if (bullet.rectCircDetect(entities[key], bullet) && entities[key].team != bullet.team && entities[key].type != "blood") {
                 if (entities[key].hp != null){
                     entities[key].hp -= bullet.damage;
+                    entities[key].lastHurtBy = bullet.id;
                 }
                 bullets.splice(bullets.indexOf(bullet), 1);
             }

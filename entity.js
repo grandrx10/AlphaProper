@@ -26,7 +26,17 @@ export class Entity {
         this.location = "";
         this.interact;
         this.expireTime = -1;
+        this.shake = {
+            shakeStart: 0,
+            shakeDuration: 0
+        }
+        this.lastHurtBy;
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1};
+        this.inventory = {
+            items: ["", "", "", "", "", ""],
+            inventoryOpen: false,
+            itemSelected: ""
+        };
     }
 
     checkInteract(portals){
@@ -103,7 +113,10 @@ export class Entity {
                 entities[n].expireTime = 100;
                 n ++ ;
             }
-
+            if (entities[entities[this.id].lastHurtBy] != null){
+                entities[entities[this.id].lastHurtBy].shake.shakeStart = gameTime;
+                entities[entities[this.id].lastHurtBy].shake.shakeDuration = 10;
+            }
             delete entities[this.id];
             // shake.shakeStart = gameTime;
             // shake.shakeDuration = 10;
@@ -121,7 +134,7 @@ export class Entity {
             this.weapon.lastFired = gameTime;
             this.createBullet(this.x + this.length/2, this.y+ this.width/2
             , aimPos[0], aimPos[1], this.weapon.speed, this.weapon.damage,
-            "default", 100, this.team, bullets, gameTime);
+            "default", 100, this.team, bullets, gameTime, this.id);
             return true
         }
         return false
@@ -216,10 +229,10 @@ export class Entity {
     deaccelerate(){
         this.ySpeed += 0.3;
 
-        if (this.xSpeed >= 0.4){
-            this.xSpeed -= 0.4;
-        } else if (this.xSpeed <= -0.4) {
-            this.xSpeed += 0.4
+        if (this.xSpeed > 0.2){
+            this.xSpeed -= 0.2;
+        } else if (this.xSpeed < -0.2) {
+            this.xSpeed += 0.2
         } else {
             this.xSpeed = 0
         }
@@ -265,7 +278,7 @@ export class Entity {
         return Math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
     }
 
-    createBullet(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime){
-        bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime));
+    createBullet(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime, id){
+        bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id));
     }
 }

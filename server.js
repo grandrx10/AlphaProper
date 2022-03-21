@@ -44,7 +44,8 @@ function newConnection(socket){
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
-    socket.on("enterPortal", enterPortal);
+    socket.on("interact", enterPortal);
+    socket.on("openInventory", openInventory);
     socket.on("shoot", triggerBullet);
 
     function keyMsg(key) {
@@ -64,6 +65,12 @@ function newConnection(socket){
     function enterPortal(id){
         if (entities[id].interact != null){
             findPortalDestination(entities[id].interact.name, id)
+        }
+    }
+
+    function openInventory(id){
+        if(entities[id] != null){
+            entities[id].inventory.inventoryOpen = !entities[id].inventory.inventoryOpen;
         }
     }
 }
@@ -88,6 +95,17 @@ function update(){
 
     for (var i = 0; i < bullets.length; i ++){
         bullets[i].updateBulletLocation(entities, walls, bullets)
+    }
+
+    for (var i = rooms.length-1; i >= 0; i --){
+        if (gameTime - rooms[i].lastChecked > 100){
+            rooms[i].lastChecked = gameTime;
+            if (rooms[i].checkEmpty(entities, rooms[i]) && rooms[i].name != "lobby"){
+                rooms[i].deleteArray(walls);
+                rooms[i].deleteDictionary(entities, rooms[i]);
+                rooms.splice(i, 1);
+            }
+        }
     }
 }
 
@@ -155,10 +173,10 @@ function createSection(name, x, y){
         var length = 1650;
         var width = 500;
     } else if (name == "dungeon01"){
-        var length = 8000;
+        var length = 6400;
         var width = 500;
     }
-    rooms.push(new Room(name, x, y, length, width));
+    rooms.push(new Room(name, x, y, length, width + 50, gameTime));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){
         rooms[rooms.length-1].x = randint(0, 1000);
         rooms[rooms.length-1].y = randint(0, 1000);
@@ -214,7 +232,7 @@ function generateLevel(levelName, x, y, length){
             walls.push(new Wall("wall", xLocation + 100, y - 300, 580, 20, "silver"));
             walls.push(new Wall("wall", xLocation + 400, y - 150, 20, 150, "silver"));
             walls.push(new Wall("wall", xLocation + 350, y - 150, 120, 20, "silver"));
-            for (var c =0; c < randint(5,7); c ++){
+            for (var c =0; c < randint(1,3); c ++){
                 summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         } else if (roomToGenerate == "tree"){
@@ -223,7 +241,7 @@ function generateLevel(levelName, x, y, length){
             walls.push(new Wall("wall", xLocation + 175, y - 200, 100, 100, "green"));
             walls.push(new Wall("wall", xLocation + 505, y - 100, 40, 100, "brown"));
             walls.push(new Wall("wall", xLocation + 475, y - 200, 100, 100, "green"));
-            for (var c =0; c < randint(5,7); c ++){
+            for (var c =0; c < randint(1,3); c ++){
                 summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         }
