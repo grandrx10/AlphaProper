@@ -216,10 +216,10 @@ export class Entity {
     deaccelerate(){
         this.ySpeed += 0.3;
 
-        if (this.xSpeed > 0.2){
-            this.xSpeed -= 0.2;
-        } else if (this.xSpeed < -0.2) {
-            this.xSpeed += 0.2
+        if (this.xSpeed >= 0.4){
+            this.xSpeed -= 0.4;
+        } else if (this.xSpeed <= -0.4) {
+            this.xSpeed += 0.4
         } else {
             this.xSpeed = 0
         }
