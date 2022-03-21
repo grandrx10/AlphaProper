@@ -102,7 +102,7 @@ function draw(){
                 socket.emit('key', key);
             }
 
-            if (keyIsDown(69) && entities[entity].interact != null){ // enter portal (e) 
+            if (keyIsDown(69) && entities[socket.id].interact != null){ // enter portal (e)
                 socket.emit('enterPortal', socket.id);
             }
         }
