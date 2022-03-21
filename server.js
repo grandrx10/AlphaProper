@@ -155,7 +155,7 @@ function createSection(name, x, y){
         var length = 1650;
         var width = 500;
     } else if (name == "dungeon01"){
-        var length = 6400;
+        var length = 8000;
         var width = 500;
     }
     rooms.push(new Room(name, x, y, length, width));
