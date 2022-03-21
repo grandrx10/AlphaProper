@@ -68,7 +68,7 @@ function newConnection(socket){
     }
 }
 
-setInterval(update, 20);
+setInterval(update, 15);
 
 function update(){
     gameTime ++;
