@@ -12,8 +12,6 @@ export class Entity {
         this.ySpeed = 0;
         this.length = length;
         this.width = width;
-        this.hp = health;
-        this.maxHp = health;
         this.xAccel = 0;
         this.yAccel = 0;
         this.xOrigA = maxAccelX;
@@ -35,12 +33,14 @@ export class Entity {
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
 
         this.stats = {
-            ATK: ["ATK", 0],
-            SPD: ["SPD", 0],
-            ATK_SPD: ["ATK SPD", 0],
-            HP: ["HP", this.maxHp],
-            DEF: ["DEF", 0],
-            MANA: ["MANA", 0]
+            atk: ["ATK", 0],
+            spd: ["SPD", 0],
+            dex: ["DEX", 0],
+            maxHp: ["MAX HP", health],
+            hp: ["HP", health],
+            def: ["DEF", 0],
+            mana: ["MANA", 0],
+            vit: ["VIT", 0]
         }
 
         if(this.type == "Player"){
@@ -53,15 +53,15 @@ export class Entity {
             };
             for (var i = 0; i < this.inventory.inventorySize; i ++){
                 if (i <this.inventory.inventorySize/2){
-                    this.inventory.items.push(new ItemFrame("", i, 125 + i*(350/(this.inventory.inventorySize/2)), 150, 80, 80));
+                    this.inventory.items.push(new ItemFrame("", i, 125 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
                 } else {
                     this.inventory.items.push(new ItemFrame("", i, 125 + (i-this.inventory.inventorySize/2)*
-                    (350/(this.inventory.inventorySize/2)), 240, 80, 80));
+                    (350/(this.inventory.inventorySize/2)), 190, 80, 80));
                 }
             }
             let equipSpot = ["Head", "Chest", "Ability", "Weapon"]
             for (var i = 0; i < 4; i ++){
-                this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 360, 80, 80));
+                this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80));
             }
         }
     }
@@ -132,7 +132,7 @@ export class Entity {
     }
 
     checkDeath(entities, gameTime, n){
-        if (this.hp <= 0){
+        if (this.stats.hp[1] <= 0){
             for (var i = 0; i < 5; i++){
                 entities[n] = new Entity("Blood", "blood", this.x, this.y, 10, 10, 5, "none", "darkred", -1, gameTime, n);
                 entities[n].xAccel = this.randint(-10, 10);
@@ -174,7 +174,7 @@ export class Entity {
             fill("grey");
             rect(this.x - xRange, this.y - yRange - 20, this.length, 8);
             fill("green");
-            rect(this.x - xRange, this.y - yRange - 20, this.length*(this.hp/this.maxHp), 8);
+            rect(this.x - xRange, this.y - yRange - 20, this.length*(this.stats.hp[1]/this.stats.maxHp[1]), 8);
         }
     }
 

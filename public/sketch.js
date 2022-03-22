@@ -1,4 +1,3 @@
-
 var socket;
 
 var gameStart = false;
@@ -69,7 +68,7 @@ function draw(){
                 fill("grey");
                 rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length, 8);
                 fill("green");
-                rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length*(entities[entity].hp/entities[entity].maxHp), 8)
+                rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length*(entities[entity].stats.hp[1]/entities[entity].stats.maxHp[1]), 8)
                 fill("white")
                 textAlign(CENTER);
                 textFont(clientFont);
@@ -87,7 +86,7 @@ function draw(){
             }
             fill("white")
             textSize(20);
-            text("Location: " + entities[socket.id].location, 150, 50);
+            text("Location: " + entities[socket.id].location, 150, 30);
 
 
             if (keyIsDown(68)){ // go right (D)
@@ -137,10 +136,11 @@ function randint(min, max){
 
 function displayInventory(){
     fill("#62B2F7");
-    rect(100, 100, 400, 400)
+    rect(100, 50, 400, 400)
+    rect(150, 450, 300, 100)
     fill("black");
     textSize(20);
-    text("Inventory", 300, 130)
+    text("Inventory", 300, 80)
     for(var i = 0; i < entities[socket.id].inventory.items.length; i++){
         fill ("grey")
         rect(entities[socket.id].inventory.items[i].x, entities[socket.id].inventory.items[i].y,
@@ -151,6 +151,20 @@ function displayInventory(){
             text(entities[socket.id].inventory.items[i].slot, entities[socket.id].inventory.items[i].x + 
                 entities[socket.id].inventory.items[i].length/2, entities[socket.id].inventory.items[i].y - 10);
         }
+    }  
+    
+    var num = 0;
+    for (var stat in entities[socket.id].stats){
+        fill("black")
+        textSize(12)
+        textAlign(LEFT)
+        if (num < 4){
+            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + num*70, 500)
+        } else {
+            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + (num-4)*70, 530)
+        }
+        num ++;
+        textAlign(CENTER)
     }
 }
 

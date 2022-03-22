@@ -237,7 +237,7 @@ function generateLevel(levelName, x, y, length){
                 summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         } else if (roomToGenerate == "tree"){
-            walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
+            walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "darkgreen"));
             walls.push(new Wall("wall", xLocation + 205, y - 100, 40, 100, "brown"));
             walls.push(new Wall("wall", xLocation + 175, y - 200, 100, 100, "green"));
             walls.push(new Wall("wall", xLocation + 505, y - 100, 40, 100, "brown"));
