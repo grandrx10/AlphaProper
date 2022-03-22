@@ -1,3 +1,4 @@
+
 var socket;
 
 var gameStart = false;
@@ -139,10 +140,18 @@ function displayInventory(){
     rect(100, 100, 400, 400)
     fill("black");
     textSize(20);
-    text("Inventory", 300, 120)
-    // for(var i = 0; i < entities[socket.id].inventory.items.length; i++){
-    //     entities[socket.id].inventory.items;
-    // }
+    text("Inventory", 300, 130)
+    for(var i = 0; i < entities[socket.id].inventory.items.length; i++){
+        fill ("grey")
+        rect(entities[socket.id].inventory.items[i].x, entities[socket.id].inventory.items[i].y,
+            entities[socket.id].inventory.items[i].length, entities[socket.id].inventory.items[i].width)
+
+        if (!Number.isInteger(entities[socket.id].inventory.items[i].slot)){
+            fill("black")
+            text(entities[socket.id].inventory.items[i].slot, entities[socket.id].inventory.items[i].x + 
+                entities[socket.id].inventory.items[i].length/2, entities[socket.id].inventory.items[i].y - 10);
+        }
+    }
 }
 
 function preload(){

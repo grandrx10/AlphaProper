@@ -1,5 +1,6 @@
 import { Weapon } from "./weapon.js"
 import { Bullet } from "./bullet.js"
+import { ItemFrame } from "./itemFrame.js"
 
 export class Entity {
     constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY){
@@ -31,12 +32,38 @@ export class Entity {
             shakeDuration: 0
         }
         this.lastHurtBy;
-        this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1};
-        this.inventory = {
-            items: ["", "", "", "", "", ""],
-            inventoryOpen: false,
-            itemSelected: ""
-        };
+        this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
+
+        this.stats = {
+            ATK: ["ATK", 0],
+            SPD: ["SPD", 0],
+            ATK_SPD: ["ATK SPD", 0],
+            HP: ["HP", this.maxHp],
+            DEF: ["DEF", 0],
+            MANA: ["MANA", 0]
+        }
+
+        if(this.type == "Player"){
+            this.inventory = {
+                inventorySize: 8,
+                items: [],
+                inventoryOpen: false,
+                itemSelected: ""
+
+            };
+            for (var i = 0; i < this.inventory.inventorySize; i ++){
+                if (i <this.inventory.inventorySize/2){
+                    this.inventory.items.push(new ItemFrame("", i, 125 + i*(350/(this.inventory.inventorySize/2)), 150, 80, 80));
+                } else {
+                    this.inventory.items.push(new ItemFrame("", i, 125 + (i-this.inventory.inventorySize/2)*
+                    (350/(this.inventory.inventorySize/2)), 240, 80, 80));
+                }
+            }
+            let equipSpot = ["Head", "Chest", "Ability", "Weapon"]
+            for (var i = 0; i < 4; i ++){
+                this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 360, 80, 80));
+            }
+        }
     }
 
     checkInteract(portals){
