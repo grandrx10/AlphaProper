@@ -123,15 +123,10 @@ function update(){
     // sendInfo.append(gameTime);
     // sendInfo.append(entities);
     // sendInfo.append(walls);
-    // io.sockets.emit("sendingUpdate", [gameTime, entities, walls, bullets, interactables]);
+    io.sockets.emit("sendingUpdate", [gameTime, entities, walls, bullets, interactables]);
     
     if (Object.keys(entities).length != 0){
         Object.keys(entities).forEach(function(key) {
-
-            if (!Number.isInteger(key)){
-                io.to(key).emit("sendingUpdate", [gameTime, entities, walls, bullets, interactables])
-            }
-
             entities[key].update(walls);
             entities[key].setRoom(rooms);
             entities[key].accelerate();
