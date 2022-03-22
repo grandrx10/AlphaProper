@@ -233,7 +233,7 @@ function generateLevel(levelName, x, y, length){
             walls.push(new Wall("wall", xLocation + 100, y - 300, 580, 20, "silver"));
             walls.push(new Wall("wall", xLocation + 400, y - 150, 20, 150, "silver"));
             walls.push(new Wall("wall", xLocation + 350, y - 150, 120, 20, "silver"));
-            for (var c =0; c < randint(1,3); c ++){
+            for (var c =0; c < randint(3,5); c ++){
                 summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         } else if (roomToGenerate == "tree"){
@@ -242,7 +242,7 @@ function generateLevel(levelName, x, y, length){
             walls.push(new Wall("wall", xLocation + 175, y - 200, 100, 100, "green"));
             walls.push(new Wall("wall", xLocation + 505, y - 100, 40, 100, "brown"));
             walls.push(new Wall("wall", xLocation + 475, y - 200, 100, 100, "green"));
-            for (var c =0; c < randint(1,3); c ++){
+            for (var c =0; c < randint(3,5); c ++){
                 summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         } else if (roomToGenerate == "overArch"){
@@ -253,7 +253,7 @@ function generateLevel(levelName, x, y, length){
             walls.push(new Wall("wall", xLocation + 300, y-100, 200, 100, "silver"));
 
 
-            for (var c =0; c < randint(1,3); c ++){
+            for (var c =0; c < randint(3,5); c ++){
                 summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         }
