@@ -2,7 +2,7 @@ import { Bullet } from "./bullet.js"
 import { Wall } from "./wall.js"
 import { Entity } from "./entity.js"
 import { Weapon } from "./weapon.js"
-import { Portal } from "./portal.js"
+import { Interactable } from "./interactable.js"
 import express from "express"
 import { Server } from "socket.io"
 import { Room } from "./room.js"
@@ -29,8 +29,8 @@ var rooms = []
 //entities[-1] = new Entity("Enemy", "npc", 100, 100, 20, 30, 100, "pistol", "purple", -1, gameTime,-1, 0.5,6);
 var walls = []
 var bullets = []
-var portals = [];
-portals.push(new Portal("dungeon01", 1200, 230, 30, 40, "cyan", 5))
+var interactables = [];
+interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
 var gameTime = 0;
 createSection("lobby", 0, 0, 1650, 500)
 
@@ -79,14 +79,14 @@ setInterval(update, 15);
 
 function update(){
     gameTime ++;
-    io.sockets.emit("sendingUpdate", [gameTime, entities, walls, bullets, portals]);
+    io.sockets.emit("sendingUpdate", [gameTime, entities, walls, bullets, interactables]);
     
     if (Object.keys(entities).length != 0){
         Object.keys(entities).forEach(function(key) {
             entities[key].update(walls);
             entities[key].setRoom(rooms);
             entities[key].accelerate();
-            entities[key].checkInteract(portals);
+            entities[key].checkInteract(interactables);
             entities[key].aiMovement(entities, entities[key], bullets, gameTime);
             entities[key].checkDeath(entities, gameTime, game.n);
             game.n ++;
@@ -102,6 +102,7 @@ function update(){
             rooms[i].lastChecked = gameTime;
             if (rooms[i].checkEmpty(entities, rooms[i]) && rooms[i].name != "lobby"){
                 rooms[i].deleteArray(walls);
+                rooms[i].deleteArray(interactables);
                 rooms[i].deleteDictionary(entities, rooms[i]);
                 rooms.splice(i, 1);
             }
@@ -176,7 +177,7 @@ function createSection(name, x, y){
         var length = 6400;
         var width = 500;
     }
-    rooms.push(new Room(name, x, y, length + 50, width + 50, gameTime));
+    rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){
         rooms[rooms.length-1].x = randint(0, 1000);
         rooms[rooms.length-1].y = randint(0, 1000);
@@ -219,7 +220,7 @@ function generateLevel(levelName, x, y, length){
         var xLocation = x + segmentLength*(i);
         if (i == lastRoom && levelName != "lobby"){
             walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
-            portals.push(new Portal("lobby", xLocation + 700, y - 40, 30, 40, "blue", 5))
+            interactables.push(new Interactable("lobby", xLocation + 700, y - 40, 30, 40, "blue", "portal"))
         }
         else if (roomToGenerate == "empty" || i == 0){
             walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
