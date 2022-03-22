@@ -51,7 +51,7 @@ export class Entity {
         };
         for (var i = 0; i < this.inventory.inventorySize; i ++){
             if (i <this.inventory.inventorySize/2){
-                this.inventory.items.push(new ItemFrame("Mercenary Cap", i, 125 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
+                this.inventory.items.push(new ItemFrame("", i, 125 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
             } else {
                 this.inventory.items.push(new ItemFrame("", i, 125 + (i-this.inventory.inventorySize/2)*
                 (350/(this.inventory.inventorySize/2)), 190, 80, 80));
@@ -61,6 +61,12 @@ export class Entity {
         for (var i = 0; i < 4; i ++){
             this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80));
         }
+
+        this.inventory.items[0].itemName = "Ranger Hat";
+        this.inventory.items[0].refreshItem();
+        this.inventory.items[1].itemName = "Mercenary Cap";
+        this.inventory.items[1].refreshItem();
+        
     }
 
     checkInteract(portals){

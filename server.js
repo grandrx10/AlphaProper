@@ -123,6 +123,7 @@ function update(){
     // sendInfo.append(gameTime);
     // sendInfo.append(entities);
     // sendInfo.append(walls);
+    // optimize walls another day
     io.sockets.emit("sendingUpdate", [gameTime, entities, walls, bullets, interactables]);
     
     if (Object.keys(entities).length != 0){
