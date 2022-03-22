@@ -65,9 +65,11 @@ function draw(){
         for (entity in entities){
             fill(entities[entity].colour);
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
-            for (var i = 0; i < entities[entity].inventory.items.length; i ++){
-                if (entities[entity].inventory.items[i].slot == "Head"){
-                    drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange, true, entity)
+            if (entities[entity].type == "Player"){
+                for (var i = 0; i < entities[entity].inventory.items.length; i ++){
+                    if (entities[entity].inventory.items[i].slot == "Head"){
+                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange, true, entity)
+                    }
                 }
             }
 
