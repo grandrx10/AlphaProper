@@ -46,8 +46,8 @@ export class Bullet {
     checkBulletCollisionEntities(entities, bullets, bullet){
         Object.keys(entities).forEach(function(key) {
             if (bullet.rectCircDetect(entities[key], bullet) && entities[key].team != bullet.team && entities[key].type != "blood") {
-                if (entities[key].hp != null){
-                    entities[key].hp -= bullet.damage;
+                if (entities[key].stats.hp[1] != null){
+                    entities[key].stats.hp[1] -= bullet.damage;
                     entities[key].lastHurtBy = bullet.id;
                 }
                 bullets.splice(bullets.indexOf(bullet), 1);

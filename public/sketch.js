@@ -1,3 +1,4 @@
+
 var socket;
 
 var gameStart = false;
@@ -64,6 +65,12 @@ function draw(){
         for (entity in entities){
             fill(entities[entity].colour);
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
+            for (var i = 0; i < entities[entity].inventory.items.length; i ++){
+                if (entities[entity].inventory.items[i].slot == "Head"){
+                    drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange, true, entity)
+                }
+            }
+
             if (entities[entity].type != "blood"){
                 fill("grey");
                 rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length, 8);
@@ -121,6 +128,12 @@ function keyPressed() {
     }
 }
 
+function mousePressed(){
+    if (entities[socket.id] != null && entities[socket.id].inventory.inventoryOpen){
+        socket.emit('pickUpItem', {id: socket.id, x: mouseX, y: mouseY});
+    }
+}
+
 function cameraShake(){
     if (gameTime - entities[socket.id].shake.shakeStart <= entities[socket.id].shake.shakeDuration){
         shake.x = randint(-10, 10);
@@ -135,17 +148,24 @@ function randint(min, max){
 }
 
 function displayInventory(){
+    // draw the basic outline of the inventory
     fill("#62B2F7");
     rect(100, 50, 400, 400)
     rect(150, 450, 300, 100)
     fill("black");
     textSize(20);
     text("Inventory", 300, 80)
+    // draw out all the inventory boxes
     for(var i = 0; i < entities[socket.id].inventory.items.length; i++){
         fill ("grey")
         rect(entities[socket.id].inventory.items[i].x, entities[socket.id].inventory.items[i].y,
             entities[socket.id].inventory.items[i].length, entities[socket.id].inventory.items[i].width)
-
+        
+        // draw out the items themselves
+        drawItem(entities[socket.id].inventory.items[i].itemName, entities[socket.id].inventory.items[i].x + 30,
+            entities[socket.id].inventory.items[i].y + 40, false, socket.id)
+        
+        // write the slot information
         if (!Number.isInteger(entities[socket.id].inventory.items[i].slot)){
             fill("black")
             text(entities[socket.id].inventory.items[i].slot, entities[socket.id].inventory.items[i].x + 
@@ -153,18 +173,42 @@ function displayInventory(){
         }
     }  
     
+    // write stats
     var num = 0;
     for (var stat in entities[socket.id].stats){
         fill("black")
         textSize(12)
         textAlign(LEFT)
         if (num < 4){
-            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + num*70, 500)
+            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + num*70, 470)
         } else {
-            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + (num-4)*70, 530)
+            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + (num-4)*70, 500)
         }
         num ++;
         textAlign(CENTER)
+    }
+
+    //describe items when hovering
+    for(var i = 0; i < entities[socket.id].inventory.items.length; i++){
+        if (contains(mouseX, mouseY, entities[socket.id].inventory.items[i]) && entities[socket.id].inventory.items[i].itemName != ""){
+            fill("#2282FF");
+            rect(mouseX, mouseY, 300, 100);
+            fill("black");
+            textSize(15);
+            text(entities[socket.id].inventory.items[i].itemName, mouseX + 150, mouseY + 20)
+            textSize(10);
+            text(entities[socket.id].inventory.items[i].item.description, mouseX + 150, mouseY + 40)
+            var statsMessage = "";
+            for (stat in entities[socket.id].inventory.items[i].item.stats){
+                statsMessage += entities[socket.id].inventory.items[i].item.stats[stat][0] + ": " + 
+                entities[socket.id].inventory.items[i].item.stats[stat][1] + " "
+            }
+            text(statsMessage, mouseX + 150, mouseY + 80)
+        }
+    }
+
+    if (entities[socket.id].inventory.itemSelected != null){
+        drawItem(entities[socket.id].inventory.itemSelected, mouseX, mouseY, false, socket.id)
     }
 }
 
@@ -181,3 +225,24 @@ function update(returnList){
     portals = returnList[4];
 }
 
+function drawItem(itemName, x, y, flip, id){
+    push();
+    if (entities[id].dir == "left" && flip){
+        scale(-1, 1)
+        x = -x - 20
+    }
+    if (itemName == "Ranger Hat"){
+        fill("brown");
+        rect(x, y - 5, 20, 5);
+        rect(x-10, y, 40, 5);
+    } else if (itemName == "Mercenary Cap"){
+        fill("#464749");
+        rect(x, y - 8, 20, 8);
+        rect(x, y, 25, 5);
+    }
+    pop();
+}
+
+function contains(x, y, rect){
+    return (x >= rect.x && x <= rect.x + rect.length && y >= rect.y && y <= rect.y + rect.width)
+}

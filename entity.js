@@ -10,6 +10,7 @@ export class Entity {
         this.y = y;
         this.xSpeed = 0;
         this.ySpeed = 0;
+        this.dir;
         this.length = length;
         this.width = width;
         this.xAccel = 0;
@@ -36,33 +37,29 @@ export class Entity {
             atk: ["ATK", 0],
             spd: ["SPD", 0],
             dex: ["DEX", 0],
-            maxHp: ["MAX HP", health],
+            maxHp: ["MAXHP", health],
             hp: ["HP", health],
             def: ["DEF", 0],
             mana: ["MANA", 0],
             vit: ["VIT", 0]
         }
-
-        if(this.type == "Player"){
-            this.inventory = {
-                inventorySize: 8,
-                items: [],
-                inventoryOpen: false,
-                itemSelected: ""
-
-            };
-            for (var i = 0; i < this.inventory.inventorySize; i ++){
-                if (i <this.inventory.inventorySize/2){
-                    this.inventory.items.push(new ItemFrame("", i, 125 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
-                } else {
-                    this.inventory.items.push(new ItemFrame("", i, 125 + (i-this.inventory.inventorySize/2)*
-                    (350/(this.inventory.inventorySize/2)), 190, 80, 80));
-                }
+        this.inventory = {
+            inventorySize: 8,
+            items: [],
+            inventoryOpen: false,
+            itemSelected: null
+        };
+        for (var i = 0; i < this.inventory.inventorySize; i ++){
+            if (i <this.inventory.inventorySize/2){
+                this.inventory.items.push(new ItemFrame("Mercenary Cap", i, 125 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
+            } else {
+                this.inventory.items.push(new ItemFrame("", i, 125 + (i-this.inventory.inventorySize/2)*
+                (350/(this.inventory.inventorySize/2)), 190, 80, 80));
             }
-            let equipSpot = ["Head", "Chest", "Ability", "Weapon"]
-            for (var i = 0; i < 4; i ++){
-                this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80));
-            }
+        }
+        let equipSpot = ["Head", "Chest", "Ability", "Weapon"]
+        for (var i = 0; i < 4; i ++){
+            this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80));
         }
     }
 
@@ -181,12 +178,14 @@ export class Entity {
     move(dir){
         if (dir == "left"){
             this.xAccel = -this.xOrigA;
+            this.dir = dir
         } else if (dir == "right"){
             this.xAccel = this.xOrigA;
+            this.dir = dir
         }else if (dir == "jump" && this.canJump){
             this.yAccel = -this.yOrigA;
             this.canJump = false;
-        }   
+        }
     }
 
     setRoom(rooms){

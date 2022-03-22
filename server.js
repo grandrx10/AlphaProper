@@ -6,6 +6,7 @@ import { Interactable } from "./interactable.js"
 import express from "express"
 import { Server } from "socket.io"
 import { Room } from "./room.js"
+import { Item } from "./item.js"
 
 // var express = require('express');
 
@@ -47,6 +48,7 @@ function newConnection(socket){
     socket.on("interact", enterPortal);
     socket.on("openInventory", openInventory);
     socket.on("shoot", triggerBullet);
+    socket.on("pickUpItem", pickUpItem);
 
     function keyMsg(key) {
         //data is the key pressed
@@ -57,7 +59,7 @@ function newConnection(socket){
     }
 
     function triggerBullet(aimPos){
-        if (entities[socket.id] != null){
+        if (entities[socket.id] != null && entities[socket.id].inventory.inventoryOpen == false){
             entities[socket.id].shoot(gameTime, bullets, aimPos)
         }
     }
@@ -70,7 +72,44 @@ function newConnection(socket){
 
     function openInventory(id){
         if(entities[id] != null){
+            if (entities[id].inventory.inventoryOpen && entities[id].inventory.itemSelected != null){
+                var returnedItem = false;
+                for (var i = 0; i < entities[id].inventory.items.length && !returnedItem; i++){
+                    if (entities[id].inventory.items[i].itemName == "" && (Number.isInteger(entities[id].inventory.items[i].slot)
+                    || entities[id].inventory.items[i].slot == entities[id].inventory.items[i].item.slot)){
+                        entities[id].inventory.items[i].itemName = entities[id].inventory.itemSelected;
+                        entities[id].inventory.items[i].refreshItem();
+                        returnedItem = true;
+                    }
+                }
+            }
             entities[id].inventory.inventoryOpen = !entities[id].inventory.inventoryOpen;
+            entities[id].inventory.itemSelected = null;
+        }
+    }
+
+    function pickUpItem(list){
+        for (var i = 0; i < entities[list.id].inventory.items.length; i++){
+            if (entities[list.id].inventory.itemSelected == null){
+                if (contains(list.x, list.y, entities[list.id].inventory.items[i]) 
+                    && entities[list.id].inventory.items[i].itemName != ""){
+                    entities[list.id].inventory.itemSelected = entities[list.id].inventory.items[i].itemName;
+                    entities[list.id].inventory.items[i].itemName = ""
+                    entities[list.id].inventory.items[i].refreshItem();
+                }
+            } else {
+                if (contains(list.x, list.y, entities[list.id].inventory.items[i]) 
+                    && (Number.isInteger(entities[list.id].inventory.items[i].slot)||
+                    entities[list.id].inventory.items[i].slot == new Item(entities[list.id].inventory.itemSelected).slot)){
+                    var temp = entities[list.id].inventory.itemSelected 
+                    entities[list.id].inventory.itemSelected = entities[list.id].inventory.items[i].itemName;
+                    entities[list.id].inventory.items[i].itemName = temp
+                    entities[list.id].inventory.items[i].refreshItem();
+                    if (entities[list.id].inventory.itemSelected == ""){
+                        entities[list.id].inventory.itemSelected = null
+                    }
+                }
+            }
         }
     }
 }
@@ -140,6 +179,10 @@ function rectCircDetect(rect, circle){
 
 function createBullet(x, y, aimX, aimY, speed, damage, type, duration, team){
     bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime));
+}
+
+function contains(x, y, rect){
+    return (x >= rect.x && x <= rect.x + rect.length && y >= rect.y && y <= rect.y + rect.width)
 }
 
 function distance(x1, y1, x2, y2){
