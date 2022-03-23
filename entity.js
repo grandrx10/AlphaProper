@@ -6,7 +6,7 @@ import { Interactable } from "./interactable.js"
 import { Rect } from "./rect.js"
 
 export class Entity {
-    constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY){
+    constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY, engageRange){
         this.name = name;// required
         this.type = type;// required
         this.x = x;// required
@@ -51,6 +51,7 @@ export class Entity {
 
         if (this.type == "npc"){
             this.dropTable = new DropTable(this.name);
+            this.engageRange = engageRange;
         }
 
         if (this.type == "Player"){ 
@@ -102,13 +103,16 @@ export class Entity {
 
     moveTowardsMap(){
         if (this.travelMap.x != -1 && this.travelMap.y != -1){
-            if (this.x + this.length/2 < this.travelMap.x){
+            if (this.x + this.length/2 + this.engageRange < this.travelMap.x){
                 this.xAccel = this.xOrigA;
-            } else {
+            } else if (this.x + this.length/2 - this.engageRange > this.travelMap.x){
                 this.xAccel = -this.xOrigA;
             }
+            // else if (this.x + this.length/2 < this.travelMap.x) {
+            //     this.xAccel = this.xOrigA;
+            // }
 
-            if ((this.xSpeed == 0||this.y + this.width/2> this.travelMap.y) && this.canJump && this.randint(1,20) == 1){
+            if ((this.xSpeed == 0||this.y + this.width/2> this.travelMap.y) && this.canJump && this.randint(1,40) == 1){
                 this.yAccel = -this.yOrigA;
                 this.canJump = false
             }
@@ -201,7 +205,7 @@ export class Entity {
             this.weapon.lastFired = gameTime;
             this.createBullet(this.x + this.length/2, this.y+ this.width/2
             , aimPos[0], aimPos[1], this.weapon.speed, this.weapon.damage,
-            "default", 100, this.team, bullets, gameTime, this.id);
+            "default", this.weapon.expireTime, this.team, bullets, gameTime, this.id, this.weapon.colour);
             return true
         }
         return false
@@ -325,7 +329,7 @@ export class Entity {
         return Math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
     }
 
-    createBullet(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime, id){
-        bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id));
+    createBullet(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime, id, colour){
+        bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour));
     }
 }

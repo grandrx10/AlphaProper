@@ -1,6 +1,6 @@
 // This is the start of combat program
 export class Bullet {
-    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id) {
+    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour) {
         this.x = x;
         this.y = y;
         this.aimX = aimX;
@@ -14,9 +14,10 @@ export class Bullet {
         this.type = type;
         this.team = team;
         this.id = id;
+        this.colour = colour
     }
 
-    updateBulletLocation (entities, walls, bullets){
+    updateBulletLocation (entities, walls, bullets, gameTime){
         this.x = this.x + this.speed*this.travel[0]
         /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
         this.y = this.y + this.speed*this.travel[1]
@@ -27,11 +28,20 @@ export class Bullet {
         if (this != null){
             this.checkBulletCollision(walls, bullets);
         }
+        if (this != null){
+            this.checkBulletDuration(bullets, gameTime);
+        }
     }
 
     show(){
         fill(255)
         ellipse(this.x -xRange, this.y -yRange, this.r, this.r)
+    }
+
+    checkBulletDuration(bullets, gameTime){
+        if(gameTime - this.startTime > this.duration){
+            bullets.splice(bullets.indexOf(this), 1)
+        }
     }
 
     checkBulletCollision(walls, bullets){

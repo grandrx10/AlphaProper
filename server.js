@@ -102,24 +102,35 @@ function newConnection(socket){
             takeItem(list, entities[list.id].interact.inventory)
         }
         takeItem(list, entities[list.id].inventory)
-        //dropItem(list, entities[list.id].inventory, entities[list.id].interact)
+        dropItem(list, entities[list.id].inventory, entities[list.id].interact)
     }
 }
 
 function dropItem(list, inventory1, inventory2){
     if ( entities[list.id].inventory.itemSelected != null){
         var dropped = true;
-        for (var i = 0; i < inventory1.rects; i ++){
-            for (var c = 0; c < inventory2.rects; c ++){
-                if (contains(list.x, list.y, inventory1.rects[i]) || contains(list.x, list.y, inventory2.rects[c])){
+        if (inventory2 != null){
+            inventory2 = inventory2.inventory
+            for (var i = 0; i < inventory1.rects.length; i ++){
+                for (var c = 0; c < inventory2.rects.length; c ++){
+                    if (contains(list.x, list.y, inventory1.rects[i]) || contains(list.x, list.y, inventory2.rects[c])){
+                        dropped = false;
+                    }
+                }
+            }
+        } else {
+            for (var i = 0; i < inventory1.rects.length; i ++){
+                if (contains(list.x, list.y, inventory1.rects[i])){
                     dropped = false;
+                    
                 }
             }
         }
         
         if (dropped){
-            interactables.push(new Interactable(entities[list.id].inventory.itemSelected, entities[list.id].x,
+            interactables.push(new Interactable("Loot", entities[list.id].x,
                 entities[list.id].y, 15, 15, "brown", "bag"));
+                interactables[interactables.length -1].addToInventory(entities[list.id].inventory.itemSelected)
                 entities[list.id].inventory.itemSelected = null
         }
     }
@@ -202,7 +213,7 @@ function update(){
     }
 
     for (var i = 0; i < bullets.length; i ++){
-        bullets[i].updateBulletLocation(entities, walls, bullets)
+        bullets[i].updateBulletLocation(entities, walls, bullets, gameTime)
     }
 
     for (var i = interactables.length-1; i >= 0; i --){
@@ -314,14 +325,21 @@ function createSection(name, x, y){
 function generateLevel(levelName, x, y, length){
     var segmentLength;
     var segmentHeight;
-    var listOfRooms;
+    var listOfRooms = [];
+    var possibleMobs = [];
+    var enemyNumber = {
+        max: 0,
+        min: 0
+    }
     if (levelName == "dungeon01"){
         segmentLength = 800;
         segmentHeight = 500;
         listOfRooms = ["overArch", "house", "tree"];
+        possibleMobs = ["Goblin Grunt", "Goblin Archer"]
+        enemyNumber.min = 3;
+        enemyNumber.max = 5;
     } else if (levelName == "lobby"){
         segmentLength = 1650;
-        listOfRooms = []
         walls.push(new Wall("wall", x, y, 1600, 50, "silver"));
         walls.push(new Wall("wall", x, y-500, 50, 550, "silver"));
         walls.push(new Wall("wall", x, y-500, 1650, 50, "silver"));
@@ -352,45 +370,49 @@ function generateLevel(levelName, x, y, length){
             walls.push(new Wall("wall", xLocation + 100, y - 300, 580, 20, "silver"));
             walls.push(new Wall("wall", xLocation + 400, y - 150, 20, 150, "silver"));
             walls.push(new Wall("wall", xLocation + 350, y - 150, 120, 20, "silver"));
-            for (var c =0; c < randint(3,5); c ++){
-                summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
-            }
         } else if (roomToGenerate == "tree"){
             walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "darkgreen"));
             walls.push(new Wall("wall", xLocation + 205, y - 100, 40, 100, "brown"));
             walls.push(new Wall("wall", xLocation + 175, y - 200, 100, 100, "green"));
             walls.push(new Wall("wall", xLocation + 505, y - 100, 40, 100, "brown"));
             walls.push(new Wall("wall", xLocation + 475, y - 200, 100, 100, "green"));
-            for (var c =0; c < randint(3,5); c ++){
-                summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
-            }
         } else if (roomToGenerate == "overArch"){
             walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
             walls.push(new Wall("wall", xLocation + 100, y - segmentHeight, 50, segmentHeight-100, "silver"));
             walls.push(new Wall("wall", xLocation + 150, y - segmentHeight, 500, segmentHeight-300, "silver"));
             walls.push(new Wall("wall", xLocation + 650, y - segmentHeight, 50, segmentHeight-100, "silver"));
             walls.push(new Wall("wall", xLocation + 300, y-100, 200, 100, "silver"));
-
-
-            for (var c =0; c < randint(3,5); c ++){
-                summonEnemy("Grunt", xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
+        }
+        if (roomToGenerate != "empty" && i != 0 && i != lastRoom){
+            for (var c =0; c < randint(enemyNumber.min,enemyNumber.max); c ++){
+                summonEnemy(possibleMobs[randint(0, possibleMobs.length)], xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         }
     }
 }
 
 function summonEnemy(name, x, y, xLimit, yLimit){
-    if (name == "Grunt"){
+    if (name == "Goblin Grunt"){
         var length = 20;
         var width = 30;
         var hp = 100;
-        var weaponName = "pistol";
-        var colour = "red"
+        var weaponName = "fist";
+        var colour = "green"
         var xSpeed = 0.5;
         var ySpeed = 6;
+        var engageRange = 0;
+    } else if (name == "Goblin Archer"){
+        var length = 15;
+        var width = 30;
+        var hp = 80;
+        var weaponName = "bow";
+        var colour = "darkgreen"
+        var xSpeed = 1;
+        var ySpeed = 6;
+        var engageRange = 100;
     }
     entities[game.n] = new Entity(name, "npc", randint(x, xLimit), randint(y, yLimit), length, width, hp, weaponName, colour,
-    -1, gameTime, game.n, xSpeed, ySpeed);
+    -1, gameTime, game.n, xSpeed, ySpeed, engageRange);
     while (!checkAvailable(entities[game.n], walls)){
         entities[game.n].x = randint(x, xLimit);
         entities[game.n].y = randint(y, yLimit);  

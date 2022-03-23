@@ -43,7 +43,8 @@ function draw(){
 
         for (let i = bullets.length-1; i >= 0; i --){
             if (bullets[i] != null){
-                fill(255)
+                console.log(bullets[i].colour)
+                fill(bullets[i].colour)
                 ellipse(bullets[i].x -xRange, bullets[i].y -yRange, bullets[i].r, bullets[i].r)
             }
         }
