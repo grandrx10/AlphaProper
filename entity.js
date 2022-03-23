@@ -1,6 +1,9 @@
 import { Weapon } from "./weapon.js"
 import { Bullet } from "./bullet.js"
 import { ItemFrame } from "./itemFrame.js"
+import { DropTable } from "./dropTable.js"
+import { Interactable } from "./interactable.js"
+import { Rect } from "./rect.js"
 
 export class Entity {
     constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY){
@@ -45,12 +48,18 @@ export class Entity {
             mana: ["MANA", 0],
             vit: ["VIT", 0]
         } 
+
+        if (this.type == "npc"){
+            this.dropTable = new DropTable(this.name);
+        }
+
         if (this.type == "Player"){ 
             this.inventory = { // required
                 inventorySize: 8,
                 items: [],
                 inventoryOpen: false,
-                itemSelected: null
+                itemSelected: null,
+                rects: [new Rect(100, 50, 400, 400), new Rect(150, 450, 300, 100)]
             };
             for (var i = 0; i < this.inventory.inventorySize; i ++){
                 if (i <this.inventory.inventorySize/2){
@@ -64,19 +73,14 @@ export class Entity {
             for (var i = 0; i < 4; i ++){
                 this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80));
             }
-    
-            this.inventory.items[0].itemName = "Ranger Hat";
-            this.inventory.items[0].refreshItem();
-            this.inventory.items[1].itemName = "Mercenary Cap";
-            this.inventory.items[1].refreshItem();
         }
     }
 
-    checkInteract(portals){
+    checkInteract(interactables){
         var detected = false;
-        for (var portal = 0; portal< portals.length; portal++){
-            if (this.rectRectDetect(portals[portal], this)){
-                this.interact = portals[portal]
+        for (var i = 0; i< interactables.length; i++){
+            if (this.rectRectDetect(interactables[i], this)){
+                this.interact = interactables[i]
                 detected = true;
             }
         }
@@ -117,7 +121,7 @@ export class Entity {
         Object.keys(entities).forEach(function(key) {
             let distanceBetween = entity.distance(entity.x + entity.length/2, entity.y+ entity.width/2,
                  entities[key].x + entities[key].length/2, entities[key].y + entities[key].width/2);
-            if ((distanceBetween < closestDistance || closestDistance < 0) && entities[key].stats.hp[1] >= 0
+            if ((distanceBetween < closestDistance || closestDistance < 0) && entities[key].stats.hp[1] > 0
             && entities[key].team != entity.team 
             && entities[key].team != -1 && entity.travelMap.detectRange >= distanceBetween){
                 closest = key;
@@ -139,7 +143,7 @@ export class Entity {
         }
     }
 
-    checkDeath(entities, gameTime, n){
+    checkDeath(entities, gameTime, n, interactables){
         if (this.stats.hp[1] < 0){
             this.stats.hp[1] = 0
         }
@@ -158,7 +162,21 @@ export class Entity {
             }
 
             if (entities[this.id].type != "Player"){
+                var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
+                entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag")
+
+                for (var i = 0; i < entities[this.id].dropTable.drops.length; i ++){
+                    if (this.randint(1, 100) <= entities[this.id].dropTable.drops[i][1]){
+                        lootDrop.addToInventory(entities[this.id].dropTable.drops[i][0]);
+                    }
+                }
+
+                if (!lootDrop.checkEmpty()){
+                    interactables.push(lootDrop)
+                }
+
                 delete entities[this.id];
+
             } else if (entities[this.id].deathTime == 0){
                 this.deathTime = gameTime;
                 var temp = entities[this.id].width;
@@ -221,7 +239,7 @@ export class Entity {
         }
     }
 
-    update(blocks, blocks2) {
+    update(blocks) {
         this.x += this.xSpeed;
         for (var c = 0; c < blocks.length; c ++){
             if (this.rectRectDetect(this, blocks[c]) && this != blocks[c] && blocks[c].type != "blood"){
@@ -233,18 +251,6 @@ export class Entity {
                 }
             }
         }
-
-        // for (var c = 0; c < blocks2.length; c ++){
-        //     if (this.rectRectDetect(this, blocks2[c]) && this != blocks2[c] && blocks2[c].type != "blood"){
-        //         this.x += -this.xSpeed;
-        //         this.xSpeed = 0;
-
-        //         if (this.type == "npc" && this.canJump){
-        //             this.yAccel = -this.yOrigA;
-        //             this.canJump = false
-        //         }
-        //     }
-        // }
         
         this.y += this.ySpeed;
         for (var c = 0; c < blocks.length; c ++){
@@ -256,16 +262,6 @@ export class Entity {
                 }
             }
         }
-
-        // for (var c = 0; c < blocks2.length; c ++){
-        //     if (this.rectRectDetect(this, blocks2[c]) && this != blocks2[c] && blocks2[c].type != "blood"){
-        //         this.y += -this.ySpeed;
-        //         this.ySpeed = 0;
-        //         if (blocks2[c].y > this.y){
-        //             this.canJump = true;
-        //         }
-        //     }
-        // }
 
     }
         

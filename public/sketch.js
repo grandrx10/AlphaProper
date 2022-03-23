@@ -84,7 +84,7 @@ function draw(){
                 textSize(12);
                 text(entities[entity].name, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 30)
                 if (entities[entity].interact != null){
-                    text("Press E to enter: " + entities[entity].interact.name, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 50)
+                    text(entities[entity].interact.text, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 50)
                 }
             }
         }
@@ -116,7 +116,7 @@ function draw(){
                 socket.emit('key', key);
             }
 
-            if (keyIsDown(69) && entities[socket.id].interact != null){ // enter portal (e)
+            if (keyIsDown(69) && entities[socket.id].interact != null){ // interact (e)
                 socket.emit('interact', socket.id);
             }
         }
@@ -164,8 +164,10 @@ function displayDeathScreen(){
 function displayInventory(){
     // draw the basic outline of the inventory
     fill("#62B2F7");
-    rect(100, 50, 400, 400)
-    rect(150, 450, 300, 100)
+    for (var i = 0; i < entities[socket.id].inventory.rects.length; i ++){
+        rect(entities[socket.id].inventory.rects[i].x, entities[socket.id].inventory.rects[i].y, entities[socket.id].inventory.rects[i].length,
+            entities[socket.id].inventory.rects[i].width)
+    }
     fill("black");
     textSize(20);
     text("Inventory", 300, 80)
@@ -185,7 +187,39 @@ function displayInventory(){
             text(entities[socket.id].inventory.items[i].slot, entities[socket.id].inventory.items[i].x + 
                 entities[socket.id].inventory.items[i].length/2, entities[socket.id].inventory.items[i].y - 10);
         }
-    }  
+    } 
+
+    // Draw out the loot bag
+    if (entities[socket.id].interact != null){
+        if (entities[socket.id].interact.type == "bag"){
+            fill("#A45939");
+            for (var i = 0; i < entities[socket.id].interact.inventory.rects.length; i ++){
+                rect(entities[socket.id].interact.inventory.rects[i].x, entities[socket.id].interact.inventory.rects[i].y, 
+                    entities[socket.id].interact.inventory.rects[i].length,
+                    entities[socket.id].interact.inventory.rects[i].width)
+            }
+            fill("black");
+            textSize(20);
+            text("Bag", 1100, 80)
+            for(var i = 0; i < entities[socket.id].interact.inventory.items.length; i++){
+                fill ("grey")
+                rect(entities[socket.id].interact.inventory.items[i].x, entities[socket.id].interact.inventory.items[i].y,
+                    entities[socket.id].interact.inventory.items[i].length, entities[socket.id].interact.inventory.items[i].width)
+                
+                // draw out the items themselves
+                drawItem(entities[socket.id].interact.inventory.items[i].itemName, entities[socket.id].interact.inventory.items[i].x + 30,
+                    entities[socket.id].interact.inventory.items[i].y + 40, false, socket.id)
+
+            }
+            for(var i = 0; i < entities[socket.id].interact.inventory.items.length; i++){
+                if (contains(mouseX, mouseY, entities[socket.id].interact.inventory.items[i]) 
+                && entities[socket.id].interact.inventory.items[i].itemName != ""){
+                    describeItem(entities[socket.id].interact.inventory.items[i], "#B34B1E")
+                }
+            }
+        }
+    }
+    
     
     // write stats
     var num = 0;
@@ -205,19 +239,7 @@ function displayInventory(){
     //describe items when hovering
     for(var i = 0; i < entities[socket.id].inventory.items.length; i++){
         if (contains(mouseX, mouseY, entities[socket.id].inventory.items[i]) && entities[socket.id].inventory.items[i].itemName != ""){
-            fill("#2282FF");
-            rect(mouseX, mouseY, 300, 100);
-            fill("black");
-            textSize(15);
-            text(entities[socket.id].inventory.items[i].itemName, mouseX + 150, mouseY + 20)
-            textSize(10);
-            text(entities[socket.id].inventory.items[i].item.description, mouseX + 150, mouseY + 40)
-            var statsMessage = "";
-            for (stat in entities[socket.id].inventory.items[i].item.stats){
-                statsMessage += entities[socket.id].inventory.items[i].item.stats[stat][0] + ": " + 
-                entities[socket.id].inventory.items[i].item.stats[stat][1] + " "
-            }
-            text(statsMessage, mouseX + 150, mouseY + 80)
+            describeItem(entities[socket.id].inventory.items[i], "#2282FF")
         }
     }
 
@@ -259,4 +281,24 @@ function drawItem(itemName, x, y, flip, id){
 
 function contains(x, y, rect){
     return (x >= rect.x && x <= rect.x + rect.length && y >= rect.y && y <= rect.y + rect.width)
+}
+
+function describeItem(chosenItem, colour){
+    var i = 1;
+    if (mouseX > LENGTH/2){
+        i = -1;
+    }
+    fill(colour);
+    rect(mouseX, mouseY, i*300, 100);
+    fill("black");
+    textSize(15);
+    text(chosenItem.itemName, mouseX + i*150, mouseY + 20)
+    textSize(10);
+    text(chosenItem.item.description, mouseX + i*150, mouseY + 40)
+    var statsMessage = "";
+    for (stat in chosenItem.item.stats){
+        statsMessage += chosenItem.item.stats[stat][0] + ": " + 
+        chosenItem.item.stats[stat][1] + " "
+    }
+    text(statsMessage, mouseX + i*150, mouseY + 80)
 }

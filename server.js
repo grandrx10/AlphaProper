@@ -8,6 +8,7 @@ import { Server } from "socket.io"
 import { Room } from "./room.js"
 import { Item } from "./item.js"
 import { SimpleEntity } from "./simpleEntity.js"
+import { Rect } from "./rect.js"
 
 // var express = require('express');
 
@@ -33,6 +34,7 @@ var walls = []
 var bullets = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
+// interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
 var gameTime = 0;
 createSection("lobby", 0, 0, 1650, 500)
 
@@ -46,7 +48,7 @@ function newConnection(socket){
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
-    socket.on("interact", enterPortal);
+    socket.on("interact", interact);
     socket.on("openInventory", openInventory);
     socket.on("shoot", triggerBullet);
     socket.on("pickUpItem", pickUpItem);
@@ -66,9 +68,13 @@ function newConnection(socket){
         }
     }
 
-    function enterPortal(id){
+    function interact(id){
         if (entities[id].interact != null && entities[socket.id].deathTime == 0){
-            findPortalDestination(entities[id].interact.name, id)
+            if (entities[id].interact.type == "portal"){
+                findPortalDestination(entities[id].interact.name, id)
+            } else if (entities[id].interact.type == "bag"){
+                entities[id].inventory.inventoryOpen = true;
+            }
         }
     }
 
@@ -92,29 +98,57 @@ function newConnection(socket){
     }
 
     function pickUpItem(list){
-        for (var i = 0; i < entities[list.id].inventory.items.length; i++){
-            // when they pick up the item
-            if (entities[list.id].inventory.itemSelected == null){
-                if (contains(list.x, list.y, entities[list.id].inventory.items[i]) 
-                    && entities[list.id].inventory.items[i].itemName != ""){
-                    entities[list.id].inventory.itemSelected = entities[list.id].inventory.items[i].itemName;
-                    entities[list.id].inventory.items[i].itemName = ""
-                    entities[list.id].inventory.items[i].refreshItem();
-                }
-            } else {
-                // put down the item
-                if (contains(list.x, list.y, entities[list.id].inventory.items[i]) 
-                    && (Number.isInteger(entities[list.id].inventory.items[i].slot)||
-                    entities[list.id].inventory.items[i].slot == new Item(entities[list.id].inventory.itemSelected).slot)){
-                    var temp = entities[list.id].inventory.itemSelected 
-                    entities[list.id].inventory.itemSelected = entities[list.id].inventory.items[i].itemName;
-                    entities[list.id].inventory.items[i].itemName = temp
-                    entities[list.id].inventory.items[i].refreshItem();
-                    if (entities[list.id].inventory.itemSelected == ""){
-                        entities[list.id].inventory.itemSelected = null
-                    }
+        if (entities[list.id].interact != null){
+            takeItem(list, entities[list.id].interact.inventory)
+        }
+        takeItem(list, entities[list.id].inventory)
+        //dropItem(list, entities[list.id].inventory, entities[list.id].interact)
+    }
+}
+
+function dropItem(list, inventory1, inventory2){
+    if ( entities[list.id].inventory.itemSelected != null){
+        var dropped = true;
+        for (var i = 0; i < inventory1.rects; i ++){
+            for (var c = 0; c < inventory2.rects; c ++){
+                if (contains(list.x, list.y, inventory1.rects[i]) || contains(list.x, list.y, inventory2.rects[c])){
+                    dropped = false;
                 }
             }
+        }
+        
+        if (dropped){
+            interactables.push(new Interactable(entities[list.id].inventory.itemSelected, entities[list.id].x,
+                entities[list.id].y, 15, 15, "brown", "bag"));
+                entities[list.id].inventory.itemSelected = null
+        }
+    }
+}
+
+function takeItem(list, inventory){
+    // when they pick up the item
+    for (var i = 0; i < inventory.items.length; i++){
+        if ( entities[list.id].inventory.itemSelected == null){
+            if (contains(list.x, list.y, inventory.items[i]) 
+                && inventory.items[i].itemName != ""){
+                entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
+                inventory.items[i].itemName = ""
+                inventory.items[i].refreshItem();
+            }
+        } else {
+            if (contains(list.x, list.y, inventory.items[i]) 
+                && (Number.isInteger(inventory.items[i].slot)||
+                inventory.items[i].slot == new Item(inventory.itemSelected).slot)){
+                
+
+                var temp = entities[list.id].inventory.itemSelected
+                entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
+                inventory.items[i].itemName = temp
+                inventory.items[i].refreshItem();
+                if (entities[list.id].inventory.itemSelected == ""){
+                    entities[list.id].inventory.itemSelected = null
+                }
+            } 
         }
     }
 }
@@ -162,13 +196,20 @@ function update(){
             entities[key].accelerate();
             entities[key].checkInteract(interactables);
             entities[key].aiMovement(entities, entities[key], bullets, gameTime);
-            entities[key].checkDeath(entities, gameTime, game.n);
+            entities[key].checkDeath(entities, gameTime, game.n, interactables);
             game.n ++;
         });
     }
 
     for (var i = 0; i < bullets.length; i ++){
         bullets[i].updateBulletLocation(entities, walls, bullets)
+    }
+
+    for (var i = interactables.length-1; i >= 0; i --){
+        interactables[i].update(walls)
+        if (interactables[i].type == "bag" && interactables[i].checkEmpty()){
+            interactables.splice(i, 1);
+        }
     }
 
     for (var i = rooms.length-1; i >= 0; i --){
