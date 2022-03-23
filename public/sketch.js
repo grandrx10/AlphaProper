@@ -17,8 +17,8 @@ var shake = {
     y: 0
 }; // How much does the screen shake?
 
-var width = 1400;
-var height = 600;
+var LENGTH = 1400;
+var WIDTH = 600;
 
 var clientFont;
 
@@ -37,8 +37,8 @@ function draw(){
     if (gameStart){
         if (entities[socket.id] != null){
             cameraShake();
-            xRange = entities[socket.id].x - width/2;
-            yRange = entities[socket.id].y - height/2;
+            xRange = entities[socket.id].x - LENGTH/2;
+            yRange = entities[socket.id].y - WIDTH/2;
         }
 
         for (let i = bullets.length-1; i >= 0; i --){
@@ -65,7 +65,7 @@ function draw(){
         for (entity in entities){
             fill(entities[entity].colour);
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
-            if (entities[entity].type == "Player"){
+            if (entities[entity].type == "Player" && entities[entity].stats.hp[1] > 0){
                 for (var i = 0; i < entities[entity].inventory.items.length; i ++){
                     if (entities[entity].inventory.items[i].slot == "Head"){
                         drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange, true, entity)
@@ -90,6 +90,10 @@ function draw(){
         }
 
         if (entities[socket.id] != null){
+            if (entities[socket.id].deathTime != 0){
+                displayDeathScreen();
+            }
+
             if (entities[socket.id].inventory.inventoryOpen){
                 displayInventory();
             }
@@ -147,6 +151,14 @@ function cameraShake(){
 }
 function randint(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function displayDeathScreen(){
+    fill("red");
+    textSize(30);
+    text("YOU ARE DEAD", LENGTH/2, 100)
+    textSize(20);
+    text("Respawning In: " + (entities[socket.id].deathDuration -(gameTime - entities[socket.id].deathTime)), LENGTH/2, 200)
 }
 
 function displayInventory(){

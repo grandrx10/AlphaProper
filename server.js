@@ -42,7 +42,7 @@ function newConnection(socket){
     });
     
     console.log("new connection: " + socket.id);
-    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, "smg", 
+    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 1000, "smg", 
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
@@ -53,29 +53,31 @@ function newConnection(socket){
 
     function keyMsg(key) {
         //data is the key pressed
-        if (Object.keys(entities).indexOf(socket.id) != -1) {
+        if (Object.keys(entities).indexOf(socket.id) != -1 && entities[socket.id].deathTime == 0) {
           entities[socket.id].move(key);
           // socket.broadcast.emit('key', data); // this sends to everyone minus the client that sent the message
         }
     }
 
     function triggerBullet(aimPos){
-        if (entities[socket.id] != null && entities[socket.id].inventory.inventoryOpen == false){
+        if (entities[socket.id] != null && entities[socket.id].deathTime == 0 &&
+            entities[socket.id].inventory.inventoryOpen == false){
             entities[socket.id].shoot(gameTime, bullets, aimPos)
         }
     }
 
     function enterPortal(id){
-        if (entities[id].interact != null){
+        if (entities[id].interact != null && entities[socket.id].deathTime == 0){
             findPortalDestination(entities[id].interact.name, id)
         }
     }
 
     function openInventory(id){
-        if(entities[id] != null){
+        if(entities[id] != null && entities[socket.id].deathTime == 0){
             if (entities[id].inventory.inventoryOpen && entities[id].inventory.itemSelected != null){
                 var returnedItem = false;
                 for (var i = 0; i < entities[id].inventory.items.length && !returnedItem; i++){
+                    // return the item to its original slot if they have their inventory open
                     if (entities[id].inventory.items[i].itemName == "" && (Number.isInteger(entities[id].inventory.items[i].slot)
                     || entities[id].inventory.items[i].slot == entities[id].inventory.items[i].item.slot)){
                         entities[id].inventory.items[i].itemName = entities[id].inventory.itemSelected;
@@ -91,6 +93,7 @@ function newConnection(socket){
 
     function pickUpItem(list){
         for (var i = 0; i < entities[list.id].inventory.items.length; i++){
+            // when they pick up the item
             if (entities[list.id].inventory.itemSelected == null){
                 if (contains(list.x, list.y, entities[list.id].inventory.items[i]) 
                     && entities[list.id].inventory.items[i].itemName != ""){
@@ -99,6 +102,7 @@ function newConnection(socket){
                     entities[list.id].inventory.items[i].refreshItem();
                 }
             } else {
+                // put down the item
                 if (contains(list.x, list.y, entities[list.id].inventory.items[i]) 
                     && (Number.isInteger(entities[list.id].inventory.items[i].slot)||
                     entities[list.id].inventory.items[i].slot == new Item(entities[list.id].inventory.itemSelected).slot)){
@@ -115,33 +119,44 @@ function newConnection(socket){
     }
 }
 
+setInterval(updateGameTime, 1);
+function updateGameTime(){
+    gameTime ++
+}
+
 setInterval(update, 15);
 
 function update(){
-    gameTime ++;
-
     // var sendInfo = []
     // sendInfo.append(gameTime);
     // sendInfo.append(entities);
     // sendInfo.append(walls);
     // optimize walls another day
 
-    var sendEntities = {};
-
-    if (Object.keys(entities).length != 0){
-        Object.keys(entities).forEach(function(key) {
-            sendEntities[key] = new SimpleEntity(entities[key].name, entities[key].type, 
-                entities[key].x, entities[key].y, entities[key].length,
-                entities[key].width, entities[key].dir, entities[key].stats,
-                entities[key].colour, entities[key].location, entities[key].interact,
-                entities[key].shake, entities[key].inventory)
-        });
-    }
-
-    io.sockets.emit("sendingUpdate", [gameTime, sendEntities, walls, bullets, interactables]);
     
     if (Object.keys(entities).length != 0){
         Object.keys(entities).forEach(function(key) {
+            if (entities[key].type == "Player"){
+                // send update
+                var sendEntities = {};
+
+                if (Object.keys(entities).length != 0){
+                    Object.keys(entities).forEach(function(id) {
+                        if (distance(entities[key].x + entities[key].length/2, entities[key].y + entities[key].width/2,
+                        entities[id].x + entities[id].length/2, entities[id].y + entities[id].width/2) < 1450){
+                            sendEntities[id] = new SimpleEntity(entities[id].name, entities[id].type, 
+                                entities[id].x, entities[id].y, entities[id].length,
+                                entities[id].width, entities[id].dir, entities[id].stats,
+                                entities[id].colour, entities[id].location, entities[id].interact,
+                                entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration)
+                        }
+                    });
+                }
+
+
+                io.to(key).emit('sendingUpdate', [gameTime, sendEntities, walls, bullets, interactables])
+            }
+
             entities[key].update(walls);
             entities[key].setRoom(rooms);
             entities[key].accelerate();

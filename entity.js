@@ -32,6 +32,8 @@ export class Entity {
         } 
         this.lastHurtBy;
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
+        this.deathTime = 0;
+        this.deathDuration = 500;
 
         this.stats = { // required
             atk: ["ATK", 0],
@@ -115,7 +117,8 @@ export class Entity {
         Object.keys(entities).forEach(function(key) {
             let distanceBetween = entity.distance(entity.x + entity.length/2, entity.y+ entity.width/2,
                  entities[key].x + entities[key].length/2, entities[key].y + entities[key].width/2);
-            if ((distanceBetween > closestDistance || closestDistance <= 0) && entities[key].team != entity.team 
+            if ((distanceBetween < closestDistance || closestDistance < 0) && entities[key].stats.hp[1] >= 0
+            && entities[key].team != entity.team 
             && entities[key].team != -1 && entity.travelMap.detectRange >= distanceBetween){
                 closest = key;
                 closestDistance = distanceBetween;
@@ -125,6 +128,7 @@ export class Entity {
         if (closest != -1){
             this.travelMap.x = entities[closest].x + entities[closest].length/2;
             this.travelMap.y = entities[closest].y + entities[closest].width/2;
+            // console.log("location of entity", this.travelMap.x, this.travelMap.y)
             this.travelMap.aimX = entities[closest].x + entities[closest].length/2;
             this.travelMap.aimY = entities[closest].y + entities[closest].width/2;
         } else {
@@ -136,21 +140,35 @@ export class Entity {
     }
 
     checkDeath(entities, gameTime, n){
-        if (this.stats.hp[1] <= 0){
+        if (this.stats.hp[1] < 0){
+            this.stats.hp[1] = 0
+        }
+
+        if (this.stats.hp[1] <= 0 && this.deathTime == 0){
             for (var i = 0; i < 5; i++){
                 entities[n] = new Entity("Blood", "blood", this.x, this.y, 10, 10, 5, "none", "darkred", -1, gameTime, n);
                 entities[n].xAccel = this.randint(-10, 10);
                 entities[n].yAccel = this.randint(-10, 10);
-                entities[n].expireTime = 100;
+                entities[n].expireTime = 300;
                 n ++ ;
             }
             if (entities[entities[this.id].lastHurtBy] != null){
                 entities[entities[this.id].lastHurtBy].shake.shakeStart = gameTime;
                 entities[entities[this.id].lastHurtBy].shake.shakeDuration = 10;
             }
-            delete entities[this.id];
-            // shake.shakeStart = gameTime;
-            // shake.shakeDuration = 10;
+
+            if (entities[this.id].type != "Player"){
+                delete entities[this.id];
+            } else if (entities[this.id].deathTime == 0){
+                this.deathTime = gameTime;
+                var temp = entities[this.id].width;
+                entities[this.id].width = entities[this.id].length;
+                entities[this.id].length = temp;
+                entities[this.id].inventory.inventoryOpen = false;
+            }
+        } else if ((gameTime - this.deathTime) > this.deathDuration && this.deathTime != 0){
+            entities[this.id] = new Entity(this.id, "Player", 100 + this.randint(-20, 20), 100, 20, 30, 100, "smg", 
+            "purple", 0, gameTime, this.id,1,6)
         }
 
         if (this.expireTime != -1 && gameTime - this.creationTime > this.expireTime){
