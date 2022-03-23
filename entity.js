@@ -33,7 +33,7 @@ export class Entity {
         this.lastHurtBy;
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
         this.deathTime = 0;
-        this.deathDuration = 500;
+        this.deathDuration = 5000;
 
         this.stats = { // required
             atk: ["ATK", 0],
@@ -149,7 +149,7 @@ export class Entity {
                 entities[n] = new Entity("Blood", "blood", this.x, this.y, 10, 10, 5, "none", "darkred", -1, gameTime, n);
                 entities[n].xAccel = this.randint(-10, 10);
                 entities[n].yAccel = this.randint(-10, 10);
-                entities[n].expireTime = 300;
+                entities[n].expireTime = 700;
                 n ++ ;
             }
             if (entities[entities[this.id].lastHurtBy] != null){

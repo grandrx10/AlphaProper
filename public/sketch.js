@@ -158,7 +158,7 @@ function displayDeathScreen(){
     textSize(30);
     text("YOU ARE DEAD", LENGTH/2, 100)
     textSize(20);
-    text("Respawning In: " + (entities[socket.id].deathDuration -(gameTime - entities[socket.id].deathTime)), LENGTH/2, 200)
+    text("Respawning In: " + (entities[socket.id].deathDuration -(gameTime - entities[socket.id].deathTime))/1000 + " seconds", LENGTH/2, 200)
 }
 
 function displayInventory(){
