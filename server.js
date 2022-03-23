@@ -7,6 +7,7 @@ import express from "express"
 import { Server } from "socket.io"
 import { Room } from "./room.js"
 import { Item } from "./item.js"
+import { SimpleEntity } from "./simpleEntity.js"
 
 // var express = require('express');
 
@@ -124,7 +125,20 @@ function update(){
     // sendInfo.append(entities);
     // sendInfo.append(walls);
     // optimize walls another day
-    io.sockets.emit("sendingUpdate", [gameTime, entities, walls, bullets, interactables]);
+
+    var sendEntities = {};
+
+    if (Object.keys(entities).length != 0){
+        Object.keys(entities).forEach(function(key) {
+            sendEntities[key] = new SimpleEntity(entities[key].name, entities[key].type, 
+                entities[key].x, entities[key].y, entities[key].length,
+                entities[key].width, entities[key].dir, entities[key].stats,
+                entities[key].colour, entities[key].location, entities[key].interact,
+                entities[key].shake, entities[key].inventory)
+        });
+    }
+
+    io.sockets.emit("sendingUpdate", [gameTime, sendEntities, walls, bullets, interactables]);
     
     if (Object.keys(entities).length != 0){
         Object.keys(entities).forEach(function(key) {

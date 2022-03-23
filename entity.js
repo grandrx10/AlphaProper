@@ -4,36 +4,36 @@ import { ItemFrame } from "./itemFrame.js"
 
 export class Entity {
     constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY){
-        this.name = name;
-        this.type = type;
-        this.x = x;
-        this.y = y;
+        this.name = name;// required
+        this.type = type;// required
+        this.x = x;// required
+        this.y = y;// required
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.dir;
-        this.length = length;
-        this.width = width;
+        this.dir;// required
+        this.length = length;// required
+        this.width = width;// required
         this.xAccel = 0;
         this.yAccel = 0;
         this.xOrigA = maxAccelX;
         this.yOrigA = maxAccelY;
         this.weapon = new Weapon(weapon);
-        this.colour = colour;
+        this.colour = colour;// required
         this.canJump = true;
         this.team = team;
         this.creationTime = gameTime;
         this.id = id;
-        this.location = "";
-        this.interact;
+        this.location = "";// required
+        this.interact;// required
         this.expireTime = -1;
-        this.shake = {
+        this.shake = {// required
             shakeStart: 0,
             shakeDuration: 0
-        }
+        } 
         this.lastHurtBy;
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
 
-        this.stats = {
+        this.stats = { // required
             atk: ["ATK", 0],
             spd: ["SPD", 0],
             dex: ["DEX", 0],
@@ -42,9 +42,9 @@ export class Entity {
             def: ["DEF", 0],
             mana: ["MANA", 0],
             vit: ["VIT", 0]
-        }
-        if (this.type == "Player"){
-            this.inventory = {
+        } 
+        if (this.type == "Player"){ 
+            this.inventory = { // required
                 inventorySize: 8,
                 items: [],
                 inventoryOpen: false,
