@@ -27,11 +27,11 @@ io.sockets.on('connection', newConnection);
 let d = new Date();
 let gameTime = d.getTime();
 
-setInterval(updateGameTime, 10);
-function updateGameTime(){
-    d = new Date();
-    gameTime = d.getTime()
-}
+// setInterval(updateGameTime, 10);
+// function updateGameTime(){
+//     d = new Date();
+//     gameTime = d.getTime()
+// }
 
 var entities = {};
 var game = {
@@ -183,7 +183,8 @@ function update(){
     // sendInfo.append(entities);
     // sendInfo.append(walls);
     // optimize walls another day
-
+    d = new Date();
+    gameTime = d.getTime()
     
     if (Object.keys(entities).length != 0){
         Object.keys(entities).forEach(function(key) {

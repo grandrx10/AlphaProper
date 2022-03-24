@@ -162,7 +162,6 @@ export class Entity {
         if (closest != -1){
             this.travelMap.x = entities[closest].x + entities[closest].length/2;
             this.travelMap.y = entities[closest].y + entities[closest].width/2;
-            // console.log("location of entity", this.travelMap.x, this.travelMap.y)
             this.travelMap.aimX = entities[closest].x + entities[closest].length/2;
             this.travelMap.aimY = entities[closest].y + entities[closest].width/2;
         } else {
