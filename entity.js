@@ -189,7 +189,7 @@ export class Entity {
             }
             if (entities[entities[this.id].lastHurtBy] != null){
                 entities[entities[this.id].lastHurtBy].shake.shakeStart = gameTime;
-                entities[entities[this.id].lastHurtBy].shake.shakeDuration = 10;
+                entities[entities[this.id].lastHurtBy].shake.shakeDuration = 100;
             }
 
             if (entities[this.id].type != "Player"){

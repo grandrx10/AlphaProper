@@ -175,7 +175,9 @@ function takeItem(list, inventory){
     }
 }
 
-setInterval(update, 15);
+setInterval(update, 1);
+
+var oldTime = 0
 
 function update(){
     // var sendInfo = []
@@ -185,59 +187,61 @@ function update(){
     // optimize walls another day
     d = new Date();
     gameTime = d.getTime()
-    
-    if (Object.keys(entities).length != 0){
-        Object.keys(entities).forEach(function(key) {
-            if (entities[key].type == "Player"){
-                // send update
-                var sendEntities = {};
+    if (gameTime - oldTime > 14){
+        oldTime = gameTime
+        if (Object.keys(entities).length != 0){
+            Object.keys(entities).forEach(function(key) {
+                if (entities[key].type == "Player"){
+                    // send update
+                    var sendEntities = {};
 
-                if (Object.keys(entities).length != 0){
-                    Object.keys(entities).forEach(function(id) {
-                        if (distance(entities[key].x + entities[key].length/2, entities[key].y + entities[key].width/2,
-                        entities[id].x + entities[id].length/2, entities[id].y + entities[id].width/2) < 1450){
-                            sendEntities[id] = new SimpleEntity(entities[id].name, entities[id].type, 
-                                entities[id].x, entities[id].y, entities[id].length,
-                                entities[id].width, entities[id].dir, entities[id].stats,
-                                entities[id].colour, entities[id].location, entities[id].interact,
-                                entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration)
-                        }
-                    });
+                    if (Object.keys(entities).length != 0){
+                        Object.keys(entities).forEach(function(id) {
+                            if (distance(entities[key].x + entities[key].length/2, entities[key].y + entities[key].width/2,
+                            entities[id].x + entities[id].length/2, entities[id].y + entities[id].width/2) < 1450){
+                                sendEntities[id] = new SimpleEntity(entities[id].name, entities[id].type, 
+                                    entities[id].x, entities[id].y, entities[id].length,
+                                    entities[id].width, entities[id].dir, entities[id].stats,
+                                    entities[id].colour, entities[id].location, entities[id].interact,
+                                    entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration)
+                            }
+                        });
+                    }
+
+
+                    io.to(key).emit('sendingUpdate', [gameTime, sendEntities, walls, bullets, interactables])
                 }
 
-
-                io.to(key).emit('sendingUpdate', [gameTime, sendEntities, walls, bullets, interactables])
-            }
-
-            entities[key].update(walls);
-            entities[key].setRoom(rooms);
-            entities[key].accelerate();
-            entities[key].checkInteract(interactables);
-            entities[key].aiMovement(entities, entities[key], bullets, gameTime);
-            entities[key].checkDeath(entities, gameTime, game.n, interactables);
-            game.n ++;
-        });
-    }
-
-    for (var i = 0; i < bullets.length; i ++){
-        bullets[i].updateBulletLocation(entities, walls, bullets, gameTime)
-    }
-
-    for (var i = interactables.length-1; i >= 0; i --){
-        interactables[i].update(walls)
-        if (interactables[i].type == "bag" && interactables[i].checkEmpty()){
-            interactables.splice(i, 1);
+                entities[key].update(walls);
+                entities[key].setRoom(rooms);
+                entities[key].accelerate();
+                entities[key].checkInteract(interactables);
+                entities[key].aiMovement(entities, entities[key], bullets, gameTime);
+                entities[key].checkDeath(entities, gameTime, game.n, interactables);
+                game.n ++;
+            });
         }
-    }
 
-    for (var i = rooms.length-1; i >= 0; i --){
-        if (gameTime - rooms[i].lastChecked > 100){
-            rooms[i].lastChecked = gameTime;
-            if (rooms[i].checkEmpty(entities, rooms[i]) && rooms[i].name != "lobby"){
-                rooms[i].deleteArray(walls);
-                rooms[i].deleteArray(interactables);
-                rooms[i].deleteDictionary(entities, rooms[i]);
-                rooms.splice(i, 1);
+        for (var i = 0; i < bullets.length; i ++){
+            bullets[i].updateBulletLocation(entities, walls, bullets, gameTime)
+        }
+
+        for (var i = interactables.length-1; i >= 0; i --){
+            interactables[i].update(walls)
+            if (interactables[i].type == "bag" && interactables[i].checkEmpty()){
+                interactables.splice(i, 1);
+            }
+        }
+
+        for (var i = rooms.length-1; i >= 0; i --){
+            if (gameTime - rooms[i].lastChecked > 100){
+                rooms[i].lastChecked = gameTime;
+                if (rooms[i].checkEmpty(entities, rooms[i]) && rooms[i].name != "lobby"){
+                    rooms[i].deleteArray(walls);
+                    rooms[i].deleteArray(interactables);
+                    rooms[i].deleteDictionary(entities, rooms[i]);
+                    rooms.splice(i, 1);
+                }
             }
         }
     }
