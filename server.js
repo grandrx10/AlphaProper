@@ -27,7 +27,7 @@ io.sockets.on('connection', newConnection);
 let d = new Date();
 let gameTime = d.getTime();
 
-setInterval(updateGameTime, 1);
+setInterval(updateGameTime, 10);
 function updateGameTime(){
     d = new Date();
     gameTime = d.getTime()
