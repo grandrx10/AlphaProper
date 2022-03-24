@@ -8,7 +8,15 @@ export class Weapon {
             this.speed = 20;
             this.expireTime = 200;
             this.colour = "white"
-        } else if (this.name == "fist"){
+        } else if (this.name == "dev"){
+            this.cooldown = 1; // 100
+            this.lastFired = 0;
+            this.damage = 20;
+            this.speed = 20;
+            this.expireTime = 200;
+            this.colour = "white"
+        } 
+        else if (this.name == "fist"){
             this.cooldown = 500;
             this.lastFired = 0;
             this.damage = 10;

@@ -252,13 +252,13 @@ export class Entity {
 
     move(dir){
         if (dir == "left"){
-            this.xAccel = -this.xOrigA;
+            this.xAccel = -this.xOrigA*(1 + 0.1*this.stats.spd[1]);
             this.dir = dir
         } else if (dir == "right"){
-            this.xAccel = this.xOrigA;
+            this.xAccel = this.xOrigA*(1 + 0.1*this.stats.spd[1]);
             this.dir = dir
         }else if (dir == "jump" && this.canJump){
-            this.yAccel = -this.yOrigA;
+            this.yAccel = -this.yOrigA*(1 + 0.1*this.stats.spd[1]);
             this.canJump = false;
         }
     }
@@ -317,11 +317,11 @@ export class Entity {
         }
 
         if (this.type != "blood"){
-            if (this.xSpeed > 5){
-                this.xSpeed = 5
+            if (this.xSpeed > 5*(1+0.1*this.stats.spd[1])){
+                this.xSpeed = 5*(1+0.1*this.stats.spd[1])
             }
-            if (this.xSpeed < -5){
-                this.xSpeed = -5
+            if (this.xSpeed < -5*(1+0.1*this.stats.spd[1])){
+                this.xSpeed = -5*(1+0.1*this.stats.spd[1])
             }
         }
     }

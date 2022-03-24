@@ -24,6 +24,15 @@ var io = new Server(server);
 
 io.sockets.on('connection', newConnection);
 
+let d = new Date();
+let gameTime = d.getTime();
+
+setInterval(updateGameTime, 1);
+function updateGameTime(){
+    d = new Date();
+    gameTime = d.getTime()
+}
+
 var entities = {};
 var game = {
     n:0
@@ -35,7 +44,6 @@ var bullets = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
 interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
-var gameTime = 0;
 createSection("lobby", 0, 0, 1650, 500)
 
 function newConnection(socket){
@@ -132,6 +140,7 @@ function dropItem(list, inventory1, inventory2){
                 entities[list.id].y, 15, 15, "brown", "bag"));
                 interactables[interactables.length -1].addToInventory(entities[list.id].inventory.itemSelected)
                 entities[list.id].inventory.itemSelected = null
+                entities[list.id].updateStats();
         }
     }
 }
@@ -145,6 +154,7 @@ function takeItem(list, inventory){
                 entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
                 inventory.items[i].itemName = ""
                 inventory.items[i].refreshItem();
+                entities[list.id].updateStats();
             }
         } else {
             if (contains(list.x, list.y, inventory.items[i]) 
@@ -159,14 +169,10 @@ function takeItem(list, inventory){
                 if (entities[list.id].inventory.itemSelected == ""){
                     entities[list.id].inventory.itemSelected = null
                 }
+                entities[list.id].updateStats();
             } 
         }
     }
-}
-
-setInterval(updateGameTime, 1);
-function updateGameTime(){
-    gameTime ++
 }
 
 setInterval(update, 15);
@@ -206,7 +212,6 @@ function update(){
             entities[key].setRoom(rooms);
             entities[key].accelerate();
             entities[key].checkInteract(interactables);
-            entities[key].updateStats();
             entities[key].aiMovement(entities, entities[key], bullets, gameTime);
             entities[key].checkDeath(entities, gameTime, game.n, interactables);
             game.n ++;
