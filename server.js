@@ -34,7 +34,7 @@ var walls = []
 var bullets = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
-// interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
+interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
 var gameTime = 0;
 createSection("lobby", 0, 0, 1650, 500)
 
@@ -206,6 +206,7 @@ function update(){
             entities[key].setRoom(rooms);
             entities[key].accelerate();
             entities[key].checkInteract(interactables);
+            entities[key].updateStats();
             entities[key].aiMovement(entities, entities[key], bullets, gameTime);
             entities[key].checkDeath(entities, gameTime, game.n, interactables);
             game.n ++;

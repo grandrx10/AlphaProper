@@ -101,6 +101,32 @@ export class Entity {
         }
     }
 
+    updateStats(){
+        if (this.type == "Player"){
+            var healthTemp = this.stats.hp[1];
+            this.stats = { // required
+                atk: ["ATK", 0],
+                spd: ["SPD", 0],
+                dex: ["DEX", 0],
+                maxHp: ["MAXHP", 100],
+                hp: ["HP", healthTemp],
+                def: ["DEF", 0],
+                mana: ["MANA", 0],
+                vit: ["VIT", 0]
+            }
+            for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
+                
+                for (var entityStat in this.stats){
+                    for (var itemStat in this.inventory.items[i].item.stats){
+                        if (entityStat == itemStat){
+                            this.stats[entityStat][1] += this.inventory.items[i].item.stats[itemStat][1];
+                        }
+                    }   
+                }
+            }
+        }
+    }
+
     moveTowardsMap(){
         if (this.travelMap.x != -1 && this.travelMap.y != -1){
             if (this.x + this.length/2 + this.engageRange < this.travelMap.x){
@@ -150,6 +176,8 @@ export class Entity {
     checkDeath(entities, gameTime, n, interactables){
         if (this.stats.hp[1] < 0){
             this.stats.hp[1] = 0
+        } else if (this.stats.hp[1] > this.stats.maxHp[1]){
+            this.stats.hp[1] = this.stats.maxHp[1];
         }
 
         if (this.stats.hp[1] <= 0 && this.deathTime == 0){
@@ -201,10 +229,10 @@ export class Entity {
     
 
     shoot(gameTime, bullets, aimPos){
-        if (gameTime - this.weapon.lastFired > this.weapon.cooldown){
+        if (gameTime - this.weapon.lastFired > this.weapon.cooldown*(1- 0.1*this.stats.dex[1])){
             this.weapon.lastFired = gameTime;
             this.createBullet(this.x + this.length/2, this.y+ this.width/2
-            , aimPos[0], aimPos[1], this.weapon.speed, this.weapon.damage,
+            , aimPos[0], aimPos[1], this.weapon.speed, this.weapon.damage * (1 + 0.1*this.stats.atk[1]),
             "default", this.weapon.expireTime, this.team, bullets, gameTime, this.id, this.weapon.colour);
             return true
         }

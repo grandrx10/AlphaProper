@@ -57,7 +57,10 @@ export class Bullet {
         Object.keys(entities).forEach(function(key) {
             if (bullet.rectCircDetect(entities[key], bullet) && entities[key].team != bullet.team && entities[key].type != "blood") {
                 if (entities[key].stats.hp[1] != null){
-                    entities[key].stats.hp[1] -= bullet.damage;
+                    var bulletDamage = bullet.damage - entities[key].stats.def[1];
+                    if (bulletDamage > 0){
+                        entities[key].stats.hp[1] -= bullet.damage;
+                    }
                     entities[key].lastHurtBy = bullet.id;
                 }
                 bullets.splice(bullets.indexOf(bullet), 1);
