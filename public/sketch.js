@@ -8,6 +8,7 @@ var entities = {}
 var walls = []
 var bullets = []
 var portals = []
+var particles = []
 
 var xRange;
 var yRange;
@@ -73,19 +74,28 @@ function draw(){
                 }
             }
 
-            if (entities[entity].type != "blood"){
-                fill("grey");
-                rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length, 8);
-                fill("green");
-                rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length*(entities[entity].stats.hp[1]/entities[entity].stats.maxHp[1]), 8)
-                fill("white")
-                textAlign(CENTER);
-                textFont(clientFont);
+            fill("grey");
+            rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length, 8);
+            fill("green");
+            rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length*(entities[entity].stats.hp[1]/entities[entity].stats.maxHp[1]), 8)
+            fill("white")
+            textAlign(CENTER);
+            textFont(clientFont);
+            textSize(12);
+            text(entities[entity].name, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 30)
+            if (entities[entity].interact != null){
+                text(entities[entity].interact.text, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 50)
+            }
+        }
+        
+        for(var i = 0; i < particles.length; i++){
+            if (particles[i].type == "text"){
                 textSize(12);
-                text(entities[entity].name, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 30)
-                if (entities[entity].interact != null){
-                    text(entities[entity].interact.text, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 50)
-                }
+                fill(particles[i].colour);
+                text(particles[i].name, particles[i].x - xRange, particles[i].y-yRange);
+            }else {
+                fill(particles[i].colour);
+                rect(particles[i].x - xRange, particles[i].y-yRange, particles[i].length, particles[i].width);
             }
         }
 
@@ -259,6 +269,7 @@ function update(returnList){
     bullets = returnList[3];
     gameStart = true;
     portals = returnList[4];
+    particles = returnList[5];
 }
 
 function drawItem(itemName, x, y, flip, id){

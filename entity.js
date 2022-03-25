@@ -4,6 +4,7 @@ import { ItemFrame } from "./itemFrame.js"
 import { DropTable } from "./dropTable.js"
 import { Interactable } from "./interactable.js"
 import { Rect } from "./rect.js"
+import { Particle } from "./particle.js"
 
 export class Entity {
     constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY, engageRange){
@@ -172,7 +173,7 @@ export class Entity {
         }
     }
 
-    checkDeath(entities, gameTime, n, interactables){
+    checkDeath(entities, gameTime, interactables, particles){
         if (this.stats.hp[1] < 0){
             this.stats.hp[1] = 0
         } else if (this.stats.hp[1] > this.stats.maxHp[1]){
@@ -181,12 +182,10 @@ export class Entity {
 
         if (this.stats.hp[1] <= 0 && this.deathTime == 0){
             for (var i = 0; i < 5; i++){
-                entities[n] = new Entity("Blood", "blood", this.x, this.y, 10, 10, 5, "none", "darkred", -1, gameTime, n);
-                entities[n].xAccel = this.randint(-10, 10);
-                entities[n].yAccel = this.randint(-10, 10);
-                entities[n].expireTime = 700;
-                n ++ ;
+                particles.push(new Particle("","blood", this.x, this.y, 10, 10, 700, gameTime,"darkred",
+                this.randint(-10, 10), this.randint(-10, 10)));
             }
+
             if (entities[entities[this.id].lastHurtBy] != null){
                 entities[entities[this.id].lastHurtBy].shake.shakeStart = gameTime;
                 entities[entities[this.id].lastHurtBy].shake.shakeDuration = 100;

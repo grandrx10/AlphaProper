@@ -41,6 +41,7 @@ var rooms = []
 //entities[-1] = new Entity("Enemy", "npc", 100, 100, 20, 30, 100, "pistol", "purple", -1, gameTime,-1, 0.5,6);
 var walls = []
 var bullets = []
+var particles = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
 interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
@@ -178,13 +179,9 @@ function takeItem(list, inventory){
 setInterval(update, 1);
 
 var oldTime = 0
-
+// UPDATE THE SERVER ---------------------------------------------------------------------------------//
 function update(){
-    // var sendInfo = []
-    // sendInfo.append(gameTime);
-    // sendInfo.append(entities);
-    // sendInfo.append(walls);
-    // optimize walls another day
+
     d = new Date();
     gameTime = d.getTime()
     if (gameTime - oldTime > 14){
@@ -192,7 +189,7 @@ function update(){
         if (Object.keys(entities).length != 0){
             Object.keys(entities).forEach(function(key) {
                 if (entities[key].type == "Player"){
-                    // send update
+                    // send update, optimize entities
                     var sendEntities = {};
 
                     if (Object.keys(entities).length != 0){
@@ -209,7 +206,7 @@ function update(){
                     }
 
 
-                    io.to(key).emit('sendingUpdate', [gameTime, sendEntities, walls, bullets, interactables])
+                    io.to(key).emit('sendingUpdate', [gameTime, sendEntities, walls, bullets, interactables, particles])
                 }
 
                 entities[key].update(walls);
@@ -217,13 +214,21 @@ function update(){
                 entities[key].accelerate();
                 entities[key].checkInteract(interactables);
                 entities[key].aiMovement(entities, entities[key], bullets, gameTime);
-                entities[key].checkDeath(entities, gameTime, game.n, interactables);
+                entities[key].checkDeath(entities, gameTime, interactables, particles);
                 game.n ++;
             });
         }
 
         for (var i = 0; i < bullets.length; i ++){
-            bullets[i].updateBulletLocation(entities, walls, bullets, gameTime)
+            bullets[i].updateBulletLocation(entities, walls, bullets, gameTime, particles)
+        }
+
+        for (var i = particles.length-1; i >= 0; i --){
+            if (particles.type != "text"){
+                particles[i].accelerate();
+                particles[i].update(walls)
+            }
+            particles[i].checkExpire(gameTime, particles);
         }
 
         for (var i = interactables.length-1; i >= 0; i --){

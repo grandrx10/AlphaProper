@@ -1,3 +1,5 @@
+import { Particle } from "./particle.js";
+
 // This is the start of combat program
 export class Bullet {
     constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour) {
@@ -17,14 +19,14 @@ export class Bullet {
         this.colour = colour
     }
 
-    updateBulletLocation (entities, walls, bullets, gameTime){
+    updateBulletLocation (entities, walls, bullets, gameTime, particles){
         this.x = this.x + this.speed*this.travel[0]
         /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
         this.y = this.y + this.speed*this.travel[1]
         /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
 
 
-        this.checkBulletCollisionEntities(entities, bullets, this);
+        this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
         if (this != null){
             this.checkBulletCollision(walls, bullets);
         }
@@ -53,13 +55,15 @@ export class Bullet {
         }
     }
 
-    checkBulletCollisionEntities(entities, bullets, bullet){
+    checkBulletCollisionEntities(entities, bullets, bullet, particles, gameTime){
         Object.keys(entities).forEach(function(key) {
             if (bullet.rectCircDetect(entities[key], bullet) && entities[key].team != bullet.team && entities[key].type != "blood") {
                 if (entities[key].stats.hp[1] != null){
                     var bulletDamage = bullet.damage - entities[key].stats.def[1];
                     if (bulletDamage > 0){
                         entities[key].stats.hp[1] -= bullet.damage;
+                        particles.push(new Particle(bulletDamage, "text", bullet.x + entities[key].randint(-10, 10),
+                        bullet.y + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", 0, 0));
                     }
                     entities[key].lastHurtBy = bullet.id;
                 }
