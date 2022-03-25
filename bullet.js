@@ -52,10 +52,7 @@ export class Bullet {
 
     checkBulletDuration(bullets, gameTime){
         if (this != null){
-            if(gameTime - this.startTime > this.duration && this.duration != -1){
-
-                if (this.type == "rect")
-                    console.log("Problem1")
+            if(gameTime - this.startTime > this.duration && !this.stay){
                 bullets.splice(bullets.indexOf(this), 1)
                 
             }
@@ -68,8 +65,6 @@ export class Bullet {
             for (let i = walls.length-1; i >= 0 && !deleted; i--){
                 if (!this.stay && ((this.rectCircDetect(walls[i], this) && this.type == "circle") ||
                 (this.rectRectDetect(walls[i], this) && this.type == "rect"))) {
-                    if (this.type == "rect")
-                    console.log("Problem2")
                     bullets.splice(bullets.indexOf(this), 1);
                     deleted = true;
                 }
@@ -97,8 +92,6 @@ export class Bullet {
                         entities[key].lastHurtBy = bullet.id;
                     }
                     if (!bullet.stay){
-                        if (bullets[bullets.indexOf(bullet)].type == "rect")
-                            console.log("Problem3")
                         bullets.splice(bullets.indexOf(bullet), 1);
                         bulletDeleted = true;
                     }
