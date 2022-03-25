@@ -41,10 +41,11 @@ var rooms = []
 //entities[-1] = new Entity("Enemy", "npc", 100, 100, 20, 30, 100, "pistol", "purple", -1, gameTime,-1, 0.5,6);
 var walls = []
 var bullets = []
+bullets.push(new Bullet(100, 100,101, 101, 0,-10,"rect", -1, -1,gameTime, -1,"green", 100, 20, true, true))
 var particles = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
-interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
+//interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
 createSection("lobby", 0, 0, 1650, 500)
 
 function newConnection(socket){
@@ -52,7 +53,6 @@ function newConnection(socket){
         delete entities[socket.id];
     });
     
-    console.log("new connection: " + socket.id);
     entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, "smg", 
     "purple", 0, gameTime, socket.id,1,6)
 
@@ -181,10 +181,10 @@ setInterval(update, 1);
 var oldTime = 0
 // UPDATE THE SERVER ---------------------------------------------------------------------------------//
 function update(){
-
     d = new Date();
     gameTime = d.getTime()
     if (gameTime - oldTime > 14){
+
         oldTime = gameTime
         if (Object.keys(entities).length != 0){
             Object.keys(entities).forEach(function(key) {
@@ -224,10 +224,8 @@ function update(){
         }
 
         for (var i = particles.length-1; i >= 0; i --){
-            if (particles.type != "text"){
-                particles[i].accelerate();
-                particles[i].update(walls)
-            }
+            particles[i].accelerate();
+            particles[i].update(walls)
             particles[i].checkExpire(gameTime, particles);
         }
 

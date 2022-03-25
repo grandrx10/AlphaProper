@@ -231,7 +231,8 @@ export class Entity {
             this.weapon.lastFired = gameTime;
             this.createBullet(this.x + this.length/2, this.y+ this.width/2
             , aimPos[0], aimPos[1], this.weapon.speed, this.weapon.damage * (1 + 0.1*this.stats.atk[1]),
-            "default", this.weapon.expireTime, this.team, bullets, gameTime, this.id, this.weapon.colour);
+            "circle", this.weapon.expireTime, this.team, bullets, gameTime, this.id, this.weapon.colour,
+            this.weapon.bulletSize, this.weapon.bulletSize, false, false);
             return true
         }
         return false
@@ -355,7 +356,7 @@ export class Entity {
         return Math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
     }
 
-    createBullet(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime, id, colour){
-        bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour));
+    createBullet(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime, id, colour, length, width, gravity, stay){
+        bullets.push(new Bullet(x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour, length, width, gravity, stay));
     }
 }

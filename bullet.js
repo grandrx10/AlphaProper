@@ -2,12 +2,14 @@ import { Particle } from "./particle.js";
 
 // This is the start of combat program
 export class Bullet {
-    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour) {
+    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour, length, width, gravity, stay) {
         this.x = x;
         this.y = y;
         this.aimX = aimX;
         this.aimY = aimY;
-        this.r = 10;
+        this.r = length;
+        this.length = length;
+        this.width = width;
         this.travel = [aimX - x, aimY - y];
         this.speed = speed;
         this.damage = damage;
@@ -17,6 +19,10 @@ export class Bullet {
         this.team = team;
         this.id = id;
         this.colour = colour
+        this.gravity = gravity;
+        this.stay = stay;
+        this.xSpeed = 0;
+        this.ySpeed = 0;
     }
 
     updateBulletLocation (entities, walls, bullets, gameTime, particles){
@@ -24,6 +30,11 @@ export class Bullet {
         /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
         this.y = this.y + this.speed*this.travel[1]
         /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
+
+        if (this.gravity){
+            this.deaccelerate();
+            this.update(walls)
+        }
 
 
         this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
@@ -41,14 +52,21 @@ export class Bullet {
     }
 
     checkBulletDuration(bullets, gameTime){
-        if(gameTime - this.startTime > this.duration){
+        if(gameTime - this.startTime > this.duration && this.duration != -1){
+            if(this.type == "rect"){
+                console.log("BRUH")
+            }
             bullets.splice(bullets.indexOf(this), 1)
         }
     }
 
     checkBulletCollision(walls, bullets){
         for (let i = walls.length-1; i >= 0; i--){
-            if (this.rectCircDetect(walls[i], this)) {
+            if (!this.stay && ((this.rectCircDetect(walls[i], this) && this.type == "circle") ||
+            (this.rectRectDetect(walls[i], this) && this.type == "rect"))) {
+                if(this.type == "rect"){
+                    console.log("BRUH1")
+                }
                 bullets.splice(bullets.indexOf(this), 1);
                 break;
             }
@@ -57,19 +75,51 @@ export class Bullet {
 
     checkBulletCollisionEntities(entities, bullets, bullet, particles, gameTime){
         Object.keys(entities).forEach(function(key) {
-            if (bullet.rectCircDetect(entities[key], bullet) && entities[key].team != bullet.team && entities[key].type != "blood") {
+            if (((bullet.rectCircDetect(entities[key], bullet)&& bullet.type == "circle") ||
+            (bullet.rectRectDetect(entities[key], bullet)&& bullet.type == "rect"))
+             && entities[key].team != bullet.team) {
                 if (entities[key].stats.hp[1] != null){
-                    var bulletDamage = bullet.damage - entities[key].stats.def[1];
-                    if (bulletDamage > 0){
-                        entities[key].stats.hp[1] -= bullet.damage;
-                        particles.push(new Particle(bulletDamage, "text", bullet.x + entities[key].randint(-10, 10),
-                        bullet.y + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", 0, 0));
+                    if (bullet.damage > 0){
+                        var bulletDamage = bullet.damage*(1 - 0.05*entities[key].stats.def[1]);
+                    } else{
+                        var bulletDamage = bullet.damage
                     }
+                    entities[key].stats.hp[1] -= bullet.damage;
+                    particles.push(new Particle(bulletDamage, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
+                    bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
+                    entities[key].randint(-5, -1)));
                     entities[key].lastHurtBy = bullet.id;
                 }
-                bullets.splice(bullets.indexOf(bullet), 1);
+                if (!bullet.stay){
+                    if(bullet.type == "rect"){
+                        console.log("BRUH2")
+                    }
+                    bullets.splice(bullets.indexOf(bullet), 1);
+                }
             }
         });
+    }
+
+    update(blocks) {
+        this.x += this.xSpeed;
+        for (var c = 0; c < blocks.length; c ++){
+            if (this.rectRectDetect(this, blocks[c]) && this != blocks[c]){
+                this.x += -this.xSpeed;
+                this.xSpeed = 0;
+            }
+        }
+        
+        this.y += this.ySpeed;
+        for (var c = 0; c < blocks.length; c ++){
+            if (this.rectRectDetect(this, blocks[c]) && this != blocks[c]){
+                this.y += -this.ySpeed;
+                this.ySpeed = 0;
+            }
+        }
+    }
+
+    deaccelerate(){
+        this.ySpeed += 0.3;
     }
 
     rectCircDetect(rect, circle){
