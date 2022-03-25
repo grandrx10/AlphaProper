@@ -12,6 +12,7 @@ export class Interactable {
         this.width = width;
         this.colour = colour;
         this.type = type;
+        this.id = -1;
 
         if (this.type == "portal"){
             this.text = "Press E to enter: " + this.name
@@ -30,7 +31,18 @@ export class Interactable {
                     (350/(this.inventory.inventorySize/2)), 190, 80, 80));
                 }
             }
+        } else if (this.type == "healStation"){
+            this.text = "Press E to spawn healing"
         }
+    }
+
+    checkForDuplicate(array){
+        for (var i = 0; i < array.length; i ++){
+            if (array[i].id == this.id){
+                return true;
+            }
+        }
+        return false;
     }
 
     checkEmpty(){

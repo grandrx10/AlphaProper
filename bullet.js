@@ -3,13 +3,13 @@ import { Particle } from "./particle.js";
 // This is the start of combat program
 export class Bullet {
     constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour, length, width, gravity, stay) {
-        this.x = x;
-        this.y = y;
+        this.x = x; // required
+        this.y = y; // required
         this.aimX = aimX;
         this.aimY = aimY;
-        this.r = length;
-        this.length = length;
-        this.width = width;
+        this.r = length;// required
+        this.length = length;// required
+        this.width = width;// required
         this.travel = [aimX - x, aimY - y];
         this.speed = speed;
         this.damage = damage;
@@ -18,7 +18,7 @@ export class Bullet {
         this.type = type;
         this.team = team;
         this.id = id;
-        this.colour = colour
+        this.colour = colour// required
         this.gravity = gravity;
         this.stay = stay;
         this.xSpeed = 0;

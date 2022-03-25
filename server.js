@@ -41,7 +41,6 @@ var rooms = []
 //entities[-1] = new Entity("Enemy", "npc", 100, 100, 20, 30, 100, "pistol", "purple", -1, gameTime,-1, 0.5,6);
 var walls = []
 var bullets = []
-bullets.push(new Bullet(100, 100,101, 101, 0,-1,"rect", -1, -1,gameTime, -1,"green", 100, 20, true, true))
 var particles = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
@@ -83,6 +82,11 @@ function newConnection(socket){
                 findPortalDestination(entities[id].interact.name, id)
             } else if (entities[id].interact.type == "bag"){
                 entities[id].inventory.inventoryOpen = true;
+            } else if (entities[id].interact.type == "healStation"){
+                if (!entities[id].interact.checkForDuplicate(bullets)){
+                    bullets.push(new Bullet(entities[id].interact.x + entities[id].interact.length,
+                        entities[id].interact.y, 0, 0, 0,-1,"rect", -1, -1,gameTime, entities[id].interact.id,"green", 100, 20, true, true));
+                    }
             }
         }
     }
@@ -363,6 +367,9 @@ function generateLevel(levelName, x, y, length){
         walls.push(new Wall("wall", x+505,y-372,23, 120, "silver"))
         walls.push(new Wall("wall", x+950, y-230, 500, 30, "silver"))
         walls.push(new Wall("wall", x+1650, y-500, 50, 550, "silver"))
+        interactables.push(new Interactable("Healing Station", x+1000, y-40, 30, 40, "brown", "healStation"))
+        interactables[interactables.length-1].id = game.n
+        game.n ++;
     }
 
     for (var i = 0; i < length/segmentLength; i ++){
