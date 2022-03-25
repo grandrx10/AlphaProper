@@ -38,12 +38,11 @@ export class Bullet {
 
 
         this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
-        if (this != null){
-            this.checkBulletCollision(walls, bullets);
-        }
-        if (this != null){
-            this.checkBulletDuration(bullets, gameTime);
-        }
+
+        this.checkBulletCollision(walls, bullets);
+
+        this.checkBulletDuration(bullets, gameTime);
+
     }
 
     show(){
@@ -52,52 +51,60 @@ export class Bullet {
     }
 
     checkBulletDuration(bullets, gameTime){
-        if(gameTime - this.startTime > this.duration && this.duration != -1){
-            if(this.type == "rect"){
-                console.log("BRUH")
+        if (this != null){
+            if(gameTime - this.startTime > this.duration && this.duration != -1){
+
+                if (this.type == "rect")
+                    console.log("Problem1")
+                bullets.splice(bullets.indexOf(this), 1)
+                
             }
-            bullets.splice(bullets.indexOf(this), 1)
         }
     }
 
     checkBulletCollision(walls, bullets){
-        for (let i = walls.length-1; i >= 0; i--){
-            if (!this.stay && ((this.rectCircDetect(walls[i], this) && this.type == "circle") ||
-            (this.rectRectDetect(walls[i], this) && this.type == "rect"))) {
-                if(this.type == "rect"){
-                    console.log("BRUH1")
+        if (this != null){
+            var deleted = false;
+            for (let i = walls.length-1; i >= 0 && !deleted; i--){
+                if (!this.stay && ((this.rectCircDetect(walls[i], this) && this.type == "circle") ||
+                (this.rectRectDetect(walls[i], this) && this.type == "rect"))) {
+                    if (this.type == "rect")
+                    console.log("Problem2")
+                    bullets.splice(bullets.indexOf(this), 1);
+                    deleted = true;
                 }
-                bullets.splice(bullets.indexOf(this), 1);
-                break;
             }
         }
     }
 
     checkBulletCollisionEntities(entities, bullets, bullet, particles, gameTime){
-        Object.keys(entities).forEach(function(key) {
-            if (((bullet.rectCircDetect(entities[key], bullet)&& bullet.type == "circle") ||
-            (bullet.rectRectDetect(entities[key], bullet)&& bullet.type == "rect"))
-             && entities[key].team != bullet.team) {
-                if (entities[key].stats.hp[1] != null){
-                    if (bullet.damage > 0){
-                        var bulletDamage = bullet.damage*(1 - 0.05*entities[key].stats.def[1]);
-                    } else{
-                        var bulletDamage = bullet.damage
+        if (this != null){
+            var bulletDeleted = false;
+            Object.keys(entities).forEach(function(key) {
+                if (!bulletDeleted && ((bullet.rectCircDetect(entities[key], bullet)&& bullet.type == "circle") ||
+                (bullet.rectRectDetect(entities[key], bullet)&& bullet.type == "rect"))
+                && entities[key].team != bullet.team) {
+                    if (entities[key].stats.hp[1] != null){
+                        if (bullet.damage > 0){
+                            var bulletDamage = bullet.damage*(1 - 0.05*entities[key].stats.def[1]);
+                        } else{
+                            var bulletDamage = bullet.damage
+                        }
+                        entities[key].stats.hp[1] -= bullet.damage;
+                        particles.push(new Particle(bulletDamage, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
+                        bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
+                        entities[key].randint(-5, -1)));
+                        entities[key].lastHurtBy = bullet.id;
                     }
-                    entities[key].stats.hp[1] -= bullet.damage;
-                    particles.push(new Particle(bulletDamage, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
-                    bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
-                    entities[key].randint(-5, -1)));
-                    entities[key].lastHurtBy = bullet.id;
-                }
-                if (!bullet.stay){
-                    if(bullet.type == "rect"){
-                        console.log("BRUH2")
+                    if (!bullet.stay){
+                        if (bullets[bullets.indexOf(bullet)].type == "rect")
+                            console.log("Problem3")
+                        bullets.splice(bullets.indexOf(bullet), 1);
+                        bulletDeleted = true;
                     }
-                    bullets.splice(bullets.indexOf(bullet), 1);
                 }
-            }
-        });
+            });
+        }
     }
 
     update(blocks) {

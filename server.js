@@ -41,7 +41,7 @@ var rooms = []
 //entities[-1] = new Entity("Enemy", "npc", 100, 100, 20, 30, 100, "pistol", "purple", -1, gameTime,-1, 0.5,6);
 var walls = []
 var bullets = []
-bullets.push(new Bullet(100, 100,101, 101, 0,-10,"rect", -1, -1,gameTime, -1,"green", 100, 20, true, true))
+bullets.push(new Bullet(100, 100,101, 101, 0,-1,"rect", -1, -1,gameTime, -1,"green", 100, 20, true, true))
 var particles = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
