@@ -286,6 +286,7 @@ function displayInventory(){
 
 function preload(){
     clientFont = loadFont('RedHatMono-Regular.ttf')
+    //song = loadSound('assets/lucky_dragons_-_power_melody.mp3');
 }
 
 function update(returnList){

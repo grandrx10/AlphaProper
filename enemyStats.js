@@ -64,10 +64,10 @@ export class EnemyStats {
                 ySpeed = 7;
                 engageRange = 0;
                 attacks = [["speech", -1],["warlordShot", 5000], ["warlordSpray", 2000]]
-                drops = [["Leather Tunic", 20],
-                        ["Mercenary Cap", 20],
-                        ["Ranger Hat", 20],
-                        ["Warlord's Vest", 10]]
+                drops = [["Leather Tunic", 40],
+                        ["Mercenary Cap", 40],
+                        ["Ranger Hat", 40],
+                        ["Warlord's Vest", 20]]
                 speechList = [["Ah. So the adventurers have\nfinally arrived.",3000], 
                 ["I take it you have taken care of my\nwarband already.", 3000],
                 ["There is a rule in my culture.", 2000],
