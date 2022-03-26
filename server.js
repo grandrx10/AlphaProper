@@ -391,8 +391,8 @@ function generateLevel(levelName, x, y, length){
             listOfRooms = ["overArch", "house", "tree"];
             possibleMobs = ["Goblin Grunt", "Goblin Archer", "Goblin Brute"]
             finalPortal = "Warlord's Lair"
-            enemyNumber.min = 2;
-            enemyNumber.max = 4;
+            enemyNumber.min = 1;
+            enemyNumber.max = 3;
             break;
         case "lobby":
             segmentLength = 1650;
