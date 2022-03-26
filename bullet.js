@@ -36,12 +36,11 @@ export class Bullet {
             this.update(walls)
         }
 
+        //this.checkBulletDuration(bullets, gameTime);
 
         this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
 
         this.checkBulletCollision(walls, bullets);
-
-        this.checkBulletDuration(bullets, gameTime);
 
     }
 
@@ -54,19 +53,17 @@ export class Bullet {
         if (this != null){
             if(gameTime - this.startTime > this.duration && !this.stay){
                 bullets.splice(bullets.indexOf(this), 1)
-                
             }
         }
     }
 
     checkBulletCollision(walls, bullets){
         if (this != null){
-            var deleted = false;
-            for (let i = walls.length-1; i >= 0 && !deleted; i--){
+            for (let i = walls.length-1; i >= 0; i--){
                 if (!this.stay && ((this.rectCircDetect(walls[i], this) && this.type == "circle") ||
                 (this.rectRectDetect(walls[i], this) && this.type == "rect"))) {
                     bullets.splice(bullets.indexOf(this), 1);
-                    deleted = true;
+                    break;
                 }
             }
         }
@@ -74,9 +71,8 @@ export class Bullet {
 
     checkBulletCollisionEntities(entities, bullets, bullet, particles, gameTime){
         if (this != null){
-            var bulletDeleted = false;
-            Object.keys(entities).forEach(function(key) {
-                if (!bulletDeleted && ((bullet.rectCircDetect(entities[key], bullet)&& bullet.type == "circle") ||
+            for (var key in entities) {
+                if (((bullet.rectCircDetect(entities[key], bullet)&& bullet.type == "circle") ||
                 (bullet.rectRectDetect(entities[key], bullet)&& bullet.type == "rect"))
                 && entities[key].team != bullet.team) {
                     if (entities[key].stats.hp[1] != null){
@@ -95,10 +91,10 @@ export class Bullet {
                     }
                     if (!bullet.stay){
                         bullets.splice(bullets.indexOf(bullet), 1);
-                        bulletDeleted = true;
+                        break;
                     }
                 }
-            });
+            };
         }
     }
 

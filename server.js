@@ -157,30 +157,32 @@ function dropItem(list, inventory1, inventory2){
 
 function takeItem(list, inventory){
     // when they pick up the item
-    for (var i = 0; i < inventory.items.length; i++){
-        if ( entities[list.id].inventory.itemSelected == null){
-            if (contains(list.x, list.y, inventory.items[i]) 
-                && inventory.items[i].itemName != ""){
-                entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
-                inventory.items[i].itemName = ""
-                inventory.items[i].refreshItem();
-                entities[list.id].updateStats();
-            }
-        } else {
-            if (contains(list.x, list.y, inventory.items[i]) 
-                && (Number.isInteger(inventory.items[i].slot)||
-                inventory.items[i].slot == new Item(inventory.itemSelected).slot)){
-                
-
-                var temp = entities[list.id].inventory.itemSelected
-                entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
-                inventory.items[i].itemName = temp
-                inventory.items[i].refreshItem();
-                if (entities[list.id].inventory.itemSelected == ""){
-                    entities[list.id].inventory.itemSelected = null
+    if (inventory != null){
+        for (var i = 0; i < inventory.items.length; i++){
+            if ( entities[list.id].inventory.itemSelected == null){
+                if (contains(list.x, list.y, inventory.items[i]) 
+                    && inventory.items[i].itemName != ""){
+                    entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
+                    inventory.items[i].itemName = ""
+                    inventory.items[i].refreshItem();
+                    entities[list.id].updateStats();
                 }
-                entities[list.id].updateStats();
-            } 
+            } else {
+                if (contains(list.x, list.y, inventory.items[i]) 
+                    && (Number.isInteger(inventory.items[i].slot)||
+                    inventory.items[i].slot == new Item(inventory.itemSelected).slot)){
+                    
+    
+                    var temp = entities[list.id].inventory.itemSelected
+                    entities[list.id].inventory.itemSelected = inventory.items[i].itemName;
+                    inventory.items[i].itemName = temp
+                    inventory.items[i].refreshItem();
+                    if (entities[list.id].inventory.itemSelected == ""){
+                        entities[list.id].inventory.itemSelected = null
+                    }
+                    entities[list.id].updateStats();
+                } 
+            }
         }
     }
 }
@@ -239,6 +241,10 @@ function update(){
 
         for (var i = 0; i < bullets.length; i ++){
             bullets[i].updateBulletLocation(entities, walls, bullets, gameTime, particles)
+        }
+
+        for (var i = 0; i < bullets.length; i ++){
+            bullets[i].checkBulletDuration(bullets, gameTime);
         }
 
 
