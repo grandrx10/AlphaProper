@@ -225,14 +225,15 @@ function update(){
 
                     io.to(key).emit('sendingUpdate', [gameTime, sendEntities, walls, bullets, interactables, particles])
                 }
-
-                entities[key].update(walls);
-                entities[key].setRoom(rooms);
-                entities[key].accelerate();
-                entities[key].checkInteract(interactables);
-                entities[key].aiMovement(entities, entities[key], bullets, gameTime);
-                entities[key].checkDeath(entities, gameTime, interactables, particles);
-                game.n ++;
+                if (entities[key] != null){
+                    entities[key].update(walls);
+                    entities[key].setRoom(rooms);
+                    entities[key].accelerate();
+                    entities[key].checkInteract(interactables);
+                    entities[key].aiMovement(entities, entities[key], bullets, gameTime);
+                    entities[key].checkDeath(entities, gameTime, interactables, particles);
+                    game.n ++;
+                }
             });
         }
 
