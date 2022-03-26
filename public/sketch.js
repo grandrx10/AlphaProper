@@ -74,6 +74,8 @@ function draw(){
                 for (var i = 0; i < entities[entity].inventory.items.length; i ++){
                     if (entities[entity].inventory.items[i].slot == "Head"){
                         drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange, true, entity)
+                    } else if (entities[entity].inventory.items[i].slot == "Chest"){
+                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange + 10, true, entity)
                     }
                 }
             }
@@ -242,9 +244,9 @@ function displayInventory(){
         textSize(12)
         textAlign(LEFT)
         if (num < 4){
-            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + num*70, 470)
+            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + num*70, 470)
         } else {
-            text(entities[socket.id].stats[stat][0] + ": " + entities[socket.id].stats[stat][1], 160 + (num-4)*70, 500)
+            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-4)*70, 500)
         }
         num ++;
         textAlign(CENTER)
@@ -290,6 +292,9 @@ function drawItem(itemName, x, y, flip, id){
         fill("#464749");
         rect(x, y - 8, 20, 8);
         rect(x, y, 25, 5);
+    } else if (itemName == "Leather Tunic"){
+        fill(138, 50, 0);
+        rect(x, y, 20, 20);
     }
     pop();
 }

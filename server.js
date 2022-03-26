@@ -8,6 +8,7 @@ import { Server } from "socket.io"
 import { Room } from "./room.js"
 import { Item } from "./item.js"
 import { SimpleEntity } from "./simpleEntity.js"
+import { SimpleBullet } from "./simpleBullet.js"
 import { Rect } from "./rect.js"
 
 // var express = require('express');
@@ -44,7 +45,7 @@ var bullets = []
 var particles = []
 var interactables = [];
 interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
-//interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
+interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
 createSection("lobby", 0, 0, 1650, 500)
 
 function newConnection(socket){
@@ -72,7 +73,9 @@ function newConnection(socket){
     function triggerBullet(aimPos){
         if (entities[socket.id] != null && entities[socket.id].deathTime == 0 &&
             entities[socket.id].inventory.inventoryOpen == false){
-            entities[socket.id].shoot(gameTime, bullets, aimPos)
+            entities[socket.id].attackInfo.preformAttack(entities[socket.id].attacks[entities[socket.id].attackIndex],
+                bullets,entities, entities[socket.id], gameTime,
+                aimPos[0], aimPos[1])
         }
     }
 
@@ -207,6 +210,13 @@ function update(){
                                     entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration)
                             }
                         });
+                    }
+
+                    var simpleBullets = [];
+
+                    for (var i = 0; i < bullets.length; i ++){
+                        simpleBullets.push(new SimpleBullet(bullets[i].x, bullets[i].y, bullets[i].colour,
+                            bullets[i].length, bullets[i].width));
                     }
 
 
@@ -422,6 +432,7 @@ function summonEnemy(name, x, y, xLimit, yLimit){
         var xSpeed = 0.5;
         var ySpeed = 6;
         var engageRange = 0;
+        var attacks = ["shoot"]
     } else if (name == "Goblin Archer"){
         var length = 15;
         var width = 30;
@@ -431,9 +442,11 @@ function summonEnemy(name, x, y, xLimit, yLimit){
         var xSpeed = 1;
         var ySpeed = 6;
         var engageRange = 100;
+        var attacks = ["shoot"]
     }
     entities[game.n] = new Entity(name, "npc", randint(x, xLimit), randint(y, yLimit), length, width, hp, weaponName, colour,
     -1, gameTime, game.n, xSpeed, ySpeed, engageRange);
+    entities[game.n].attacks = attacks
     while (!checkAvailable(entities[game.n], walls)){
         entities[game.n].x = randint(x, xLimit);
         entities[game.n].y = randint(y, yLimit);  

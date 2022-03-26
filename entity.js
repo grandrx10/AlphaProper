@@ -5,6 +5,7 @@ import { DropTable } from "./dropTable.js"
 import { Interactable } from "./interactable.js"
 import { Rect } from "./rect.js"
 import { Particle } from "./particle.js"
+import { AttackPattern } from "./attackPattern.js"
 
 export class Entity {
     constructor (name, type, x, y, length, width, health, weapon, colour, team, gameTime, id, maxAccelX, maxAccelY, engageRange){
@@ -38,6 +39,9 @@ export class Entity {
         this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
         this.deathTime = 0;
         this.deathDuration = 5000;
+        this.attackInfo = new AttackPattern();
+        this.attackIndex = 0
+        this.attacks = ["shoot"]
 
         this.stats = { // required
             atk: ["ATK", 0],
@@ -47,7 +51,7 @@ export class Entity {
             hp: ["HP", health],
             def: ["DEF", 0],
             mana: ["MANA", 0],
-            vit: ["VIT", 0]
+            vit: ["VIT", 1]
         } 
 
         if (this.type == "npc"){
@@ -97,7 +101,8 @@ export class Entity {
             this.locateEnemy(entities,entity);
             this.moveTowardsMap();
             if(this.travelMap.aimX != -1){
-                this.shoot(gameTime, bullets, [this.travelMap.aimX, this.travelMap.aimY]);
+                this.attackInfo.preformAttack(this.attacks[this.attackIndex], bullets, entities, entity, gameTime,
+                    this.travelMap.aimX, this.travelMap.aimY);
             }
         }
     }
@@ -113,7 +118,7 @@ export class Entity {
                 hp: ["HP", healthTemp],
                 def: ["DEF", 0],
                 mana: ["MANA", 0],
-                vit: ["VIT", 0]
+                vit: ["VIT", 1]
             }
             for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
                 
@@ -178,6 +183,8 @@ export class Entity {
             this.stats.hp[1] = 0
         } else if (this.stats.hp[1] > this.stats.maxHp[1]){
             this.stats.hp[1] = this.stats.maxHp[1];
+        } else {
+            this.stats.hp[1] += 0.01*this.stats.vit[1];
         }
 
         if (this.stats.hp[1] <= 0 && this.deathTime == 0){
@@ -222,20 +229,6 @@ export class Entity {
         if (this.expireTime != -1 && gameTime - this.creationTime > this.expireTime){
             delete entities[this.id];
         }
-    }
-
-    
-
-    shoot(gameTime, bullets, aimPos){
-        if (gameTime - this.weapon.lastFired > this.weapon.cooldown*(1- 0.1*this.stats.dex[1])){
-            this.weapon.lastFired = gameTime;
-            this.createBullet(this.x + this.length/2, this.y+ this.width/2
-            , aimPos[0], aimPos[1], this.weapon.speed, this.weapon.damage * (1 + 0.1*this.stats.atk[1]),
-            "circle", this.weapon.expireTime, this.team, bullets, gameTime, this.id, this.weapon.colour,
-            this.weapon.bulletSize, this.weapon.bulletSize, false, false);
-            return true
-        }
-        return false
     }
 
     draw(){

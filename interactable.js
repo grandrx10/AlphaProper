@@ -25,7 +25,7 @@ export class Interactable {
             }
             for (var i = 0; i < this.inventory.inventorySize; i ++){
                 if (i <this.inventory.inventorySize/2){
-                    this.inventory.items.push(new ItemFrame("", i, 930 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
+                    this.inventory.items.push(new ItemFrame("Leather Tunic", i, 930 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
                 } else {
                     this.inventory.items.push(new ItemFrame("", i, 930 + (i-this.inventory.inventorySize/2)*
                     (350/(this.inventory.inventorySize/2)), 190, 80, 80));

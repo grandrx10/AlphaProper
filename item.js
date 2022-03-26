@@ -14,6 +14,12 @@ export class Item {
             }
             this.slot = "Head"
             this.description = "A cap worn by mercenaries due\nto it's cheap production value"
+        } else if (this.name == "Leather Tunic"){
+            this.stats = {
+                def: ["DEF", 1]
+            }
+            this.slot = "Chest"
+            this.description = "A tunic crafted with cow skin\n that provides light protection."
         }
     }
 }
