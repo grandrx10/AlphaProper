@@ -487,11 +487,13 @@ function sortList(list, keyInBack){
     while(changed){
         changed = false
         for(var i = 0; i < list.length - 1; i ++){
-            if (list[i].type == keyInBack && list[i+1].type != keyInBack){
-                var temp = list[i];
-                list[i] = list[i+1];
-                list[i+1] = temp
-                changed = true;
+            if(list[i] != null && list[i+1] != null){
+                if (list[i].type == keyInBack && list[i+1].type != keyInBack){
+                    var temp = list[i];
+                    list[i] = list[i+1];
+                    list[i+1] = temp
+                    changed = true;
+                }
             }
         }
     }
