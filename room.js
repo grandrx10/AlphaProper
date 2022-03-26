@@ -1,12 +1,22 @@
 // This is the start of combat program
 export class Room {
-    constructor (name, x, y, length, width, gameTime) {
+    constructor (name, x, y, length, width, gameTime, id) {
         this.x = x;
         this.y = y;
         this.length = length;
         this.width = width;
         this.name = name
         this.lastChecked = gameTime + 100;
+        this.id = id;
+    }
+
+    checkForPortal(portals, portalName){
+        for (var i = 0; i < portals.length; i++){
+            if (portals[i].name == portalName){
+                return true;
+            }
+        }
+        return false;
     }
 
     checkEmpty(entities, room){

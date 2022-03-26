@@ -10,6 +10,7 @@ import { Item } from "./item.js"
 import { SimpleEntity } from "./simpleEntity.js"
 import { SimpleBullet } from "./simpleBullet.js"
 import { Rect } from "./rect.js"
+import { EnemyStats } from "./enemyStats.js"
 
 // var express = require('express');
 
@@ -44,16 +45,17 @@ var walls = []
 var bullets = []
 var particles = []
 var interactables = [];
-interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal"))
-interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag"))
-createSection("lobby", 0, 0, 1650, 500)
+interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal", gameTime, game.n))
+game.n++;
+interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag", gameTime))
+createSection("lobby", 0, 0, 1650, 500, -2)
 
 function newConnection(socket){
     socket.on("disconnect", () => {
         delete entities[socket.id];
     });
     
-    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, "smg", 
+    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
@@ -73,7 +75,7 @@ function newConnection(socket){
     function triggerBullet(aimPos){
         if (entities[socket.id] != null && entities[socket.id].deathTime == 0 &&
             entities[socket.id].inventory.inventoryOpen == false){
-            entities[socket.id].attackInfo.preformAttack(entities[socket.id].attacks[entities[socket.id].attackIndex],
+            entities[socket.id].attackInfo.preformAttack(entities[socket.id].attacks[0][0],0,
                 bullets,entities, entities[socket.id], gameTime,
                 aimPos[0], aimPos[1])
         }
@@ -82,7 +84,7 @@ function newConnection(socket){
     function interact(id){
         if (entities[id].interact != null && entities[socket.id].deathTime == 0){
             if (entities[id].interact.type == "portal"){
-                findPortalDestination(entities[id].interact.name, id)
+                findPortalDestination(id)
             } else if (entities[id].interact.type == "bag"){
                 entities[id].inventory.inventoryOpen = true;
             } else if (entities[id].interact.type == "healStation"){
@@ -145,7 +147,7 @@ function dropItem(list, inventory1, inventory2){
         
         if (dropped){
             interactables.push(new Interactable("Loot", entities[list.id].x,
-                entities[list.id].y, 15, 15, "brown", "bag"));
+                entities[list.id].y, 15, 15, "brown", "bag", gameTime));
                 interactables[interactables.length -1].addToInventory(entities[list.id].inventory.itemSelected)
                 entities[list.id].inventory.itemSelected = null
                 entities[list.id].updateStats();
@@ -207,7 +209,8 @@ function update(){
                                     entities[id].x, entities[id].y, entities[id].length,
                                     entities[id].width, entities[id].dir, entities[id].stats,
                                     entities[id].colour, entities[id].location, entities[id].interact,
-                                    entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration)
+                                    entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration,
+                                    entities[id].speech)
                             }
                         });
                     }
@@ -237,20 +240,31 @@ function update(){
             bullets[i].updateBulletLocation(entities, walls, bullets, gameTime, particles)
         }
 
+
         for (var i = particles.length-1; i >= 0; i --){
             particles[i].accelerate();
             particles[i].update(walls)
             particles[i].checkExpire(gameTime, particles);
         }
 
+        sortList(interactables, "bag")
         for (var i = interactables.length-1; i >= 0; i --){
-            interactables[i].update(walls)
-            if (interactables[i].type == "bag" && interactables[i].checkEmpty()){
+            interactables[i].update(walls);
+            interactables[i].checkExpire(gameTime, interactables);
+            if (interactables[i] != null && interactables[i].type == "bag" && interactables[i].checkEmpty()){
                 interactables.splice(i, 1);
             }
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
+            var listOfDungeons = ["dungeon01"]
+            for (var c = 0; c < listOfDungeons.length; c ++){
+                if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
+                    interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
+                    game.n ++;
+                }
+            }
+
             if (gameTime - rooms[i].lastChecked > 100){
                 rooms[i].lastChecked = gameTime;
                 if (rooms[i].checkEmpty(entities, rooms[i]) && rooms[i].name != "lobby"){
@@ -304,17 +318,22 @@ function distance(x1, y1, x2, y2){
     return Math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 }
 
-function findPortalDestination(nameOfPortal, id){
+function findPortalDestination(id){
     var foundRoom = false;
     for (var i = 0; i < rooms.length; i ++){
-        if (nameOfPortal == rooms[i].name){
+        if (entities[id].interact.id == rooms[i].id){
             entities[id].x = rooms[i].x + 100
             entities[id].y = rooms[i].y + 50;
+            // CHANGE THIS LATER DO NOT DO THIS!
+            if (rooms[i].name != "lobby" && rooms[i].name != "Warlord's Lair"){
+                entities[id].interact.expireTime = 10000;
+                entities[id].interact.creationTime = gameTime;
+            }
             foundRoom = true;
         }
     }
     if (!foundRoom){
-        createSection(nameOfPortal, randint(0, 1000), randint(0, 1000));
+        createSection(entities[id].interact.name, randint(0, 10000), randint(0, 10000), entities[id].interact.id);
     }
 }
 
@@ -327,15 +346,19 @@ function checkAvailable (rect, arrayOfRect){
     return true;
 }
 
-function createSection(name, x, y){
+function createSection(name, x, y, id){
     if (name == "lobby"){
         var length = 1650;
         var width = 500;
+        var id = -2
     } else if (name == "dungeon01"){
         var length = 6400;
         var width = 500;
+    } else if (name == "Warlord's Lair"){
+        var length = 1200;
+        var width = 500;
     }
-    rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime));
+    rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){
         rooms[rooms.length-1].x = randint(0, 1000);
         rooms[rooms.length-1].y = randint(0, 1000);
@@ -346,7 +369,7 @@ function createSection(name, x, y){
     walls.push(new Wall("wall", x, y, length, 20,"silver"));
     walls.push(new Wall("wall", x, y, 20, width,"silver"));
     walls.push(new Wall("wall", x, y + width, length, 20,"silver"));
-    walls.push(new Wall("wall", x+ length, y, 20, width,"silver"));
+    walls.push(new Wall("wall", x+ length - 20, y, 20, width,"silver"));
     generateLevel(name, x, y + width, length);
 }
 
@@ -355,40 +378,53 @@ function generateLevel(levelName, x, y, length){
     var segmentHeight;
     var listOfRooms = [];
     var possibleMobs = [];
+    var finalPortal = "lobby"
+    var bossRoom = false;
     var enemyNumber = {
         max: 0,
         min: 0
     }
-    if (levelName == "dungeon01"){
-        segmentLength = 800;
-        segmentHeight = 500;
-        listOfRooms = ["overArch", "house", "tree"];
-        possibleMobs = ["Goblin Grunt", "Goblin Archer"]
-        enemyNumber.min = 3;
-        enemyNumber.max = 5;
-    } else if (levelName == "lobby"){
-        segmentLength = 1650;
-        walls.push(new Wall("wall", x, y, 1600, 50, "silver"));
-        walls.push(new Wall("wall", x, y-500, 50, 550, "silver"));
-        walls.push(new Wall("wall", x, y-500, 1650, 50, "silver"));
-        walls.push(new Wall("wall", x+506,y-128,269, 128, "silver"))
-        walls.push(new Wall("wall", x+506,y-500,269, 128, "silver"))
-        walls.push(new Wall("wall", x+755,y-370,19, 117, "silver"))
-        walls.push(new Wall("wall", x+505,y-372,23, 120, "silver"))
-        walls.push(new Wall("wall", x+950, y-230, 500, 30, "silver"))
-        walls.push(new Wall("wall", x+1650, y-500, 50, 550, "silver"))
-        interactables.push(new Interactable("Healing Station", x+1000, y-40, 30, 40, "brown", "healStation"))
-        interactables[interactables.length-1].id = game.n
-        game.n ++;
+    switch(levelName){
+        case "dungeon01":
+            segmentLength = 800;
+            segmentHeight = 500;
+            listOfRooms = ["overArch", "house", "tree"];
+            possibleMobs = ["Goblin Grunt", "Goblin Archer", "Goblin Brute"]
+            finalPortal = "Warlord's Lair"
+            enemyNumber.min = 2;
+            enemyNumber.max = 4;
+            break;
+        case "lobby":
+            segmentLength = 1650;
+            walls.push(new Wall("wall", x, y, 1600, 50, "silver"));
+            walls.push(new Wall("wall", x, y-500, 50, 550, "silver"));
+            walls.push(new Wall("wall", x, y-500, 1650, 50, "silver"));
+            walls.push(new Wall("wall", x+506,y-128,269, 128, "silver"))
+            walls.push(new Wall("wall", x+506,y-500,269, 128, "silver"))
+            walls.push(new Wall("wall", x+755,y-370,19, 117, "silver"))
+            walls.push(new Wall("wall", x+505,y-372,23, 120, "silver"))
+            walls.push(new Wall("wall", x+950, y-230, 500, 30, "silver"))
+            walls.push(new Wall("wall", x+1650, y-500, 50, 550, "silver"))
+            interactables.push(new Interactable("Healing Station", x+1000, y-40, 30, 40, "brown", "healStation", gameTime, game.n))
+            game.n ++;
+            break;
+        case "Warlord's Lair":
+            segmentLength = 1200;
+            segmentHeight = 500;
+            bossRoom = true;
+            walls.push(new Wall("wall", x + 200, y - 100, 200, 20, "silver"));
+            walls.push(new Wall("wall", x + 800, y - 100, 200, 20, "silver"));
+            summonEnemy("Goblin Warlord", x+ 600, y-60)
     }
 
     for (var i = 0; i < length/segmentLength; i ++){
         var roomToGenerate = listOfRooms[randint(0, listOfRooms.length-1)];
         var lastRoom = length/segmentLength -1;
         var xLocation = x + segmentLength*(i);
-        if (i == lastRoom && levelName != "lobby"){
+        if (i == lastRoom && levelName != "lobby" && !bossRoom){
             walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
-            interactables.push(new Interactable("lobby", xLocation + 700, y - 40, 30, 40, "blue", "portal"))
+            interactables.push(new Interactable(finalPortal, xLocation + 700, y - 40, 30, 40, "blue", "portal", gameTime, game.n))
+            game.n ++;
         }
         else if (roomToGenerate == "empty" || i == 0){
             walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
@@ -416,41 +452,46 @@ function generateLevel(levelName, x, y, length){
         }
         if (roomToGenerate != "empty" && i != 0 && i != lastRoom){
             for (var c =0; c < randint(enemyNumber.min,enemyNumber.max); c ++){
-                summonEnemy(possibleMobs[randint(0, possibleMobs.length)], xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
+                summonEnemy(possibleMobs[randint(0, possibleMobs.length-1)], xLocation, y, x+segmentLength*(i+1), y- segmentHeight);
             }
         }
     }
 }
 
 function summonEnemy(name, x, y, xLimit, yLimit){
-    if (name == "Goblin Grunt"){
-        var length = 20;
-        var width = 30;
-        var hp = 100;
-        var weaponName = "fist";
-        var colour = "green"
-        var xSpeed = 0.5;
-        var ySpeed = 6;
-        var engageRange = 0;
-        var attacks = ["shoot"]
-    } else if (name == "Goblin Archer"){
-        var length = 15;
-        var width = 30;
-        var hp = 80;
-        var weaponName = "bow";
-        var colour = "darkgreen"
-        var xSpeed = 1;
-        var ySpeed = 6;
-        var engageRange = 100;
-        var attacks = ["shoot"]
+    if (xLimit == null){
+        xLimit = x;
+        yLimit = y;
     }
-    entities[game.n] = new Entity(name, "npc", randint(x, xLimit), randint(y, yLimit), length, width, hp, weaponName, colour,
-    -1, gameTime, game.n, xSpeed, ySpeed, engageRange);
-    entities[game.n].attacks = attacks
+
+    var enemyStats = new EnemyStats().getStats(name);
+    entities[game.n] = new Entity(name, "npc", randint(x, xLimit), randint(y, yLimit), enemyStats.length, enemyStats.width, 
+    enemyStats.hp, enemyStats.weaponName, enemyStats.colour,
+    -1, gameTime, game.n, enemyStats.xSpeed, enemyStats.ySpeed, enemyStats.engageRange);
+    entities[game.n].attacks = enemyStats.attacks
+    entities[game.n].drops = enemyStats.drops
+    entities[game.n].speechList = enemyStats.speechList
+    entities[game.n].boss = enemyStats.boss
+    entities[game.n].travelMap.detectRange = enemyStats.detectRange
     while (!checkAvailable(entities[game.n], walls)){
         entities[game.n].x = randint(x, xLimit);
         entities[game.n].y = randint(y, yLimit);  
     }
 
     game.n ++;
+}
+
+function sortList(list, keyInBack){
+    var changed = true;
+    while(changed){
+        changed = false
+        for(var i = 0; i < list.length - 1; i ++){
+            if (list[i].type == keyInBack && list[i+1].type != keyInBack){
+                var temp = list[i];
+                list[i] = list[i+1];
+                list[i+1] = temp
+                changed = true;
+            }
+        }
+    }
 }

@@ -7,7 +7,7 @@ var gameTime;
 var entities = {}
 var walls = []
 var bullets = []
-var portals = []
+var interactables = []
 var particles = []
 
 var xRange;
@@ -58,13 +58,23 @@ function draw(){
             rect(walls[wall].x - xRange + shake.x, walls[wall].y - yRange + shake.y, walls[wall].length, walls[wall].width);
         }
 
-        for (portal in portals){
-            fill(portals[portal].colour);
-            rect(portals[portal].x - xRange + shake.x, portals[portal].y - yRange + shake.y, portals[portal].length, portals[portal].width);
+        for (interactable in interactables){
+            fill(interactables[interactable].colour);
+            rect(interactables[interactable].x - xRange + shake.x, interactables[interactable].y - yRange + shake.y, 
+                interactables[interactable].length, interactables[interactable].width);
             textAlign(CENTER);
             fill("white")
             textSize(12);
-            text(portals[portal].name, portals[portal].x +portals[portal].length/2- xRange, portals[portal].y - yRange - 30)
+            text(interactables[interactable].name, interactables[interactable].x +interactables[interactable].length/2- xRange, 
+            interactables[interactable].y - yRange - 30)
+
+            if (interactables[interactable].expireTime != -1){
+                textSize(12);
+                var tempText = Math.round((interactables[interactable].expireTime - gameTime + 
+                    interactables[interactable].creationTime)/1000)
+                text("Closing in: " + tempText, interactables[interactable].x +interactables[interactable].length/2- xRange, 
+                interactables[interactable].y - yRange - 50)
+            }
         }
 
         for (entity in entities){
@@ -92,6 +102,16 @@ function draw(){
             if (entities[entity].interact != null){
                 text(entities[entity].interact.text, entities[entity].x +entities[entity].length/2- xRange, entities[entity].y - yRange - 50)
             }
+
+            if (entities[entity].speech != ""){
+                fill("white");
+                rect(entities[entity].x - xRange - 120, entities[entity].y - yRange - 100, 240 + entities[entity].length, 40);
+                fill("black");
+                textSize(12);
+                text(entities[entity].speech, entities[entity].x + entities[entity].length/2 - xRange,
+                entities[entity].y -85 - yRange)
+            }
+
         }
         
         for(var i = 0; i < particles.length; i++){
@@ -274,7 +294,7 @@ function update(returnList){
     walls = returnList[2];
     bullets = returnList[3];
     gameStart = true;
-    portals = returnList[4];
+    interactables = returnList[4];
     particles = returnList[5];
 }
 
@@ -295,6 +315,11 @@ function drawItem(itemName, x, y, flip, id){
     } else if (itemName == "Leather Tunic"){
         fill(138, 50, 0);
         rect(x, y, 20, 20);
+    } else if (itemName == "Warlord's Vest"){
+        fill(150, 150, 150);
+        rect(x, y, 20, 20);
+        fill(33, 128, 9);
+        rect(x + 5, y+5, 10, 10);
     }
     pop();
 }

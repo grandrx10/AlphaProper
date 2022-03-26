@@ -1,7 +1,6 @@
 import { Weapon } from "./weapon.js"
 import { Bullet } from "./bullet.js"
 import { ItemFrame } from "./itemFrame.js"
-import { DropTable } from "./dropTable.js"
 import { Interactable } from "./interactable.js"
 import { Rect } from "./rect.js"
 import { Particle } from "./particle.js"
@@ -22,7 +21,13 @@ export class Entity {
         this.yAccel = 0;
         this.xOrigA = maxAccelX;
         this.yOrigA = maxAccelY;
-        this.weapon = new Weapon(weapon);
+        this.invincible = false;
+
+        this.weapons = []//[new Weapon(weapon)];
+        for (var i = 0; i < weapon.length; i ++){
+            this.weapons.push(new Weapon(weapon[i]));
+        }
+
         this.colour = colour;// required
         this.canJump = true;
         this.team = team;
@@ -36,12 +41,13 @@ export class Entity {
             shakeDuration: 0
         } 
         this.lastHurtBy;
-        this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
         this.deathTime = 0;
         this.deathDuration = 5000;
         this.attackInfo = new AttackPattern();
         this.attackIndex = 0
-        this.attacks = ["shoot"]
+        this.attacks = [["shoot", -1]]
+        this.speech = ""; // REQUIRED
+        
 
         this.stats = { // required
             atk: ["ATK", 0],
@@ -51,12 +57,18 @@ export class Entity {
             hp: ["HP", health],
             def: ["DEF", 0],
             mana: ["MANA", 0],
-            vit: ["VIT", 1]
+            vit: ["VIT", 0]
         } 
 
         if (this.type == "npc"){
-            this.dropTable = new DropTable(this.name);
+            this.drops = [];
             this.engageRange = engageRange;
+            this.speechList = []
+            this.speechIndex = 0;
+            this.chase = true;
+            this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
+            this.fightTime = 0;
+            this.boss = false;
         }
 
         if (this.type == "Player"){ 
@@ -98,10 +110,24 @@ export class Entity {
 
     aiMovement(entities, entity, bullets, gameTime){
         if (this.type == "npc"){
+            if (this.fightTime != 0){
+                if (gameTime - this.fightTime > this.attacks[this.attackIndex][1]){
+                    if (this.attackIndex < this.attacks.length-1){
+                        this.attackIndex ++;
+                        this.fightTime = gameTime;
+                    } else if (this.attacks[this.attackIndex][0] == "speech"){
+                        this.attackIndex ++
+                    } else {
+                        this.attackIndex = 0;
+                    }
+                }
+            }
+
             this.locateEnemy(entities,entity);
-            this.moveTowardsMap();
+            if (this.chase)
+                this.moveTowardsMap();
             if(this.travelMap.aimX != -1){
-                this.attackInfo.preformAttack(this.attacks[this.attackIndex], bullets, entities, entity, gameTime,
+                this.attackInfo.preformAttack(this.attacks[this.attackIndex][0], this.attackIndex, bullets, entities, entity, gameTime,
                     this.travelMap.aimX, this.travelMap.aimY);
             }
         }
@@ -118,7 +144,7 @@ export class Entity {
                 hp: ["HP", healthTemp],
                 def: ["DEF", 0],
                 mana: ["MANA", 0],
-                vit: ["VIT", 1]
+                vit: ["VIT", 0]
             }
             for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
                 
@@ -183,8 +209,8 @@ export class Entity {
             this.stats.hp[1] = 0
         } else if (this.stats.hp[1] > this.stats.maxHp[1]){
             this.stats.hp[1] = this.stats.maxHp[1];
-        } else {
-            this.stats.hp[1] += 0.01*this.stats.vit[1];
+        } else if (this.stats.hp[1] > 0){
+            this.stats.hp[1] += 0.01 + 0.01*this.stats.vit[1];
         }
 
         if (this.stats.hp[1] <= 0 && this.deathTime == 0){
@@ -200,16 +226,21 @@ export class Entity {
 
             if (entities[this.id].type != "Player"){
                 var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
-                entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag")
+                entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag", gameTime)
 
-                for (var i = 0; i < entities[this.id].dropTable.drops.length; i ++){
-                    if (this.randint(1, 100) <= entities[this.id].dropTable.drops[i][1]){
-                        lootDrop.addToInventory(entities[this.id].dropTable.drops[i][0]);
+                for (var i = 0; i < entities[this.id].drops.length; i ++){
+                    if (this.randint(1, 100) <= entities[this.id].drops[i][1]){
+                        lootDrop.addToInventory(entities[this.id].drops[i][0]);
                     }
                 }
 
                 if (!lootDrop.checkEmpty()){
                     interactables.push(lootDrop)
+                }
+
+                if (entities[this.id].boss){
+                    interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y, 
+                    30, 40, "blue", "portal", gameTime, -2))
                 }
 
                 delete entities[this.id];
@@ -222,7 +253,7 @@ export class Entity {
                 entities[this.id].inventory.inventoryOpen = false;
             }
         } else if ((gameTime - this.deathTime) > this.deathDuration && this.deathTime != 0){
-            entities[this.id] = new Entity(this.id, "Player", 100 + this.randint(-20, 20), 100, 20, 30, 100, "smg", 
+            entities[this.id] = new Entity(this.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
             "purple", 0, gameTime, this.id,1,6)
         }
 

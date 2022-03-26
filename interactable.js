@@ -2,7 +2,7 @@ import { ItemFrame } from "./itemFrame.js"
 import { Rect } from "./rect.js";
 
 export class Interactable {
-    constructor (name, x, y, length, width, colour, type){
+    constructor (name, x, y, length, width, colour, type, gameTime, id){
         this.name = name;
         this.x = x;
         this.y = y;
@@ -12,12 +12,19 @@ export class Interactable {
         this.width = width;
         this.colour = colour;
         this.type = type;
-        this.id = -1;
+        this.id = id;
+        this.expireTime = -1;
+        this.creationTime = gameTime;
+
+        if (this.name == "lobby"){
+            this.id = -2
+        }
 
         if (this.type == "portal"){
             this.text = "Press E to enter: " + this.name
         } else if (this.type == "bag") {
             this.text = "Press E to open";
+            this.expireTime = 30000;
             this.inventory = {
                 inventorySize: 8,
                 items: [],
@@ -25,7 +32,7 @@ export class Interactable {
             }
             for (var i = 0; i < this.inventory.inventorySize; i ++){
                 if (i <this.inventory.inventorySize/2){
-                    this.inventory.items.push(new ItemFrame("Leather Tunic", i, 930 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
+                    this.inventory.items.push(new ItemFrame("Ranger Hat", i, 930 + i*(350/(this.inventory.inventorySize/2)), 100, 80, 80));
                 } else {
                     this.inventory.items.push(new ItemFrame("", i, 930 + (i-this.inventory.inventorySize/2)*
                     (350/(this.inventory.inventorySize/2)), 190, 80, 80));
@@ -33,6 +40,12 @@ export class Interactable {
             }
         } else if (this.type == "healStation"){
             this.text = "Press E to spawn healing"
+        }
+    }
+
+    checkExpire(gameTime, interactables){
+        if (gameTime - this.creationTime > this.expireTime && this.expireTime != -1){
+            interactables.splice(interactables.indexOf(this), 1)
         }
     }
 

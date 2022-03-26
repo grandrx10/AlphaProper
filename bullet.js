@@ -85,11 +85,13 @@ export class Bullet {
                         } else{
                             var bulletDamage = bullet.damage
                         }
-                        entities[key].stats.hp[1] -= bullet.damage;
-                        particles.push(new Particle(bulletDamage, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
-                        bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
-                        entities[key].randint(-5, -1)));
-                        entities[key].lastHurtBy = bullet.id;
+                        if (!entities[key].invincible){
+                            entities[key].stats.hp[1] -= bullet.damage;
+                            particles.push(new Particle(bulletDamage, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
+                            bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
+                            entities[key].randint(-5, -1)));
+                            entities[key].lastHurtBy = bullet.id;
+                        }
                     }
                     if (!bullet.stay){
                         bullets.splice(bullets.indexOf(bullet), 1);
