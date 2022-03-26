@@ -253,7 +253,7 @@ export class Entity {
                 entities[this.id].inventory.inventoryOpen = false;
             }
         } else if ((gameTime - this.deathTime) > this.deathDuration && this.deathTime != 0){
-            entities[this.id] = new Entity(this.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
+            entities[this.id] = new Entity(this.id, "Player", 100 + this.randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
             "purple", 0, gameTime, this.id,1,6)
         }
 
