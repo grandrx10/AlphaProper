@@ -87,7 +87,7 @@ export class Bullet {
                         }
                         if (!entities[key].invincible){
                             entities[key].stats.hp[1] -= bullet.damage;
-                            particles.push(new Particle(bulletDamage, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
+                            particles.push(new Particle(Math.round(bulletDamage*10)/10.0, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
                             bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
                             entities[key].randint(-5, -1)));
                             entities[key].lastHurtBy = bullet.id;
