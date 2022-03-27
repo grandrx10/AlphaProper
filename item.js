@@ -1,6 +1,10 @@
 export class Item {
     constructor(item){
         this.name = item;
+        this.stats = {};
+        this.slot = "none";
+        this.description = "none"
+        this.attackType = ""
         switch(this.name){
             case "Ranger Hat":
                 this.stats = {
@@ -30,6 +34,11 @@ export class Item {
                 }
                 this.slot = "Chest"
                 this.description = "A chainvest crafted from fine steel.\nIt will protect you well."
+                break;
+            case "Adventurer's Sword":
+                this.slot = "Weapon"
+                this.description = "A useful blade for any adventurer."
+                this.attackType = "shoot"
                 break;
         }
     }

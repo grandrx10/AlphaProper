@@ -45,7 +45,7 @@ var walls = []
 var bullets = []
 var particles = []
 var interactables = [];
-interactables.push(new Interactable("dungeon01", 1200, 230, 30, 40, "cyan", "portal", gameTime, game.n))
+interactables.push(new Interactable("Goblin Forest", 1200, 230, 30, 40, "cyan", "portal", gameTime, game.n))
 game.n++;
 interactables.push(new Interactable("Loot", 100, 100, 15, 15, "brown", "bag", gameTime))
 createSection("lobby", 0, 0, 1650, 500, -2)
@@ -55,7 +55,7 @@ function newConnection(socket){
         delete entities[socket.id];
     });
     
-    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
+    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["", ""], 
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
@@ -267,7 +267,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["dungeon01"]
+            var listOfDungeons = ["Goblin Forest"]
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
@@ -361,7 +361,7 @@ function createSection(name, x, y, id){
         var length = 1650;
         var width = 500;
         var id = -2
-    } else if (name == "dungeon01"){
+    } else if (name == "Goblin Forest"){
         var length = 6400;
         var width = 500;
     } else if (name == "Warlord's Lair"){
@@ -395,7 +395,7 @@ function generateLevel(levelName, x, y, length){
         min: 0
     }
     switch(levelName){
-        case "dungeon01":
+        case "Goblin Forest":
             segmentLength = 800;
             segmentHeight = 500;
             listOfRooms = ["overArch", "house", "tree"];
@@ -424,6 +424,7 @@ function generateLevel(levelName, x, y, length){
             bossRoom = true;
             walls.push(new Wall("wall", x + 200, y - 100, 200, 100, "silver"));
             walls.push(new Wall("wall", x + 800, y - 100, 200, 100, "silver"));
+            walls.push(new Wall("wall", x + 550, y - 300, 100, 20, "silver"));
             summonEnemy("Goblin Warlord", x+ 600, y-60)
     }
 

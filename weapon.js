@@ -11,7 +11,7 @@ export class Weapon {
                 this.colour = "white"
                 this.bulletSize = 10
                 break;
-            case "smg":
+            case "Adventurer's Sword":
                 this.cooldown = 100; // 100
                 this.damage = 20;
                 this.speed = 20;
@@ -51,9 +51,11 @@ export class Weapon {
                 this.colour = "rgb(130, 255, 186)"
                 this.bulletSize = 10
                 break;
+
+            // WARLORD WEAPONS --------------------------------------
             case "Warlord's Club":
                 this.cooldown = 700;
-                this.damage = 6;
+                this.damage = 4;
                 this.speed = 10;
                 this.expireTime = 700;
                 this.colour = "rgb(169, 255, 77)"
@@ -67,6 +69,7 @@ export class Weapon {
                 this.colour = "rgb(214, 71, 109)"
                 this.bulletSize = 12
                 break;
+            // ------------------------------------------------------
         }
     }
 }

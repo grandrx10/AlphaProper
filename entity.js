@@ -53,11 +53,13 @@ export class Entity {
             atk: ["ATK", 0],
             spd: ["SPD", 0],
             dex: ["DEX", 0],
+            def: ["DEF", 0],
             maxHp: ["MAXHP", health],
             hp: ["HP", health],
-            def: ["DEF", 0],
+            vit: ["VIT", 0],
+            gold: ["GOLD", 0],
             mana: ["MANA", 0],
-            vit: ["VIT", 0]
+            wis: ["WIS", 0],
         } 
 
         if (this.type == "npc"){
@@ -91,6 +93,10 @@ export class Entity {
             for (var i = 0; i < 4; i ++){
                 this.inventory.items.push(new ItemFrame("", equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80));
             }
+
+            var i = 3
+            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
+            equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
         }
     }
 
@@ -140,12 +146,14 @@ export class Entity {
                 atk: ["ATK", 0],
                 spd: ["SPD", 0],
                 dex: ["DEX", 0],
+                def: ["DEF", 0],
                 maxHp: ["MAXHP", 100],
                 hp: ["HP", healthTemp],
-                def: ["DEF", 0],
+                vit: ["VIT", 0],
+                gold: ["GOLD", 0],
                 mana: ["MANA", 0],
-                vit: ["VIT", 0]
-            }
+                wis: ["WIS", 0],
+            } 
             for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
                 
                 for (var entityStat in this.stats){
@@ -154,6 +162,11 @@ export class Entity {
                             this.stats[entityStat][1] += this.inventory.items[i].item.stats[itemStat][1];
                         }
                     }   
+                }
+
+                if (this.inventory.items[i].slot == "Weapon"){
+                    this.weapons[0] = new Weapon(this.inventory.items[i].item.name)
+                    this.attacks[0][0] =  this.inventory.items[i].item.attackType
                 }
             }
         }

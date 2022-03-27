@@ -48,6 +48,7 @@ function playMusic(){
     } 
     else if (entities[socket.id].location == "lobby" && song != null){
         song.stop();
+        currentSong[0] = "lobby"
     }
 }
 
@@ -106,9 +107,14 @@ function draw(){
             if (entities[entity].type == "Player" && entities[entity].stats.hp[1] > 0){
                 for (var i = 0; i < entities[entity].inventory.items.length; i ++){
                     if (entities[entity].inventory.items[i].slot == "Head"){
-                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange, true, entity)
+                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
+                            entities[entity].y - yRange, true, entity)
                     } else if (entities[entity].inventory.items[i].slot == "Chest"){
-                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange, entities[entity].y - yRange + 10, true, entity)
+                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
+                            entities[entity].y - yRange + 10, true, entity)
+                    } else if (entities[entity].inventory.items[i].slot == "Weapon"){
+                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange + entities[entity].length,
+                             entities[entity].y - yRange, true, entity, true)
                     }
                 }
             }
@@ -287,9 +293,11 @@ function displayInventory(){
         textSize(12)
         textAlign(LEFT)
         if (num < 4){
-            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + num*70, 470)
+            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + num*75, 470)
+        } else if (num < 8) {
+            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-4)*75, 500)
         } else {
-            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-4)*70, 500)
+            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-8)*75, 530)
         }
         num ++;
         textAlign(CENTER)
@@ -317,28 +325,45 @@ function update(returnList){
     particles = returnList[5];
 }
 
-function drawItem(itemName, x, y, flip, id){
+function drawItem(itemName, x, y, flip, id, isWeapon){
     push();
     if (entities[id].dir == "left" && flip){
         scale(-1, 1)
-        x = -x - 20
+        if (isWeapon){
+            x = -x + 20
+        } else {
+            x = -x - 20
+        }
     }
-    if (itemName == "Ranger Hat"){
-        fill("brown");
-        rect(x, y - 5, 20, 5);
-        rect(x-10, y, 40, 5);
-    } else if (itemName == "Mercenary Cap"){
-        fill("#464749");
-        rect(x, y - 8, 20, 8);
-        rect(x, y, 25, 5);
-    } else if (itemName == "Leather Tunic"){
-        fill(138, 50, 0);
-        rect(x, y, 20, 20);
-    } else if (itemName == "Warlord's Vest"){
-        fill(150, 150, 150);
-        rect(x, y, 20, 20);
-        fill(33, 128, 9);
-        rect(x + 5, y+5, 10, 10);
+    switch(itemName){
+        case "Ranger Hat":
+            fill("brown");
+            rect(x, y - 5, 20, 5);
+            rect(x-10, y, 40, 5);
+            break;
+        case "Mercenary Cap":
+            fill("#464749");
+            rect(x, y - 8, 20, 8);
+            rect(x, y, 25, 5);
+            break;
+        case "Leather Tunic":
+            fill(138, 50, 0);
+            rect(x, y, 20, 20);
+            break;
+        case "Warlord's Vest":
+            fill(150, 150, 150);
+            rect(x, y, 20, 20);
+            fill(33, 128, 9);
+            rect(x + 5, y+5, 10, 10);
+            break;
+        case "Adventurer's Sword":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 5, 5);
+            fill("silver");
+            rect(x + 5, y, 4, 15);
+            fill("brown");
+            rect(x + 5, y + 15, 4, 6);
+            break;
     }
     pop();
 }
