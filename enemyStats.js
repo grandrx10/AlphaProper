@@ -24,9 +24,9 @@ export class EnemyStats {
                 ySpeed = 6;
                 engageRange = 0;
                 attacks = [["shoot", -1]]
-                drops = [["Ranger Hat", 2],
-                        ["Mercenary Cap", 2],
-                        ["Leather Tunic", 2]]
+                drops = [["Ranger Hat", 4],
+                        ["Mercenary Cap", 4],
+                        ["Leather Tunic", 4]]
                 break;
             case "Goblin Archer":
                 length = 15;
@@ -39,7 +39,7 @@ export class EnemyStats {
                 engageRange = 100;
                 attacks = [["shoot",-1]]
                 drops = [["Ranger Hat", 7],
-                        ["Mercenary Cap", 2]]
+                        ["Mercenary Cap", 3]]
                 break;
             case "Goblin Brute":
                 length = 25;
@@ -51,8 +51,8 @@ export class EnemyStats {
                 ySpeed = 4;
                 engageRange = 0;
                 attacks = [["tripleShot",-1]]
-                drops = [["Leather Tunic", 5],
-                        ["Mercenary Cap", 5]]
+                drops = [["Leather Tunic", 6],
+                        ["Mercenary Cap", 4]]
                 break;
             case "Goblin Warlord":
                 length = 30;

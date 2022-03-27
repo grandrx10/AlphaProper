@@ -422,8 +422,8 @@ function generateLevel(levelName, x, y, length){
             segmentLength = 1200;
             segmentHeight = 500;
             bossRoom = true;
-            walls.push(new Wall("wall", x + 200, y - 100, 200, 20, "silver"));
-            walls.push(new Wall("wall", x + 800, y - 100, 200, 20, "silver"));
+            walls.push(new Wall("wall", x + 200, y - 100, 200, 100, "silver"));
+            walls.push(new Wall("wall", x + 800, y - 100, 200, 100, "silver"));
             summonEnemy("Goblin Warlord", x+ 600, y-60)
     }
 

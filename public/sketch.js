@@ -41,7 +41,7 @@ function preload(){
 function playMusic(){
     if (entities[socket.id].location == "Warlord's Lair" && currentSong[0] != "Warlord's Lair"){
         song = goblinWarlordSong
-        song.resume()
+        song.play()
         song.volume(0.1);
         song.loop();
         currentSong[0] = "Warlord's Lair"
