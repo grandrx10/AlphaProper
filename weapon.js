@@ -12,12 +12,28 @@ export class Weapon {
                 this.bulletSize = 10
                 break;
             case "Adventurer's Sword":
-                this.cooldown = 100; // 100
-                this.damage = 20;
+                this.cooldown = 120; // 100
+                this.damage = 18;
                 this.speed = 20;
                 this.expireTime = 200; // 200
                 this.colour = "white"
                 this.bulletSize = 10
+                break;
+            case "Hearthwood Bow":
+                this.cooldown = 150; // 100
+                this.damage = 25;
+                this.speed = 22;
+                this.expireTime = 300; // 200
+                this.colour = "rgb(110, 245, 76)"
+                this.bulletSize = 12
+                break;
+            case "Hefty Club":
+                this.cooldown = 250; // 100
+                this.damage = 12;
+                this.speed = 18;
+                this.expireTime = 300; // 200
+                this.colour = "rgb(110, 245, 76)"
+                this.bulletSize = 12
                 break;
             case "dev":
                 this.cooldown = 1; // 100

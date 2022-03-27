@@ -24,9 +24,11 @@ export class EnemyStats {
                 ySpeed = 6;
                 engageRange = 0;
                 attacks = [["shoot", -1]]
-                drops = [["Ranger Hat", 4],
-                        ["Mercenary Cap", 4],
-                        ["Leather Tunic", 4]]
+                drops = [["Ranger Hat", 5],
+                        ["Mercenary Cap", 5],
+                        ["Leather Tunic", 5],
+                        ["Hearthwood Bow", 5],
+                        ["Hefty Club", 10],]
                 break;
             case "Goblin Archer":
                 length = 15;
@@ -39,7 +41,8 @@ export class EnemyStats {
                 engageRange = 100;
                 attacks = [["shoot",-1]]
                 drops = [["Ranger Hat", 7],
-                        ["Mercenary Cap", 3]]
+                        ["Mercenary Cap", 3],
+                        ["Hearthwood Bow", 10],]
                 break;
             case "Goblin Brute":
                 length = 25;
@@ -52,7 +55,8 @@ export class EnemyStats {
                 engageRange = 0;
                 attacks = [["tripleShot",-1]]
                 drops = [["Leather Tunic", 6],
-                        ["Mercenary Cap", 4]]
+                        ["Mercenary Cap", 4],
+                        ["Hefty Club", 12],]
                 break;
             case "Goblin Warlord":
                 length = 30;
@@ -67,6 +71,8 @@ export class EnemyStats {
                 drops = [["Leather Tunic", 40],
                         ["Mercenary Cap", 40],
                         ["Ranger Hat", 40],
+                        ["Hearthwood Bow", 40],
+                        ["Hefty Club", 40],
                         ["Warlord's Vest", 20]]
                 speechList = [["Ah. So the adventurers have\nfinally arrived.",3000], 
                 ["I take it you have taken care of my\nwarband already.", 3000],

@@ -19,7 +19,7 @@ export class Item {
                     atk: ["ATK", 1]
                 }
                 this.slot = "Head"
-                this.description = "A cap worn by mercenaries due\nto it's cheap production value"
+                this.description = "A cap worn by mercenaries due\nto its cheap production value"
                 break;
             case "Leather Tunic":
                 this.stats = {
@@ -39,6 +39,16 @@ export class Item {
                 this.slot = "Weapon"
                 this.description = "A useful blade for any adventurer."
                 this.attackType = "shoot"
+                break;
+            case "Hearthwood Bow":
+                this.slot = "Weapon"
+                this.description = "A finely crafted bow made by the\nfinest goblin smiths."
+                this.attackType = "shoot"
+                break;
+            case "Hefty Club":
+                this.slot = "Weapon"
+                this.description = "A really big stick of wood."
+                this.attackType = "tripleShot"
                 break;
         }
     }

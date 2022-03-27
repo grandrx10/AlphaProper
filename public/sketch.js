@@ -105,7 +105,7 @@ function draw(){
             fill(entities[entity].colour);
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
             if (entities[entity].type == "Player" && entities[entity].stats.hp[1] > 0){
-                for (var i = 0; i < entities[entity].inventory.items.length; i ++){
+                for (var i = entities[entity].inventory.items.length-1; i >= 0; i --){
                     if (entities[entity].inventory.items[i].slot == "Head"){
                         drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
                             entities[entity].y - yRange, true, entity)
@@ -331,6 +331,8 @@ function drawItem(itemName, x, y, flip, id, isWeapon){
         scale(-1, 1)
         if (isWeapon){
             x = -x + 20
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 5, 5);
         } else {
             x = -x - 20
         }
@@ -363,6 +365,20 @@ function drawItem(itemName, x, y, flip, id, isWeapon){
             rect(x + 5, y, 4, 15);
             fill("brown");
             rect(x + 5, y + 15, 4, 6);
+            break;
+        case "Hearthwood Bow":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 8, 5);
+            fill("rgb(45, 133, 23)");
+            rect(x + 8, y+6, 4, 20);
+            rect(x+3, y + 2, 4, 4);
+            rect(x+3, y+26, 4, 4);
+            break;
+        case "Hefty Club":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 5, 5);
+            fill("brown");
+            rect(x + 5, y+1, 6, 20);
             break;
     }
     pop();
