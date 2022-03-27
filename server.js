@@ -55,7 +55,7 @@ function newConnection(socket){
         delete entities[socket.id];
     });
     
-    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["dev", ""], 
+    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
