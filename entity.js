@@ -47,7 +47,7 @@ export class Entity {
         this.attackIndex = 0
         this.attacks = [["shoot", -1]]
         this.speech = ""; // REQUIRED
-        
+    
 
         this.stats = { // required
             atk: ["ATK", 0],

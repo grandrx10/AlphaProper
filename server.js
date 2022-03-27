@@ -55,7 +55,7 @@ function newConnection(socket){
         delete entities[socket.id];
     });
     
-    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["smg", ""], 
+    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["dev", ""], 
     "purple", 0, gameTime, socket.id,1,6)
 
     socket.on("key", keyMsg);
@@ -130,17 +130,20 @@ function dropItem(list, inventory1, inventory2){
         if (inventory2 != null){
             inventory2 = inventory2.inventory
             for (var i = 0; i < inventory1.rects.length; i ++){
-                for (var c = 0; c < inventory2.rects.length; c ++){
-                    if (contains(list.x, list.y, inventory1.rects[i]) || contains(list.x, list.y, inventory2.rects[c])){
-                        dropped = false;
+                if (inventory2 != null){
+                    for (var c = 0; c < inventory2.rects.length; c ++){
+                        if (contains(list.x, list.y, inventory1.rects[i]) || contains(list.x, list.y, inventory2.rects[c])){
+                            dropped = false;
+                            break;
+                        }
                     }
-                }
+                }  
             }
         } else {
             for (var i = 0; i < inventory1.rects.length; i ++){
                 if (contains(list.x, list.y, inventory1.rects[i])){
                     dropped = false;
-                    
+                    break;
                 }
             }
         }

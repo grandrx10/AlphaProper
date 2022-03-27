@@ -22,11 +22,33 @@ var LENGTH = 1400;
 var WIDTH = 600;
 
 var clientFont;
+var currentSong = [""]
+
+let goblinWarlordSong;
+let song;
 
 function setup(){
     createCanvas(1400, 600);
     socket = io();
     preload();
+}
+
+function preload(){
+    clientFont = loadFont('RedHatMono-Regular.ttf')
+    goblinWarlordSong = createAudio("Assets/WarlordBossTheme.mp3")
+}
+
+function playMusic(){
+    if (entities[socket.id].location == "Warlord's Lair" && currentSong[0] != "Warlord's Lair"){
+        song = goblinWarlordSong
+        song.resume()
+        song.volume(0.1);
+        song.loop();
+        currentSong[0] = "Warlord's Lair"
+    } 
+    else if (entities[socket.id].location == "lobby" && song != null){
+        song.stop();
+    }
 }
 
 function draw(){
@@ -37,6 +59,7 @@ function draw(){
 
     if (gameStart){
         if (entities[socket.id] != null){
+            playMusic();
             cameraShake();
             xRange = entities[socket.id].x - LENGTH/2;
             yRange = entities[socket.id].y - WIDTH/2;
@@ -282,11 +305,6 @@ function displayInventory(){
     if (entities[socket.id].inventory.itemSelected != null){
         drawItem(entities[socket.id].inventory.itemSelected, mouseX, mouseY, false, socket.id)
     }
-}
-
-function preload(){
-    clientFont = loadFont('RedHatMono-Regular.ttf')
-    //song = loadSound('assets/lucky_dragons_-_power_melody.mp3');
 }
 
 function update(returnList){
