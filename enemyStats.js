@@ -57,7 +57,7 @@ export class EnemyStats {
             case "Goblin Warlord":
                 length = 30;
                 width = 40;
-                hp = 1000; // 1500
+                hp = 1500; // 1500
                 weaponName = ["none","Warlord's Club", "Warlord's Stomp"];
                 colour = "darkgreen"
                 xSpeed = 0.5;
