@@ -15,7 +15,7 @@ export class Weapon {
                 this.cooldown = 100; // 100
                 this.damage = 20;
                 this.speed = 20;
-                this.expireTime = 200;
+                this.expireTime = 300; // 200
                 this.colour = "white"
                 this.bulletSize = 10
                 break;
