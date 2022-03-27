@@ -97,6 +97,7 @@ export class Entity {
             var i = 3
             this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
+            this.updateStats()
         }
     }
 
