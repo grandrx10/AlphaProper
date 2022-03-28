@@ -99,9 +99,9 @@ export class Entity {
             this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
-            var i = 2
-            this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Spell of Mending",
-            equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
+            // var i = 2
+            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Spell of Mending",
+            // equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
             this.updateStats()
         }
     }
