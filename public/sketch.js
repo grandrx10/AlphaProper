@@ -25,6 +25,7 @@ var currentSong = [""]
 
 let goblinWarlordSong;
 let goblinForestSong;
+var songList = [];
 
 let song;
 
@@ -41,26 +42,27 @@ function preload(){
     clientFont = loadFont('RedHatMono-Regular.ttf')
     goblinWarlordSong = createAudio("Assets/WarlordBossTheme.mp3")
     goblinForestSong = createAudio("Assets/GoblinForestTheme.mp3")
+    songList = [[goblinForestSong, "Goblin Forest"], [goblinWarlordSong, "Warlord's Lair"]]
 }
 
 function playMusic(){
     // Optimize this
-    if (entities[socket.id].location == "Warlord's Lair" && currentSong[0] != "Warlord's Lair"){
-        song = goblinWarlordSong
-        song.play()
-        song.volume(0.05);
-        song.loop();
-        currentSong[0] = "Warlord's Lair"
-    } else if (entities[socket.id].location == "Goblin Forest" && currentSong[0] != "Goblin Forest"){
-        song = goblinForestSong
-        song.play()
-        song.volume(0.05);
-        song.loop();
-        currentSong[0] = "Goblin Forest"
-    } 
-    else if (entities[socket.id].location == "lobby" && song != null){
-        song.stop();
-        currentSong[0] = "lobby"
+    for (var i = 0; i < songList.length; i ++){
+        if (entities[socket.id].location == songList[i][1] && currentSong[0] != entities[socket.id].location){
+            if (song != null){
+                song.stop();
+            }
+            song = songList[i][0]
+            song.play()
+            song.volume(0.05);
+            song.loop();
+            currentSong[0] = songList[i][1]
+        } else if (entities[socket.id].location == "lobby"){
+            if (song != null){
+                song.stop();
+            }
+            currentSong[0] = "lobby"
+        }
     }
 }
 
@@ -380,7 +382,6 @@ function update(returnList){
 
 function drawItem(itemName, x, y, flip, id, slot){
     push();
-    console.log(slot)
     if (entities[id].dir == "left" && flip){
         scale(-1, 1)
         if (slot == "Weapon"){
@@ -441,6 +442,14 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x-1, y+6, 6, 2);
             rect(x-1, y+10, 6, 2);
             break;
+        case "Steel Hammer":
+            fill("brown");
+            rect(x-7, y + 5, 15, 5);
+            fill("gray");
+            rect(x+3, y-2, 10, 15);
+            fill(entities[id].colour)
+            rect(x-5, y +2, 5, 8);
+            break;
     }
     pop();
 }
@@ -463,10 +472,16 @@ function describeItem(chosenItem, colour){
     text(chosenItem.item.description, mouseX + i*150, mouseY + 40)
     var statsMessage = "";
     for (stat in chosenItem.item.stats){
-        statsMessage += chosenItem.item.stats[stat][0] + ": " + 
+        statsMessage += chosenItem.item.stats[stat][0] + ":+" + 
         chosenItem.item.stats[stat][1] + " "
     }
+
+    if ((chosenItem.item.slot == "Ability" || chosenItem.item.slot == "Weapon") && chosenItem.item.manaCost != null){
+        statsMessage += "Mana Cost: " + chosenItem.item.manaCost
+    }
+
     text(statsMessage, mouseX + i*150, mouseY + 80)
+    text("Slot: " + chosenItem.slot, mouseX + i*150, mouseY + 95)
 }
 
 function startGame(boolean){

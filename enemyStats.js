@@ -29,7 +29,8 @@ export class EnemyStats {
                         ["Leather Tunic", 5],
                         ["Hearthwood Bow", 5],
                         ["Spell of Mending", 5],
-                        ["Hefty Club", 10],]
+                        ["Hefty Club", 10],
+                        ["Steel Hammer", 5]]
                 break;
             case "Goblin Archer":
                 length = 15;
@@ -44,7 +45,7 @@ export class EnemyStats {
                 drops = [["Ranger Hat", 7],
                         ["Mercenary Cap", 3],
                         ["Hearthwood Bow", 10],
-                        ["Spell of Mending", 5],]
+                        ["Spell of Mending", 10],]
                 break;
             case "Goblin Brute":
                 length = 25;
@@ -59,7 +60,8 @@ export class EnemyStats {
                 drops = [["Leather Tunic", 6],
                         ["Mercenary Cap", 4],
                         ["Hefty Club", 12],
-                        ["Spell of Mending", 5],]
+                        ["Spell of Mending", 5],
+                        ["Steel Hammer", 10]]
                 break;
             case "Goblin Warlord":
                 length = 30;
@@ -77,6 +79,7 @@ export class EnemyStats {
                         ["Hearthwood Bow", 40],
                         ["Hefty Club", 40],
                         ["Spell of Mending", 40],
+                        ["Steel Hammer", 40],
                         ["Warlord's Vest", 20]]
                 speechList = [["Ah. So the adventurers have\nfinally arrived.",3000], 
                 ["I take it you have taken care of my\nwarband already.", 3000],

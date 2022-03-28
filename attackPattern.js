@@ -22,6 +22,18 @@ export class AttackPattern {
                         this.createBullet(entity, "rect", weaponIndex, aimX, aimY, bullets, gameTime)
                     }
                     break;
+                case "hammerFall":
+                    for (var i = 0; i < 10; i ++){
+                        this.createBulletComplex(entity.x + 10*i, entity.y + entity.width - 5, "circle",
+                        weaponIndex, entity.x + 10*i, entity.y, 
+                        bullets, gameTime, entity, entity.weapons[weaponIndex].speed*i)
+                    }
+                    for (var i = 0; i < 10; i ++){
+                        this.createBulletComplex(entity.x + (-i)*10, entity.y + entity.width - 5, "circle",
+                        weaponIndex, entity.x + (-i)*10, entity.y, 
+                        bullets, gameTime, entity, entity.weapons[weaponIndex].speed*i)
+                    }
+                    break;
                 // BEGINNING OF GOBLIN WARLORD BOSS -----------------------------------------------------------------//
                 case "warlordShot":
                     entity.chase = true;
@@ -32,7 +44,7 @@ export class AttackPattern {
                 case "warlordSpray":
                     entity.chase = false;
                     //bullet to the left
-                    this.createBullet(entity, "circle", weaponIndex,entity.x, entity.y +entity.width/2, bullets, gameTime)
+                    this.createBullet(entity, "circle", weaponIndex,entity.x, entity.y +entity.width/2, bullets, gameTime, )
                     // bullet to the right
                     this.createBullet(entity, "circle", weaponIndex,entity.x + entity.length, entity.y +entity.width/2, bullets, gameTime)
                     break;
@@ -64,6 +76,21 @@ export class AttackPattern {
         this.createBulletError(entity.x + entity.length/2 + entity.weapons[weaponIndex].spawnBullet[0],
         entity.y+ entity.width/2 + entity.weapons[weaponIndex].spawnBullet[1], 
         aimX, aimY, entity.weapons[weaponIndex].speed,
+        entity.weapons[weaponIndex].damage * (1 + 0.1*entity.stats.atk[1]),
+        bulletType, entity.weapons[weaponIndex].expireTime, team, bullets, gameTime, 
+        entity.id, entity.weapons[weaponIndex].colour,
+        entity.weapons[weaponIndex].bulletLength, entity.weapons[weaponIndex].bulletWidth,
+        entity.weapons[weaponIndex].gravity, entity.weapons[weaponIndex].stay);
+    }
+
+    createBulletComplex(x, y, bulletType, weaponIndex, aimX, aimY, bullets, gameTime, entity, speed){
+        var team = entity.team;
+        if (entity.weapons[weaponIndex].damage < 0){
+            team = -1;
+        }
+
+        this.createBulletError(x, y, 
+        aimX, aimY, speed,
         entity.weapons[weaponIndex].damage * (1 + 0.1*entity.stats.atk[1]),
         bulletType, entity.weapons[weaponIndex].expireTime, team, bullets, gameTime, 
         entity.id, entity.weapons[weaponIndex].colour,

@@ -24,7 +24,7 @@ export class Weapon {
                 this.colour = "white"
                 break;
             case "Hearthwood Bow":
-                this.cooldown = 150; // 100
+                this.cooldown = 150;
                 this.damage = 25;
                 this.speed = 22;
                 this.expireTime = 300; // 200
@@ -32,8 +32,18 @@ export class Weapon {
                 this.bulletLength = 12
                 this.bulletWidth = 12
                 break;
+            case "Steel Hammer":
+                this.cooldown = 500;
+                this.damage = 20;
+                this.manaCost = 20;
+                this.speed = 3;
+                this.expireTime = 1000; // 200
+                this.colour = "rgb(103, 179, 55)"
+                this.bulletLength = 12
+                this.bulletWidth = 12
+                break;
             case "Spell of Mending":
-                this.cooldown = 1000; // 100
+                this.cooldown = 1000;
                 this.damage = -0.1;
                 this.manaCost = 20;
                 this.speed = 0;
@@ -46,10 +56,10 @@ export class Weapon {
                 this.spawnBullet = [-50,0]
                 break;
             case "Hefty Club":
-                this.cooldown = 250; // 100
+                this.cooldown = 250;
                 this.damage = 12;
                 this.speed = 18;
-                this.expireTime = 300; // 200
+                this.expireTime = 250;
                 this.colour = "rgb(110, 245, 76)"
                 this.bulletLength = 12
                 this.bulletWidth = 12

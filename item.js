@@ -23,14 +23,16 @@ export class Item {
                 break;
             case "Leather Tunic":
                 this.stats = {
-                    def: ["DEF", 1]
+                    def: ["DEF", 1],
+                    maxHp: ["MAXHP", 10]
                 }
                 this.slot = "Chest"
                 this.description = "A tunic crafted with cow skin\n that provides light protection."
                 break;
             case "Warlord's Vest":
                 this.stats = {
-                    def: ["DEF", 2]
+                    def: ["DEF", 2],
+                    maxHp: ["MAXHP", 20]
                 }
                 this.slot = "Chest"
                 this.description = "A chainvest crafted from fine steel.\nIt will protect you well."
@@ -54,6 +56,13 @@ export class Item {
                 this.slot = "Ability"
                 this.description = "This contains an ancient Goblin chant\nthat allows for the healing of wounds."
                 this.attackType = "healPool"
+                this.manaCost = 20;
+                break;
+            case "Steel Hammer":
+                this.slot = "Ability"
+                this.description = "A large steel hammer that provides great\nslamming force."
+                this.attackType = "hammerFall"
+                this.manaCost = 20;
                 break;
         }
     }
