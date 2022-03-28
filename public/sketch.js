@@ -1,7 +1,6 @@
-
 var socket;
 
-var gameStart = false;
+var gameStart = [false, ""];
 var gameTime;
 
 var entities = {}
@@ -25,26 +24,39 @@ var clientFont;
 var currentSong = [""]
 
 let goblinWarlordSong;
+let goblinForestSong;
+
 let song;
 
 function setup(){
     createCanvas(1400, 600);
     socket = io();
     preload();
+    socket.on('gameStart', startGame);
+    socket.on('displayName', displayName);
+
 }
 
 function preload(){
     clientFont = loadFont('RedHatMono-Regular.ttf')
     goblinWarlordSong = createAudio("Assets/WarlordBossTheme.mp3")
+    goblinForestSong = createAudio("Assets/GoblinForestTheme.mp3")
 }
 
 function playMusic(){
+    // Optimize this
     if (entities[socket.id].location == "Warlord's Lair" && currentSong[0] != "Warlord's Lair"){
         song = goblinWarlordSong
         song.play()
-        song.volume(0.1);
+        song.volume(0.05);
         song.loop();
         currentSong[0] = "Warlord's Lair"
+    } else if (entities[socket.id].location == "Goblin Forest" && currentSong[0] != "Goblin Forest"){
+        song = goblinForestSong
+        song.play()
+        song.volume(0.05);
+        song.loop();
+        currentSong[0] = "Goblin Forest"
     } 
     else if (entities[socket.id].location == "lobby" && song != null){
         song.stop();
@@ -58,7 +70,18 @@ function draw(){
     
     socket.on('sendingUpdate', update);
 
-    if (gameStart){
+    if (!gameStart[0]){
+        textSize(20)
+        textAlign(CENTER)
+        fill("white")
+        text("Enter The Adventurer's Name: ", LENGTH/2, WIDTH/2)
+        textSize(16)
+        fill("white")
+        text(gameStart[1], LENGTH/2, WIDTH/2 + 40)
+    }
+
+    if (gameStart[0]){
+
         if (entities[socket.id] != null){
             playMusic();
             cameraShake();
@@ -105,7 +128,7 @@ function draw(){
             fill(entities[entity].colour);
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
             if (entities[entity].type == "Player" && entities[entity].stats.hp[1] > 0){
-                for (var i = entities[entity].inventory.items.length-1; i >= 0; i --){
+                for (var i = 0; i < entities[entity].inventory.items.length; i ++){
                     let slot = entities[entity].inventory.items[i].slot
                     switch(slot){
                         case "Head":
@@ -130,17 +153,17 @@ function draw(){
 
             // Health Bars
             fill("grey");
-            rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length, 8);
+            rect(entities[entity].x - xRange, entities[entity].y - yRange - 25, entities[entity].length, 8);
             fill("green");
-            rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, 
+            rect(entities[entity].x - xRange, entities[entity].y - yRange - 25, 
                 entities[entity].length*(entities[entity].stats.hp[1]/entities[entity].stats.maxHp[1]), 8)
 
             // Mana bars
             if (entities[entity].type == "Player"){
                 fill("grey");
-                rect(entities[entity].x - xRange, entities[entity].y - yRange - 12, entities[entity].length, 4);
+                rect(entities[entity].x - xRange, entities[entity].y - yRange - 17, entities[entity].length, 4);
                 fill("cyan");
-                rect(entities[entity].x - xRange, entities[entity].y - yRange - 12, 
+                rect(entities[entity].x - xRange, entities[entity].y - yRange - 17, 
                     entities[entity].length*(entities[entity].stats.mana[1]/entities[entity].stats.maxMana[1]), 4)
             }
             
@@ -219,6 +242,10 @@ function draw(){
 };
 
 function keyPressed() {
+    if (!gameStart[0]){
+        socket.emit('sendName', [socket.id, key]);
+    }
+
     if (keyCode == 81){ // (q)
         socket.emit('openInventory', socket.id);
     }
@@ -347,7 +374,6 @@ function update(returnList){
     gameTime = returnList[0];
     walls = returnList[2];
     bullets = returnList[3];
-    gameStart = true;
     interactables = returnList[4];
     particles = returnList[5];
 }
@@ -441,4 +467,12 @@ function describeItem(chosenItem, colour){
         chosenItem.item.stats[stat][1] + " "
     }
     text(statsMessage, mouseX + i*150, mouseY + 80)
+}
+
+function startGame(boolean){
+    gameStart[0] = boolean;
+}
+
+function displayName(name){
+    gameStart[1] = name;
 }

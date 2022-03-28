@@ -55,15 +55,27 @@ function newConnection(socket){
         delete entities[socket.id];
     });
     
-    entities[socket.id] = new Entity(socket.id, "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["", ""], 
+    entities[socket.id] = new Entity("", "Player", 100 + randint(-20, 20), 100, 20, 30, 100, ["", ""], 
     "purple", 0, gameTime, socket.id,1,6)
 
+    socket.on("sendName", processName);
     socket.on("key", keyMsg);
     socket.on("interact", interact);
     socket.on("openInventory", openInventory);
     socket.on("shoot", triggerBullet);
     socket.on("castAbility", triggerAbility)
     socket.on("pickUpItem", pickUpItem);
+
+    function processName (idInfo){
+        if (idInfo[1].length == 1 && entities[idInfo[0]].name.length < 12){
+            entities[idInfo[0]].name += idInfo[1];
+        } else if (idInfo[1] == "Enter"){
+            io.to(idInfo[0]).emit('gameStart', true)
+        } else if (idInfo[1] == "Backspace"){
+            entities[idInfo[0]].name = entities[idInfo[0]].name.slice(0, -1);
+        }
+        io.to(idInfo[0]).emit('displayName', entities[idInfo[0]].name)
+    };
 
     function keyMsg(key) {
         //data is the key pressed
@@ -135,16 +147,15 @@ function newConnection(socket){
 }
 
 function dropItem(list, inventory1, inventory2){
-    if ( entities[list.id].inventory.itemSelected != null){
+    if (entities[list.id].inventory.itemSelected != null){
         var dropped = true;
-        if (inventory2 != null){
+        if (inventory2 != null && inventory2.type == "bag"){
             inventory2 = inventory2.inventory
             for (var i = 0; i < inventory1.rects.length; i ++){
                 if (inventory2 != null){
                     for (var c = 0; c < inventory2.rects.length; c ++){
                         if (contains(list.x, list.y, inventory1.rects[i]) || contains(list.x, list.y, inventory2.rects[c])){
                             dropped = false;
-                            break;
                         }
                     }
                 }  
@@ -153,7 +164,6 @@ function dropItem(list, inventory1, inventory2){
             for (var i = 0; i < inventory1.rects.length; i ++){
                 if (contains(list.x, list.y, inventory1.rects[i])){
                     dropped = false;
-                    break;
                 }
             }
         }

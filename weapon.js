@@ -77,7 +77,7 @@ export class Weapon {
                 break;
             case "club":
                 this.cooldown = 900;
-                this.damage = 8;
+                this.damage = 6;
                 this.speed = 10;
                 this.expireTime = 700;
                 this.colour = "rgb(130, 255, 186)"
