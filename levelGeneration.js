@@ -46,7 +46,7 @@ export class LevelGeneration {
                 walls.push(new Wall("wall", x + 200, y - 100, 200, 100, "silver"));
                 walls.push(new Wall("wall", x + 800, y - 100, 200, 100, "silver"));
                 walls.push(new Wall("wall", x + 550, y - 300, 100, 20, "silver"));
-                this.summonEnemy("Goblin Warlord", x+ 600, y-60, game, entities, gameTime, walls)
+                this.summonEnemy("Goblin Warlord", x+ 600, y-60, x+ 600, y-60, game, entities, gameTime, walls)
         }
 
         for (var i = 0; i < length/segmentLength; i ++){
