@@ -45,7 +45,7 @@ export class Entity {
         this.deathDuration = 5000;
         this.attackInfo = new AttackPattern();
         this.attackIndex = 0
-        this.attacks = [["shoot", -1]]
+        this.attacks = [["shoot", -1], ["", -1]]
         this.speech = ""; // REQUIRED
     
 
@@ -58,7 +58,8 @@ export class Entity {
             hp: ["HP", health],
             vit: ["VIT", 0],
             gold: ["GOLD", 0],
-            mana: ["MANA", 0],
+            mana: ["MANA", 100],
+            maxMana: ["MAXMANA", 100],
             wis: ["WIS", 0],
         } 
 
@@ -96,6 +97,10 @@ export class Entity {
 
             var i = 3
             this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
+            equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
+
+            var i = 2
+            this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Spell of Mending",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
             this.updateStats()
         }
@@ -143,6 +148,7 @@ export class Entity {
     updateStats(){
         if (this.type == "Player"){
             var healthTemp = this.stats.hp[1];
+            var manaTemp = this.stats.mana[1];
             this.stats = { // required
                 atk: ["ATK", 0],
                 spd: ["SPD", 0],
@@ -152,7 +158,8 @@ export class Entity {
                 hp: ["HP", healthTemp],
                 vit: ["VIT", 0],
                 gold: ["GOLD", 0],
-                mana: ["MANA", 0],
+                mana: ["MANA", manaTemp],
+                maxMana: ["MAXMANA", 100],
                 wis: ["WIS", 0],
             } 
             for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
@@ -168,6 +175,9 @@ export class Entity {
                 if (this.inventory.items[i].slot == "Weapon"){
                     this.weapons[0] = new Weapon(this.inventory.items[i].item.name)
                     this.attacks[0][0] =  this.inventory.items[i].item.attackType
+                } else if (this.inventory.items[i].slot == "Ability"){
+                    this.weapons[1] = new Weapon(this.inventory.items[i].item.name)
+                    this.attacks[1][0] =  this.inventory.items[i].item.attackType
                 }
             }
         }
@@ -225,6 +235,12 @@ export class Entity {
             this.stats.hp[1] = this.stats.maxHp[1];
         } else if (this.stats.hp[1] > 0){
             this.stats.hp[1] += 0.01 + 0.01*this.stats.vit[1];
+        }
+
+        if (this.stats.mana[1] > this.stats.maxMana[1]){
+            this.stats.mana[1] = this.stats.maxMana[1]
+        } else {
+            this.stats.mana[1] += 0.02 + 0.02*this.stats.wis[1];
         }
 
         if (this.stats.hp[1] <= 0 && this.deathTime == 0){

@@ -106,23 +106,44 @@ function draw(){
             rect(entities[entity].x - xRange, entities[entity].y - yRange, entities[entity].length, entities[entity].width);
             if (entities[entity].type == "Player" && entities[entity].stats.hp[1] > 0){
                 for (var i = entities[entity].inventory.items.length-1; i >= 0; i --){
-                    if (entities[entity].inventory.items[i].slot == "Head"){
-                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
-                            entities[entity].y - yRange, true, entity)
-                    } else if (entities[entity].inventory.items[i].slot == "Chest"){
-                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
-                            entities[entity].y - yRange + 10, true, entity)
-                    } else if (entities[entity].inventory.items[i].slot == "Weapon"){
-                        drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange + entities[entity].length,
-                             entities[entity].y - yRange, true, entity, true)
+                    let slot = entities[entity].inventory.items[i].slot
+                    switch(slot){
+                        case "Head":
+                            drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
+                                entities[entity].y - yRange, true, entity, slot)
+                            break;
+                        case "Chest":
+                            drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
+                                entities[entity].y - yRange + 10, true, entity, slot)
+                            break;
+                        case "Weapon":
+                            drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange + entities[entity].length,
+                                entities[entity].y - yRange, true, entity, slot)
+                            break;
+                        case "Ability":
+                            drawItem(entities[entity].inventory.items[i].itemName, entities[entity].x - xRange,
+                                entities[entity].y - yRange + 10, true, entity, slot)
+                            break;
                     }
                 }
             }
 
+            // Health Bars
             fill("grey");
             rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length, 8);
             fill("green");
-            rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, entities[entity].length*(entities[entity].stats.hp[1]/entities[entity].stats.maxHp[1]), 8)
+            rect(entities[entity].x - xRange, entities[entity].y - yRange - 20, 
+                entities[entity].length*(entities[entity].stats.hp[1]/entities[entity].stats.maxHp[1]), 8)
+
+            // Mana bars
+            if (entities[entity].type == "Player"){
+                fill("grey");
+                rect(entities[entity].x - xRange, entities[entity].y - yRange - 12, entities[entity].length, 4);
+                fill("cyan");
+                rect(entities[entity].x - xRange, entities[entity].y - yRange - 12, 
+                    entities[entity].length*(entities[entity].stats.mana[1]/entities[entity].stats.maxMana[1]), 4)
+            }
+            
             fill("white")
             textAlign(CENTER);
             textFont(clientFont);
@@ -183,6 +204,10 @@ function draw(){
 
             if (keyIsDown(69) && entities[socket.id].interact != null){ // interact (e)
                 socket.emit('interact', socket.id);
+            }
+
+            if (keyIsDown(32)){
+                socket.emit('castAbility', [mouseX + xRange, mouseY + yRange]);
             }
         }
 
@@ -292,14 +317,16 @@ function displayInventory(){
         fill("black")
         textSize(12)
         textAlign(LEFT)
-        if (num < 4){
-            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + num*75, 470)
-        } else if (num < 8) {
-            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-4)*75, 500)
-        } else {
-            text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-8)*75, 530)
+        if (stat != "maxMana" && stat != "maxHp"){
+            if (num < 4){
+                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + num*75, 470)
+            } else if (num < 8) {
+                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-4)*75, 500)
+            } else {
+                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-8)*75, 530)
+            }
+            num ++;
         }
-        num ++;
         textAlign(CENTER)
     }
 
@@ -325,15 +352,15 @@ function update(returnList){
     particles = returnList[5];
 }
 
-function drawItem(itemName, x, y, flip, id, isWeapon){
+function drawItem(itemName, x, y, flip, id, slot){
     push();
+    console.log(slot)
     if (entities[id].dir == "left" && flip){
         scale(-1, 1)
-        if (isWeapon){
+        if (slot == "Weapon"){
             x = -x + 20
-            fill(entities[id].colour)
-            rect(x, y + entities[id].width/2, 5, 5);
-        } else {
+        }
+        else {
             x = -x - 20
         }
     }
@@ -379,6 +406,14 @@ function drawItem(itemName, x, y, flip, id, isWeapon){
             rect(x, y + entities[id].width/2, 5, 5);
             fill("brown");
             rect(x + 5, y+1, 6, 20);
+            break;
+        case "Spell of Mending":
+            fill("white");
+            rect(x-3, y, 10, 15);
+            fill("gray");
+            rect(x-1, y+2, 6, 2);
+            rect(x-1, y+6, 6, 2);
+            rect(x-1, y+10, 6, 2);
             break;
     }
     pop();

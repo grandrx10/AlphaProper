@@ -62,6 +62,7 @@ function newConnection(socket){
     socket.on("interact", interact);
     socket.on("openInventory", openInventory);
     socket.on("shoot", triggerBullet);
+    socket.on("castAbility", triggerAbility)
     socket.on("pickUpItem", pickUpItem);
 
     function keyMsg(key) {
@@ -69,6 +70,15 @@ function newConnection(socket){
         if (Object.keys(entities).indexOf(socket.id) != -1 && entities[socket.id].deathTime == 0) {
           entities[socket.id].move(key);
           // socket.broadcast.emit('key', data); // this sends to everyone minus the client that sent the message
+        }
+    }
+
+    function triggerAbility(aimPos){
+        if (entities[socket.id] != null && entities[socket.id].deathTime == 0 &&
+            entities[socket.id].inventory.inventoryOpen == false){
+            entities[socket.id].attackInfo.preformAttack(entities[socket.id].attacks[1][0],1,
+                bullets,entities, entities[socket.id], gameTime,
+                aimPos[0], aimPos[1])
         }
     }
 

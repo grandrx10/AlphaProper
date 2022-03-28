@@ -36,8 +36,6 @@ export class Bullet {
             this.update(walls)
         }
 
-        //this.checkBulletDuration(bullets, gameTime);
-
         this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
 
         this.checkBulletCollision(walls, bullets);
@@ -51,7 +49,7 @@ export class Bullet {
 
     checkBulletDuration(bullets, gameTime){
         if (this != null){
-            if(gameTime - this.startTime > this.duration && !this.stay){
+            if(gameTime - this.startTime > this.duration && this.duration != -1){
                 bullets.splice(bullets.indexOf(this), 1)
             }
         }

@@ -50,6 +50,11 @@ export class Item {
                 this.description = "A really big stick of wood."
                 this.attackType = "tripleShot"
                 break;
+            case "Spell of Mending":
+                this.slot = "Ability"
+                this.description = "This contains an ancient Goblin chant\nthat allows for the healing of wounds."
+                this.attackType = "healPool"
+                break;
         }
     }
 }

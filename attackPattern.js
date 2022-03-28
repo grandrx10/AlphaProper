@@ -3,7 +3,9 @@ import { Bullet } from "./bullet.js";
 export class AttackPattern {
 
     preformAttack(attack, weaponIndex, bullets, entities, entity, gameTime, aimX, aimY){
-        if (gameTime - entity.weapons[weaponIndex].lastFired > entity.weapons[weaponIndex].cooldown*(1- 0.1*entity.stats.dex[1])){
+        if (gameTime - entity.weapons[weaponIndex].lastFired > entity.weapons[weaponIndex].cooldown*(1- 0.1*entity.stats.dex[1])
+        && entity.stats.mana[1] >= entity.weapons[weaponIndex].manaCost){
+            entity.stats.mana[1] -= entity.weapons[weaponIndex].manaCost
             entity.weapons[weaponIndex].lastFired = gameTime;
             switch(attack){
                 case "shoot":
@@ -11,7 +13,13 @@ export class AttackPattern {
                     break;
                 case "tripleShot":
                     for (var i = 0; i < 3; i ++){
-                        this.createBullet(entity, "circle", weaponIndex, aimX + this.randint(-20, 20), aimY + this.randint(-20, 20), bullets, gameTime)
+                        this.createBullet(entity, "circle", weaponIndex, aimX + this.randint(-20, 20), aimY + this.randint(-20, 20),
+                        bullets, gameTime)
+                    }
+                    break;
+                case "healPool":
+                    for (var i = 0; i < 3; i ++){
+                        this.createBullet(entity, "rect", weaponIndex, aimX, aimY, bullets, gameTime)
                     }
                     break;
                 // BEGINNING OF GOBLIN WARLORD BOSS -----------------------------------------------------------------//
@@ -48,12 +56,19 @@ export class AttackPattern {
         }
     }
     createBullet(entity, bulletType, weaponIndex, aimX, aimY, bullets, gameTime){
-        this.createBulletError(entity.x + entity.length/2, entity.y+ entity.width/2, 
+        var team = entity.team;
+        if (entity.weapons[weaponIndex].damage < 0){
+            team = -1;
+        }
+
+        this.createBulletError(entity.x + entity.length/2 + entity.weapons[weaponIndex].spawnBullet[0],
+        entity.y+ entity.width/2 + entity.weapons[weaponIndex].spawnBullet[1], 
         aimX, aimY, entity.weapons[weaponIndex].speed,
         entity.weapons[weaponIndex].damage * (1 + 0.1*entity.stats.atk[1]),
-        bulletType, entity.weapons[weaponIndex].expireTime, entity.team, bullets, gameTime, 
+        bulletType, entity.weapons[weaponIndex].expireTime, team, bullets, gameTime, 
         entity.id, entity.weapons[weaponIndex].colour,
-        entity.weapons[weaponIndex].bulletSize, entity.weapons[weaponIndex].bulletSize, false, false);
+        entity.weapons[weaponIndex].bulletLength, entity.weapons[weaponIndex].bulletWidth,
+        entity.weapons[weaponIndex].gravity, entity.weapons[weaponIndex].stay);
     }
 
     createBulletError(x, y, aimX, aimY, speed, damage, type, duration, team, bullets, gameTime, id, colour, length, width, gravity, stay){
