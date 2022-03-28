@@ -288,7 +288,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["Goblin Forest", "Warlord's Lair"]
+            var listOfDungeons = ["Goblin Forest"]
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
