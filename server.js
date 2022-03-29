@@ -115,6 +115,11 @@ function newConnection(socket){
                     bullets.push(new Bullet(entities[id].interact.x + entities[id].interact.length,
                         entities[id].interact.y, 0, 0, 0,-1,"rect", -1, -1,gameTime, entities[id].interact.id,"green", 100, 20, true, true));
                     }
+            } else if (entities[id].interact.type == "button"){
+                var wallIndex = findWall(entities[id].interact.id, walls)
+                if (wallIndex != -1){
+                    walls.splice(wallIndex, 1);
+                }
             }
         }
     }
@@ -288,7 +293,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["Goblin Forest"]
+            var listOfDungeons = ["Goblin Forest"] // crusader Encampment
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
@@ -388,6 +393,9 @@ function createSection(name, x, y, id){
     } else if (name == "Warlord's Lair"){
         var length = 1200;
         var width = 500;
+    } else if (name == "Crusader Encampment"){
+        var length = 6400;
+        var width = 500;
     }
     rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){
@@ -420,4 +428,14 @@ function sortList(list, keyInBack){
             }
         }
     }
+}
+
+
+function findWall(id){
+    for (var i = 0; i < walls.length; i ++){
+        if (walls[i].id != null && walls[i].id == id){
+            return i
+        }
+    }
+    return -1;
 }

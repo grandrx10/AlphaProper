@@ -210,7 +210,7 @@ function draw(){
             }
             fill("white")
             textSize(20);
-            text("Location: " + entities[socket.id].location, 150, 30);
+            text("Location: " + entities[socket.id].location, 200, 30);
 
 
             if (keyIsDown(68)){ // go right (D)

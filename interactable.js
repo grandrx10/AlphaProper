@@ -40,6 +40,8 @@ export class Interactable {
             }
         } else if (this.type == "healStation"){
             this.text = "Press E to spawn healing"
+        } else if (this.type == "button"){
+            this.text = "Press E to pull switch"
         }
     }
 

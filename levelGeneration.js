@@ -11,6 +11,7 @@ export class LevelGeneration {
         var possibleMobs = [];
         var finalPortal = "lobby"
         var bossRoom = false;
+        var roomsToNotSpawnExit = ["lobby", "Warlord's Lair"]
         var enemyNumber = {
             max: 0,
             min: 0
@@ -22,6 +23,15 @@ export class LevelGeneration {
                 listOfRooms = ["overArch", "house", "tree"];
                 possibleMobs = ["Goblin Grunt", "Goblin Archer", "Goblin Brute"]
                 finalPortal = "Warlord's Lair"
+                enemyNumber.min = 1;
+                enemyNumber.max = 3;
+                break;
+            case "Crusader Encampment":
+                segmentLength = 1000;
+                segmentHeight = 500;
+                listOfRooms = ["checkpoint"];
+                possibleMobs = []
+                finalPortal = "lobby"
                 enemyNumber.min = 1;
                 enemyNumber.max = 3;
                 break;
@@ -58,29 +68,55 @@ export class LevelGeneration {
                 interactables.push(new Interactable(finalPortal, xLocation + 700, y - 40, 30, 40, "blue", "portal", gameTime, game.n))
                 game.n ++;
             }
-            else if (roomToGenerate == "empty" || i == 0){
+            else if (roomToGenerate == "empty"){
                 walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
-            } else if (roomToGenerate == "house"){
+            } else if (i == 0 && !roomsToNotSpawnExit.includes(levelName)){
+                interactables.push(new Interactable("lobby", xLocation + 100, y - 40, 30, 40, "blue", "portal", gameTime, game.n))
+                game.n ++;
                 walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
-                walls.push(new Wall("wall", xLocation + 100, y - 300, 20, 200, "silver"));
-                walls.push(new Wall("wall", xLocation + 70, y - 150, 30, 20, "silver"));
-                walls.push(new Wall("wall", xLocation + 700, y - 150, 30, 20, "silver"));
-                walls.push(new Wall("wall", xLocation + 680, y - 300, 20, 200, "silver"));
-                walls.push(new Wall("wall", xLocation + 100, y - 300, 580, 20, "silver"));
-                walls.push(new Wall("wall", xLocation + 400, y - 150, 20, 150, "silver"));
-                walls.push(new Wall("wall", xLocation + 350, y - 150, 120, 20, "silver"));
-            } else if (roomToGenerate == "tree"){
-                walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "darkgreen"));
-                walls.push(new Wall("wall", xLocation + 205, y - 100, 40, 100, "brown"));
-                walls.push(new Wall("wall", xLocation + 175, y - 200, 100, 100, "green"));
-                walls.push(new Wall("wall", xLocation + 505, y - 100, 40, 100, "brown"));
-                walls.push(new Wall("wall", xLocation + 475, y - 200, 100, 100, "green"));
-            } else if (roomToGenerate == "overArch"){
-                walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
-                walls.push(new Wall("wall", xLocation + 100, y - segmentHeight, 50, segmentHeight-100, "silver"));
-                walls.push(new Wall("wall", xLocation + 150, y - segmentHeight, 500, segmentHeight-300, "silver"));
-                walls.push(new Wall("wall", xLocation + 650, y - segmentHeight, 50, segmentHeight-100, "silver"));
-                walls.push(new Wall("wall", xLocation + 300, y-100, 200, 100, "silver"));
+            }
+            
+            if (i != 0 && i != lastRoom){
+                switch (roomToGenerate){
+                    case "house":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
+                        walls.push(new Wall("wall", xLocation + 100, y - 300, 20, 200, "silver"));
+                        walls.push(new Wall("wall", xLocation + 70, y - 150, 30, 20, "silver"));
+                        walls.push(new Wall("wall", xLocation + 700, y - 150, 30, 20, "silver"));
+                        walls.push(new Wall("wall", xLocation + 680, y - 300, 20, 200, "silver"));
+                        walls.push(new Wall("wall", xLocation + 100, y - 300, 580, 20, "silver"));
+                        walls.push(new Wall("wall", xLocation + 400, y - 150, 20, 150, "silver"));
+                        walls.push(new Wall("wall", xLocation + 350, y - 150, 120, 20, "silver"));
+                        break;
+                    case "tree":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "darkgreen"));
+                        walls.push(new Wall("wall", xLocation + 205, y - 100, 40, 100, "brown"));
+                        walls.push(new Wall("wall", xLocation + 175, y - 200, 100, 100, "green"));
+                        walls.push(new Wall("wall", xLocation + 505, y - 100, 40, 100, "brown"));
+                        walls.push(new Wall("wall", xLocation + 475, y - 200, 100, 100, "green"));
+                        break;
+                    case "overArch":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "silver"));
+                        walls.push(new Wall("wall", xLocation + 100, y - segmentHeight, 50, segmentHeight-100, "silver"));
+                        walls.push(new Wall("wall", xLocation + 150, y - segmentHeight, 500, segmentHeight-300, "silver"));
+                        walls.push(new Wall("wall", xLocation + 650, y - segmentHeight, 50, segmentHeight-100, "silver"));
+                        walls.push(new Wall("wall", xLocation + 300, y-100, 200, 100, "silver"));
+                        break;
+                    case "checkpoint":
+                        walls.push(new Wall("wall", xLocation + 100, y - segmentHeight + 20, 20, 400, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 100, y - segmentHeight + 400, 500, 20, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 700, y - 300, 20, 300, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 400, y - 300, 300, 20, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 100, y - 300, 200, 20, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 700, y - 150, 70, 20, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 700, y - segmentHeight + 20, 20, 100, "rgb(130, 106, 86)"));
+                        walls.push(new Wall("wall", xLocation + 900, y - segmentHeight + 20, 50, segmentHeight - 120, "rgb(161, 68, 50)"));
+                        walls.push(new Wall("wall", xLocation + 915, y - 100, 20, 100, "blue", game.n));
+                        interactables.push(new Interactable("Switch", xLocation + 150, y - segmentHeight + 40, 30, 40,
+                        "rgb(136, 189, 181)", "button", gameTime, game.n))
+                        game.n ++;
+                        break;
+                }
             }
             if (roomToGenerate != "empty" && i != 0 && i != lastRoom){
                 for (var c =0; c < this.randint(enemyNumber.min,enemyNumber.max); c ++){

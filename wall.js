@@ -1,5 +1,5 @@
 export class Wall {
-    constructor (type, x, y, length, width, colour){
+    constructor (type, x, y, length, width, colour, id){
         this.type = type;
         this.x = x;
         this.y = y;
@@ -10,6 +10,7 @@ export class Wall {
         this.length = length;
         this.width = width;
         this.colour = colour;
+        this.id = id;
     }
 
 
