@@ -293,7 +293,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["Goblin Forest"] // crusader Encampment
+            var listOfDungeons = ["Goblin Forest", "Crusader Encampment"] // crusader Encampment
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
@@ -394,7 +394,7 @@ function createSection(name, x, y, id){
         var length = 1200;
         var width = 500;
     } else if (name == "Crusader Encampment"){
-        var length = 6400;
+        var length = 6000;
         var width = 500;
     }
     rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));

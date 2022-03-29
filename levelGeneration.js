@@ -29,7 +29,7 @@ export class LevelGeneration {
             case "Crusader Encampment":
                 segmentLength = 1000;
                 segmentHeight = 500;
-                listOfRooms = ["checkpoint"];
+                listOfRooms = ["checkpoint", "camp", "highWall"];
                 possibleMobs = []
                 finalPortal = "lobby"
                 enemyNumber.min = 1;
@@ -103,6 +103,7 @@ export class LevelGeneration {
                         walls.push(new Wall("wall", xLocation + 300, y-100, 200, 100, "silver"));
                         break;
                     case "checkpoint":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "rgb(78, 112, 33)"));
                         walls.push(new Wall("wall", xLocation + 100, y - segmentHeight + 20, 20, 400, "rgb(130, 106, 86)"));
                         walls.push(new Wall("wall", xLocation + 100, y - segmentHeight + 400, 500, 20, "rgb(130, 106, 86)"));
                         walls.push(new Wall("wall", xLocation + 700, y - 300, 20, 300, "rgb(130, 106, 86)"));
@@ -112,10 +113,58 @@ export class LevelGeneration {
                         walls.push(new Wall("wall", xLocation + 700, y - segmentHeight + 20, 20, 100, "rgb(130, 106, 86)"));
                         walls.push(new Wall("wall", xLocation + 900, y - segmentHeight + 20, 50, segmentHeight - 120, "rgb(161, 68, 50)"));
                         walls.push(new Wall("wall", xLocation + 915, y - 100, 20, 100, "blue", game.n));
-                        interactables.push(new Interactable("Switch", xLocation + 150, y - segmentHeight + 40, 30, 40,
+                        interactables.push(new Interactable("Switch", xLocation + 150, y - segmentHeight + 40, 30, 20,
                         "rgb(136, 189, 181)", "button", gameTime, game.n))
                         game.n ++;
                         break;
+                    case "camp":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "rgb(78, 112, 33)"));
+                        walls.push(new Wall("wall", xLocation + 100, y - 150, 20, 150, "rgb(117, 102, 83)"));
+                        walls.push(new Wall("wall", xLocation + 100, y - 150, 200, 20, "rgb(117, 102, 83)"));
+                        walls.push(new Wall("wall", xLocation + 300, y - 150, 20, 100, "rgb(117, 102, 83)"));
+
+                        walls.push(new Wall("wall", xLocation + 600, y - 150, 20, 100, "rgb(117, 102, 83)"));
+                        walls.push(new Wall("wall", xLocation + 600, y - 150, 200, 20, "rgb(117, 102, 83)"));
+                        walls.push(new Wall("wall", xLocation + 800, y - 150, 20, 150, "rgb(117, 102, 83)"));
+
+                        walls.push(new Wall("wall", xLocation + 600, y - 80, 20, 80, "blue", game.n));
+                        walls.push(new Wall("wall", xLocation + 300, y - 80, 20, 80, "blue", game.n));
+                        interactables.push(new Interactable("Switch", xLocation + 440, y - segmentHeight + 40, 30, 20,
+                        "rgb(136, 189, 181)", "button", gameTime, game.n))
+                        game.n ++;
+
+                        walls.push(new Wall("wall", xLocation + 900, y - segmentHeight + 20, 50, segmentHeight - 120, "rgb(161, 68, 50)"));
+                        walls.push(new Wall("wall", xLocation + 900, y - 100, 20, 100, "blue", game.n));
+                        interactables.push(new Interactable("Switch", xLocation + 200, y - 40, 30, 20,
+                        "rgb(136, 189, 181)", "button", gameTime, game.n))
+                        game.n ++;
+
+                        walls.push(new Wall("wall", xLocation + 930, y - 100, 20, 100, "blue", game.n));
+                        interactables.push(new Interactable("Switch", xLocation + 700, y - 40, 30, 20,
+                        "rgb(136, 189, 181)", "button", gameTime, game.n))
+                        game.n ++;
+                        break;
+                    case "highWall":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "rgb(78, 112, 33)"));
+                        walls.push(new Wall("wall", xLocation + 100, y - segmentHeight + 100, 200, segmentHeight - 100 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 300, y - 150, 50, 20 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 50, y - 150, 50, 20 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 300, y - 300, 50, 20 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 50, y - 300, 50, 20 , "gray"));
+
+                        walls.push(new Wall("wall", xLocation + 600, y - segmentHeight + 100, 200, segmentHeight - 100 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 800, y - 150, 50, 20 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 550, y - 150, 50, 20 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 800, y - 300, 50, 20 , "gray"));
+                        walls.push(new Wall("wall", xLocation + 550, y - 300, 50, 20 , "gray"));
+                        
+                        walls.push(new Wall("wall", xLocation + 900, y - segmentHeight + 20, 50, segmentHeight - 120, "rgb(161, 68, 50)"));
+                        walls.push(new Wall("wall", xLocation + 900, y - 100, 20, 100, "blue", game.n));
+                        interactables.push(new Interactable("Switch", xLocation + 450, y - 40, 30, 20,
+                        "rgb(136, 189, 181)", "button", gameTime, game.n))
+                        game.n ++;
+                    break;
+
                 }
             }
             if (roomToGenerate != "empty" && i != 0 && i != lastRoom){

@@ -44,7 +44,7 @@ export class Weapon {
                 break;
             case "Spell of Mending":
                 this.cooldown = 1000;
-                this.damage = -0.1;
+                this.damage = -0.3;
                 this.manaCost = 20;
                 this.speed = 0;
                 this.expireTime = 1000; // 200
@@ -63,6 +63,9 @@ export class Weapon {
                 this.colour = "rgb(110, 245, 76)"
                 this.bulletLength = 12
                 this.bulletWidth = 12
+                break;
+            case "Minor Health Potion":
+                this.cooldown = 250;
                 break;
             case "dev":
                 this.cooldown = 1; // 100

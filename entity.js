@@ -99,9 +99,9 @@ export class Entity {
             this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
-            // var i = 2
-            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("",
-            // equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
+            var i = 2
+            this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Minor Health Potion",
+            equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
             this.updateStats()
         }
     }
@@ -141,6 +141,18 @@ export class Entity {
             if(this.travelMap.aimX != -1){
                 this.attackInfo.preformAttack(this.attacks[this.attackIndex][0], this.attackIndex, bullets, entities, entity, gameTime,
                     this.travelMap.aimX, this.travelMap.aimY);
+            }
+        }
+    }
+
+    clearInventorySlot(inventorySlot){
+        if (this != null){
+            for (var i = 0; i < this.inventory.items.length; i ++){
+                if (this.inventory.items[i].item.slot == inventorySlot){
+                    this.inventory.items[i].itemName = "";
+                    this.inventory.items[i].refreshItem();
+                    this.updateStats();
+                }
             }
         }
     }

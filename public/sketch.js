@@ -450,6 +450,14 @@ function drawItem(itemName, x, y, flip, id, slot){
             fill(entities[id].colour)
             rect(x-5, y +2, 5, 8);
             break;
+        case "Minor Health Potion":
+            fill("gray");
+            rect(x-5, y + 2, 10, 12);
+            rect(x-3, y - 2, 4, 4);
+            fill("red");
+            rect(x-3, y + 4, 6, 8);
+            
+            break;
     }
     pop();
 }

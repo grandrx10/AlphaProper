@@ -18,9 +18,7 @@ export class AttackPattern {
                     }
                     break;
                 case "healPool":
-                    for (var i = 0; i < 3; i ++){
-                        this.createBullet(entity, "rect", weaponIndex, aimX, aimY, bullets, gameTime)
-                    }
+                    this.createBullet(entity, "rect", weaponIndex, aimX, aimY, bullets, gameTime)
                     break;
                 case "hammerFall":
                     for (var i = 0; i < 10; i ++){
@@ -33,6 +31,10 @@ export class AttackPattern {
                         weaponIndex, entity.x + (-i)*10, entity.y, 
                         bullets, gameTime, entity, entity.weapons[weaponIndex].speed*i)
                     }
+                    break;
+                case "minorHeal":
+                    entity.stats.hp[1] += 50;
+                    entity.clearInventorySlot("Ability");
                     break;
                 // BEGINNING OF GOBLIN WARLORD BOSS -----------------------------------------------------------------//
                 case "warlordShot":

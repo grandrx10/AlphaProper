@@ -64,6 +64,11 @@ export class Item {
                 this.attackType = "hammerFall"
                 this.manaCost = 20;
                 break;
+            case "Minor Health Potion":
+                this.slot = "Ability"
+                this.description = "A mixture of herbs and spices that\nprovide increased regeneration."
+                this.attackType = "minorHeal"
+                break;
         }
     }
 }
