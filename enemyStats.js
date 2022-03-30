@@ -30,7 +30,9 @@ export class EnemyStats {
                         ["Hearthwood Bow", 5],
                         ["Spell of Mending", 5],
                         ["Hefty Club", 10],
-                        ["Steel Hammer", 5]]
+                        ["Steel Hammer", 5],
+                        ["Minor Health Potion", 10],
+                        ["Minor Mana Potion", 10],]
                 break;
             case "Goblin Archer":
                 length = 15;
@@ -45,7 +47,9 @@ export class EnemyStats {
                 drops = [["Ranger Hat", 7],
                         ["Mercenary Cap", 3],
                         ["Hearthwood Bow", 10],
-                        ["Spell of Mending", 10],]
+                        ["Spell of Mending", 10],
+                        ["Minor Health Potion", 10],
+                        ["Minor Mana Potion", 10],]
                 break;
             case "Goblin Brute":
                 length = 25;
@@ -61,7 +65,9 @@ export class EnemyStats {
                         ["Mercenary Cap", 4],
                         ["Hefty Club", 12],
                         ["Spell of Mending", 5],
-                        ["Steel Hammer", 10]]
+                        ["Steel Hammer", 10],
+                        ["Minor Health Potion", 10],
+                        ["Minor Mana Potion", 10],]
                 break;
             case "Goblin Warlord":
                 length = 30;
@@ -80,7 +86,11 @@ export class EnemyStats {
                         ["Hefty Club", 40],
                         ["Spell of Mending", 40],
                         ["Steel Hammer", 40],
-                        ["Warlord's Vest", 20]]
+                        ["Warlord's Vest", 20],
+                        ["Minor Health Potion", 50],
+                        ["Minor Health Potion", 50],
+                        ["Minor Mana Potion", 50],
+                        ["Minor Mana Potion", 50],]
                 speechList = [["Ah. So the adventurers have\nfinally arrived.",3000], 
                 ["I take it you have taken care of my\nwarband already.", 3000],
                 ["There is a rule in my culture.", 2000],
@@ -91,6 +101,21 @@ export class EnemyStats {
                 ["Come.", 1500]]
                 boss = true;
                 detectRange = 1200;
+                break;
+            // CRUSADER ENCAMPMENT -----------------------------------------------
+            case "Silver Knight":
+                length = 25;
+                width = 35;
+                hp = 200;
+                weaponName = ["","", "knightBlade"];
+                colour = "silver"
+                xSpeed = 0.5;
+                ySpeed = 5;
+                engageRange = 0;
+                attacks = [["speech",-1], ["armourUp", 500], ["chaseKnight", 5000]]
+                drops = [["Minor Health Potion", 10],
+                        ["Minor Mana Potion", 10],]
+                speechList = [["Intruders!",500]]
                 break;
         }
         return {

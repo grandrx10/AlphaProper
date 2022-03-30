@@ -75,7 +75,7 @@ export class Bullet {
                 && entities[key].team != bullet.team) {
                     if (entities[key].stats.hp[1] != null){
                         if (bullet.damage > 0){
-                            var bulletDamage = bullet.damage*(1 - 0.05*entities[key].stats.def[1]);
+                            var bulletDamage = bullet.damage*(1 - 0.05*(entities[key].stats.def[1] + entities[key].effects.bonusDef.bonusAmount));
                         } else{
                             var bulletDamage = bullet.damage
                         }

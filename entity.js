@@ -34,6 +34,7 @@ export class Entity {
         this.creationTime = gameTime;
         this.id = id;
         this.location = "";// required
+        this.room;
         this.interact;// required
         this.expireTime = -1;
         this.shake = {// required
@@ -61,7 +62,13 @@ export class Entity {
             mana: ["MANA", 100],
             maxMana: ["MAXMANA", 100],
             wis: ["WIS", 0],
-        } 
+        }
+
+        this.effects = { // required
+            bonusAtk: {bonusAmount: 0, startTime: 0, duration: 0, colour: "red"},
+            bonusSpd: {bonusAmount: 0, startTime: 0, duration: 0, colour: "green"},
+            bonusDef: {bonusAmount: 0, startTime: 0, duration: 0, colour: "gray"},
+        }
 
         if (this.type == "npc"){
             this.drops = [];
@@ -75,6 +82,7 @@ export class Entity {
         }
 
         if (this.type == "Player"){ 
+            this.closestBoss;
             this.inventory = { // required
                 inventorySize: 8,
                 items: [],
@@ -100,9 +108,19 @@ export class Entity {
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
             // var i = 2
-            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Minor Health Potion",
+            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Minor Mana Potion",
             // equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
             this.updateStats()
+        }
+    }
+
+    checkEffects(gameTime){
+        if (this != null){
+            for (var effect in this.effects){
+                if (gameTime - this.effects[effect].startTime > this.effects[effect].duration){
+                    this.effects[effect].bonusAmount = 0;
+                }
+            }
         }
     }
 
@@ -148,7 +166,7 @@ export class Entity {
     clearInventorySlot(inventorySlot){
         if (this != null){
             for (var i = 0; i < this.inventory.items.length; i ++){
-                if (this.inventory.items[i].item.slot == inventorySlot){
+                if (this.inventory.items[i].slot == inventorySlot){
                     this.inventory.items[i].itemName = "";
                     this.inventory.items[i].refreshItem();
                     this.updateStats();
@@ -173,7 +191,8 @@ export class Entity {
                 mana: ["MANA", manaTemp],
                 maxMana: ["MAXMANA", 100],
                 wis: ["WIS", 0],
-            } 
+            }
+
             for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
                 
                 for (var entityStat in this.stats){
@@ -317,13 +336,13 @@ export class Entity {
 
     move(dir){
         if (dir == "left"){
-            this.xAccel = -this.xOrigA*(1 + 0.1*this.stats.spd[1]);
+            this.xAccel = -this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount));
             this.dir = dir
         } else if (dir == "right"){
-            this.xAccel = this.xOrigA*(1 + 0.1*this.stats.spd[1]);
+            this.xAccel = this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount));
             this.dir = dir
         }else if (dir == "jump" && this.canJump){
-            this.yAccel = -this.yOrigA*(1 + 0.1*this.stats.spd[1]);
+            this.yAccel = -this.yOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount));
             this.canJump = false;
         }
     }
@@ -332,6 +351,23 @@ export class Entity {
         for (var i = 0; i < rooms.length; i ++){
             if (this.rectRectDetect(this, rooms[i])){
                 this.location = rooms[i].name;
+                this.room = rooms[i]
+            }
+        }
+    }
+
+    findBoss(entities, entity){
+        var bossFound = false;
+        if (entity != null && entity.type == "Player"){
+            Object.keys(entities).forEach(function(key) {
+                if (entities[key].room == entity.room && entities[key].boss){
+                    entity.closestBoss = entities[key]
+                    bossFound = true;
+                }
+            });
+
+            if (!bossFound){
+                entity.closestBoss == null;
             }
         }
     }
@@ -382,11 +418,11 @@ export class Entity {
         }
 
         if (this.type != "blood"){
-            if (this.xSpeed > 5*(1+0.1*this.stats.spd[1])){
-                this.xSpeed = 5*(1+0.1*this.stats.spd[1])
+            if (this.xSpeed > 5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))){
+                this.xSpeed = 5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))
             }
-            if (this.xSpeed < -5*(1+0.1*this.stats.spd[1])){
-                this.xSpeed = -5*(1+0.1*this.stats.spd[1])
+            if (this.xSpeed < -5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))){
+                this.xSpeed = -5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))
             }
         }
     }

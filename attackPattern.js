@@ -36,6 +36,10 @@ export class AttackPattern {
                     entity.stats.hp[1] += 50;
                     entity.clearInventorySlot("Ability");
                     break;
+                case "minorMana":
+                    entity.stats.mana[1] += 50;
+                    entity.clearInventorySlot("Ability");
+                    break;
                 // BEGINNING OF GOBLIN WARLORD BOSS -----------------------------------------------------------------//
                 case "warlordShot":
                     entity.chase = true;
@@ -46,11 +50,21 @@ export class AttackPattern {
                 case "warlordSpray":
                     entity.chase = false;
                     //bullet to the left
-                    this.createBullet(entity, "circle", weaponIndex,entity.x, entity.y +entity.width/2, bullets, gameTime, )
+                    this.createBullet(entity, "circle", weaponIndex,entity.x, entity.y +entity.width/2, bullets, gameTime)
                     // bullet to the right
                     this.createBullet(entity, "circle", weaponIndex,entity.x + entity.length, entity.y +entity.width/2, bullets, gameTime)
                     break;
                 // END OF GOBLIN WARLORD BOSS 
+                case "chaseKnight":
+                    entity.chase = true;
+                    this.createBullet(entity, "circle",weaponIndex, aimX, aimY, bullets, gameTime)
+                    break;
+                case "armourUp":
+                    entity.chase = false;
+                    entity.effects.bonusDef.bonusAmount = 10;
+                    entity.effects.bonusDef.duration = 5000;
+                    entity.effects.bonusDef.startTime = gameTime;
+                    break;
                 case "speech":
                     entity.invincible = true;
                     entity.chase = false;

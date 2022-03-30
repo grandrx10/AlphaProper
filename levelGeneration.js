@@ -30,7 +30,7 @@ export class LevelGeneration {
                 segmentLength = 1000;
                 segmentHeight = 500;
                 listOfRooms = ["checkpoint", "camp", "highWall"];
-                possibleMobs = []
+                possibleMobs = ["Silver Knight"]
                 finalPortal = "lobby"
                 enemyNumber.min = 1;
                 enemyNumber.max = 3;
@@ -57,6 +57,7 @@ export class LevelGeneration {
                 walls.push(new Wall("wall", x + 800, y - 100, 200, 100, "silver"));
                 walls.push(new Wall("wall", x + 550, y - 300, 100, 20, "silver"));
                 this.summonEnemy("Goblin Warlord", x+ 600, y-60, x+ 600, y-60, game, entities, gameTime, walls)
+                break;
         }
 
         for (var i = 0; i < length/segmentLength; i ++){
@@ -151,12 +152,6 @@ export class LevelGeneration {
                         walls.push(new Wall("wall", xLocation + 50, y - 150, 50, 20 , "gray"));
                         walls.push(new Wall("wall", xLocation + 300, y - 300, 50, 20 , "gray"));
                         walls.push(new Wall("wall", xLocation + 50, y - 300, 50, 20 , "gray"));
-
-                        walls.push(new Wall("wall", xLocation + 600, y - segmentHeight + 100, 200, segmentHeight - 100 , "gray"));
-                        walls.push(new Wall("wall", xLocation + 800, y - 150, 50, 20 , "gray"));
-                        walls.push(new Wall("wall", xLocation + 550, y - 150, 50, 20 , "gray"));
-                        walls.push(new Wall("wall", xLocation + 800, y - 300, 50, 20 , "gray"));
-                        walls.push(new Wall("wall", xLocation + 550, y - 300, 50, 20 , "gray"));
                         
                         walls.push(new Wall("wall", xLocation + 900, y - segmentHeight + 20, 50, segmentHeight - 120, "rgb(161, 68, 50)"));
                         walls.push(new Wall("wall", xLocation + 900, y - 100, 20, 100, "blue", game.n));

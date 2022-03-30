@@ -35,6 +35,7 @@ function setup(){
     preload();
     socket.on('gameStart', startGame);
     socket.on('displayName', displayName);
+    socket.on('sendingUpdate', update);
 
 }
 
@@ -69,8 +70,6 @@ function playMusic(){
 function draw(){
     frameRate(144)
     background(28, 28, 28);
-    
-    socket.on('sendingUpdate', update);
 
     if (!gameStart[0]){
         textSize(20)
@@ -153,6 +152,8 @@ function draw(){
                 }
             }
 
+            drawEffects();
+
             // Health Bars
             fill("grey");
             rect(entities[entity].x - xRange, entities[entity].y - yRange - 25, entities[entity].length, 8);
@@ -208,6 +209,8 @@ function draw(){
             if (entities[socket.id].inventory.inventoryOpen){
                 displayInventory();
             }
+
+            displayBossBar();
             fill("white")
             textSize(20);
             text("Location: " + entities[socket.id].location, 200, 30);
@@ -456,7 +459,13 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x-3, y - 2, 4, 4);
             fill("red");
             rect(x-3, y + 4, 6, 8);
-            
+            break;
+        case "Minor Mana Potion":
+            fill("gray");
+            rect(x-5, y + 2, 10, 12);
+            rect(x-3, y - 2, 4, 4);
+            fill("cyan");
+            rect(x-3, y + 4, 6, 8);
             break;
     }
     pop();
@@ -489,7 +498,7 @@ function describeItem(chosenItem, colour){
     }
 
     text(statsMessage, mouseX + i*150, mouseY + 80)
-    text("Slot: " + chosenItem.slot, mouseX + i*150, mouseY + 95)
+    text("Slot: " + chosenItem.item.slot, mouseX + i*150, mouseY + 95)
 }
 
 function startGame(boolean){
@@ -498,4 +507,42 @@ function startGame(boolean){
 
 function displayName(name){
     gameStart[1] = name;
+}
+
+function displayBossBar(){
+    if (entities[socket.id].closestBoss != null){
+        fill("black");
+        rect(200, 50, 1000, 40);
+        fill("red");
+        rect(200, 50, 1000*(entities[socket.id].closestBoss.stats.hp[1]/
+        entities[socket.id].closestBoss.stats.maxHp[1]), 40);
+
+        fill("white")
+        textSize(20)
+        text(Math.round(entities[socket.id].closestBoss.stats.hp[1]) + "/" + 
+        Math.round(entities[socket.id].closestBoss.stats.maxHp[1]),
+        LENGTH/2, 75);
+        textSize(25)
+        text(entities[socket.id].closestBoss.name,
+        LENGTH/2, 35);
+        
+    }
+}
+
+function drawEffects(){
+    var count = 0;
+    for (var effect in entities[entity].effects){
+        if (entities[entity].effects[effect].bonusAmount > 0){
+            count ++;
+        }
+    }
+
+    for (var effect in entities[entity].effects){
+        if (entities[entity].effects[effect].bonusAmount > 0){
+            fill(entities[entity].effects[effect].colour);
+            rect(entities[entity].x + entities[entity].length/2 - xRange - 8*(count-1) - 4, entities[entity].y - yRange - 60, 8, 8)
+            console.log("OK")
+            count -= 2;
+        }
+    }
 }

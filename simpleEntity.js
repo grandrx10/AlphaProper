@@ -1,5 +1,6 @@
 export class SimpleEntity {
-    constructor (name, type, x, y, length, width, dir, stats, colour, location, interact, shake, inventory, deathTime, deathDuration, speech){
+    constructor (name, type, x, y, length, width, dir, stats, colour, location, interact,
+        shake, inventory, deathTime, deathDuration, speech, closestBoss, effects){
         this.name = name;
         this.type = type;
         this.x = x;
@@ -16,7 +17,9 @@ export class SimpleEntity {
         this.deathDuration = deathDuration;
         if (this.type == "Player"){
             this.inventory = inventory;
+            this.closestBoss = closestBoss;
         }
         this.speech = speech;
+        this.effects = effects;
     }
 }

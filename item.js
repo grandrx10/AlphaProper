@@ -66,8 +66,13 @@ export class Item {
                 break;
             case "Minor Health Potion":
                 this.slot = "Ability"
-                this.description = "A mixture of herbs and spices that\nprovide increased regeneration."
+                this.description = "A mixture of herbs and spices that\nprovide increased regeneration.\nOne time use."
                 this.attackType = "minorHeal"
+                break;
+            case "Minor Mana Potion":
+                this.slot = "Ability"
+                this.description = "A mixture of insects and ink that\nincreases one's ability to use magic.\nOne time use."
+                this.attackType = "minorMana"
                 break;
         }
     }

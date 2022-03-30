@@ -7,6 +7,7 @@ export class Weapon {
         this.bulletWidth = 10
         this.spawnBullet = [0,0] // alter where the bullet spawns
         this.gravity = false
+        this.cooldown = 0 
         this.stay = false
         switch(name){
             case "none":
@@ -64,9 +65,6 @@ export class Weapon {
                 this.bulletLength = 12
                 this.bulletWidth = 12
                 break;
-            case "Minor Health Potion":
-                this.cooldown = 250;
-                break;
             case "dev":
                 this.cooldown = 1; // 100
                 this.damage = 20;
@@ -95,7 +93,6 @@ export class Weapon {
                 this.expireTime = 700;
                 this.colour = "rgb(130, 255, 186)"
                 break;
-
             // WARLORD WEAPONS --------------------------------------
             case "Warlord's Club":
                 this.cooldown = 700;
@@ -116,6 +113,13 @@ export class Weapon {
                 this.bulletWidth = 12
                 break;
             // ------------------------------------------------------
+            case "knightBlade":
+                this.cooldown = 400;
+                this.damage = 12;
+                this.speed = 12;
+                this.expireTime = 300;
+                this.colour = "rgb(191, 188, 178)"
+                break;
         }
     }
 }

@@ -241,7 +241,7 @@ function update(){
                                     entities[id].width, entities[id].dir, entities[id].stats,
                                     entities[id].colour, entities[id].location, entities[id].interact,
                                     entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration,
-                                    entities[id].speech)
+                                    entities[id].speech, entities[id].closestBoss, entities[id].effects);
                             }
                         });
                     }
@@ -258,6 +258,8 @@ function update(){
                 }
                 if (entities[key] != null){
                     entities[key].update(walls);
+                    entities[key].findBoss(entities, entities[key]);
+                    entities[key].checkEffects(gameTime);
                     entities[key].setRoom(rooms);
                     entities[key].accelerate();
                     entities[key].checkInteract(interactables);
@@ -293,7 +295,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["Goblin Forest"] // "Crusader Encampment"
+            var listOfDungeons = ["Goblin Forest", "Crusader Encampment"] // "Crusader Encampment"
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
