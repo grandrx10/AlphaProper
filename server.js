@@ -91,7 +91,7 @@ function newConnection(socket){
             entities[socket.id].inventory.inventoryOpen == false){
             entities[socket.id].attackInfo.preformAttack(entities[socket.id].attacks[1][0],1,
                 bullets,entities, entities[socket.id], gameTime,
-                aimPos[0], aimPos[1])
+                aimPos[0], aimPos[1], particles, game, walls)
         }
     }
 
@@ -100,7 +100,7 @@ function newConnection(socket){
             entities[socket.id].inventory.inventoryOpen == false){
             entities[socket.id].attackInfo.preformAttack(entities[socket.id].attacks[0][0],0,
                 bullets,entities, entities[socket.id], gameTime,
-                aimPos[0], aimPos[1])
+                aimPos[0], aimPos[1], particles, game, walls)
         }
     }
 
@@ -263,8 +263,9 @@ function update(){
                     entities[key].setRoom(rooms);
                     entities[key].accelerate();
                     entities[key].checkInteract(interactables);
-                    entities[key].aiMovement(entities, entities[key], bullets, gameTime);
-                    entities[key].checkDeath(entities, gameTime, interactables, particles);
+                    entities[key].aiMovement(entities, entities[key], bullets, gameTime, particles,game, walls);
+                    if (entities[key] != null)
+                        entities[key].checkDeath(entities, gameTime, interactables, particles);
                     game.n ++;
                 }
             });
@@ -295,7 +296,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["Goblin Forest", "Crusader Encampment"] // "Crusader Encampment"
+            var listOfDungeons = ["Goblin Forest", "Crusader Encampment", "High Priest's Quarters"] // "Crusader Encampment"
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
@@ -397,6 +398,9 @@ function createSection(name, x, y, id){
         var width = 500;
     } else if (name == "Crusader Encampment"){
         var length = 6000;
+        var width = 500;
+    }else if (name == "High Priest's Quarters"){
+        var length = 2000;
         var width = 500;
     }
     rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));

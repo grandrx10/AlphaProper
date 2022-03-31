@@ -107,15 +107,125 @@ export class EnemyStats {
                 length = 25;
                 width = 35;
                 hp = 200;
-                weaponName = ["","", "knightBlade"];
+                weaponName = ["armourUp", "knightBlade"];
                 colour = "silver"
-                xSpeed = 0.5;
-                ySpeed = 5;
+                xSpeed = 0.7;
+                ySpeed = 6;
                 engageRange = 0;
-                attacks = [["speech",-1], ["armourUp", 500], ["chaseKnight", 5000]]
+                attacks = [["armourUp", 500], ["knightChase", 5000]]
                 drops = [["Minor Health Potion", 10],
-                        ["Minor Mana Potion", 10],]
-                speechList = [["Intruders!",500]]
+                        ["Minor Mana Potion", 10],
+                        ["Legion Shield", 10],
+                        ["Summoning Banner", 5],
+                        ["Knight's Helm", 12],
+                        ["Steel Armour", 10],
+                        ["Ranger's Cloak", 3]]
+                break;
+            case "Recruiter":
+                length = 20;
+                width = 30;
+                hp = 150;
+                weaponName = ["summonSquire"];
+                colour = "rgb(235, 158, 52)"
+                xSpeed = 0.5;
+                ySpeed = 3;
+                engageRange = 300;
+                attacks = [["summonSquire", -1]]
+                drops = [["Minor Health Potion", 10],
+                        ["Minor Mana Potion", 10],
+                        ["Legion Shield", 5],
+                        ["Summoning Banner", 10],
+                        ["Knight's Helm", 6],
+                        ["Steel Armour", 5],
+                        ["Ranger's Cloak", 5]]
+                break;
+            case "Squire":
+                length = 20;
+                width = 30;
+                hp = 80;
+                weaponName = ["squireBlade"];
+                colour = "rgb(196, 196, 196)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["shoot", -1]]
+                drops = [["Minor Health Potion", 2],
+                        ["Minor Mana Potion", 2],
+                        ["Legion Shield", 1],
+                        ["Steel Armour", 2],
+                        ["Ranger's Cloak", 2]]
+                break;
+            case "Minion":
+                length = 15;
+                width = 25;
+                hp = 40;
+                weaponName = ["squireBlade"];
+                colour = "rgb(159, 113, 199)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["shoot", -1]]
+                drops = []
+                break;
+            case "Ranger":
+                length = 20;
+                width = 30;
+                hp = 120;
+                weaponName = ["tripleBow"];
+                colour = "rgb(92, 8, 166)"
+                xSpeed = 0.6;
+                ySpeed = 6;
+                engageRange = 150;
+                attacks = [["tripleStraight", -1]]
+                drops = [["Minor Health Potion", 2],
+                        ["Minor Mana Potion", 2],
+                        ["Legion Shield", 4],
+                        ["Summoning Banner", 4],
+                        ["Knight's Helm", 6],
+                        ["Steel Armour", 3],
+                        ["Ranger's Cloak", 15]]
+                break;
+            // HIGH PRIEST BOSS FIGHT
+            case "High Priest":
+                length = 20;
+                width = 30;
+                hp = 1000;
+                weaponName = ["", "oneTime"];
+                colour = "rgb(196, 196, 196)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["speech", -1], ["summonPaladinBoss", 5000]]
+                speechList = [["So you are the intruders\nI heard outside.",3000], 
+                ["Before you try to kill me,\nI just have one question for you.", 3000],
+                ["Do you believe in God?", 2000],
+                ["Funny, I've been a priest for many\nyears... and now I'm having doubts.", 3000],
+                ["Thousands of people die everyday.\nPlagues run wild.", 3000],
+                ["And yet, God hasn't stepped in yet.\nHe hasn't said a word.", 3000],
+                ["Humans are not unique. We are just\na million copies of a single person.", 3000],
+                ["Maybe he hasn't intervened because\nwe aren't worth his attention.", 3000],
+                ["I'll show him a display\nhe'll HAVE to notice.", 2000],
+                ["Sadly, that means I cannot stay\nhere to entertain you scoundrels.",3000],
+                ["PALADIN! TO MY AID!", 1000],
+                ["Goodbye.", 1000]]
+                drops = []
+                break;
+            case "Paladin Of The Order":
+                length = 20;
+                width = 40;
+                hp = 1500;
+                weaponName = ["", "holyBlade", "oneTime", "explosion"];
+                colour = "rgb(196, 100, 35)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["speech", -1], ["paladinChase", 5000], ["jump", 1000], ["explosion", 1000]]
+                speechList = [["Halt. I will not allow you\nto harm the High Priest.",3000], 
+                ["I do not know why you have chosen\nthe path of evil.", 3000],
+                ["But I will stop you right where\nyou stand.", 2500],]
+                drops = []
+                boss = true;
+                detectRange = 1500;
                 break;
         }
         return {

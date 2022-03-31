@@ -24,6 +24,13 @@ export class Weapon {
                 this.expireTime = 200; // 200
                 this.colour = "white"
                 break;
+            case "Silver Longsword":
+                this.cooldown = 100; // 100
+                this.damage = 25;
+                this.speed = 20;
+                this.expireTime = 150; // 200
+                this.colour = "silver"
+                break;
             case "Hearthwood Bow":
                 this.cooldown = 150;
                 this.damage = 25;
@@ -65,6 +72,15 @@ export class Weapon {
                 this.bulletLength = 12
                 this.bulletWidth = 12
                 break;
+
+            case "Legion Shield":
+                this.cooldown = 4000;
+                this.manaCost = 40;
+                break;
+            case "Summoning Banner":
+                this.cooldown = 1000;
+                this.manaCost = 35;
+                break;
             case "dev":
                 this.cooldown = 1; // 100
                 this.damage = 20;
@@ -72,6 +88,8 @@ export class Weapon {
                 this.expireTime = 200;
                 this.colour = "white"
                 break;
+            
+            // AI WEAPONS HERE ----------------------
             case "fist":
                 this.cooldown = 500;
                 this.damage = 10;
@@ -117,9 +135,55 @@ export class Weapon {
                 this.cooldown = 400;
                 this.damage = 12;
                 this.speed = 12;
-                this.expireTime = 300;
+                this.expireTime = 200;
+                this.colour = "rgb(191, 188, 178)"
+                this.bulletLength = 12
+                this.bulletWidth = 12
+                break;
+            case "squireBlade":
+                this.cooldown = 400;
+                this.damage = 6;
+                this.speed = 10;
+                this.expireTime = 200;
                 this.colour = "rgb(191, 188, 178)"
                 break;
+            case "armourUp":
+                this.cooldown = 500;
+                break;
+            case "summonSquire":
+                this.cooldown = 4000;
+                break;
+            case "tripleBow":
+                this.cooldown = 1000;
+                this.damage = 8;
+                this.speed = 5;
+                this.expireTime = 600;
+                this.colour = "rgb(193, 122, 255)"
+                this.bulletLength = 10
+                this.bulletWidth = 10
+                break;
+            case "oneTime":
+                this.cooldown = 1000000;
+                break;
+            case "holyBlade":
+                this.cooldown = 200;
+                this.damage = 8;
+                this.speed = 7;
+                this.expireTime = 600;
+                this.colour = "rgb(230, 184, 48)"
+                this.bulletLength = 12
+                this.bulletWidth = 12
+                break;
+            case "explosion":
+                this.cooldown = 10000;
+                this.damage = 8;
+                this.speed = 5;
+                this.expireTime = 1200;
+                this.colour = "rgb(255, 234, 173)"
+                this.bulletLength = 15
+                this.bulletWidth = 15
+                break;
+            
         }
     }
 }

@@ -65,9 +65,17 @@ export class Entity {
         }
 
         this.effects = { // required
-            bonusAtk: {bonusAmount: 0, startTime: 0, duration: 0, colour: "red"},
-            bonusSpd: {bonusAmount: 0, startTime: 0, duration: 0, colour: "green"},
-            bonusDef: {bonusAmount: 0, startTime: 0, duration: 0, colour: "gray"},
+            atk: {bonusAmount: 0, startTime: 0, duration: 0, colour: "red"},
+            spd: {bonusAmount: 0, startTime: 0, duration: 0, colour: "green"},
+            def: {bonusAmount: 0, startTime: 0, duration: 0, colour: "gray"},
+            hp: {bonusAmount: 0, startTime: 0, duration: 0, colour: "pink"},
+            dex: {bonusAmount: 0, startTime: 0, duration: 0, colour: "orange"},
+            mana: {bonusAmount: 0, startTime: 0, duration: 0, colour: "blue"},
+            wis: {bonusAmount: 0, startTime: 0, duration: 0, colour: "cyan"},
+            maxHp: {bonusAmount: 0, startTime: 0, duration: 0, colour: "darkred"},
+            maxMana: {bonusAmount: 0, startTime: 0, duration: 0, colour: "yellow"},
+            vit: {bonusAmount: 0, startTime: 0, duration: 0, colour: "darkred"},
+            gold: {bonusAmount: 0, startTime: 0, duration: 0, colour: ""},
         }
 
         if (this.type == "npc"){
@@ -76,7 +84,7 @@ export class Entity {
             this.speechList = []
             this.speechIndex = 0;
             this.chase = true;
-            this.travelMap = {x:-1, y:-1, detectRange: 500, aimX: -1, aimY:-1}; // ai only
+            this.travelMap = {x:-1, y:-1, detectRange: 600, aimX: -1, aimY:-1}; // ai only
             this.fightTime = 0;
             this.boss = false;
         }
@@ -104,11 +112,11 @@ export class Entity {
             }
 
             var i = 3
-            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
+            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Silver Longsword",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
             // var i = 2
-            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Minor Mana Potion",
+            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Knight's Helm",
             // equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
             this.updateStats()
         }
@@ -138,7 +146,7 @@ export class Entity {
         }
     }
 
-    aiMovement(entities, entity, bullets, gameTime){
+    aiMovement(entities, entity, bullets, gameTime, particles, game, walls){
         if (this.type == "npc"){
             if (this.fightTime != 0){
                 if (gameTime - this.fightTime > this.attacks[this.attackIndex][1]){
@@ -157,8 +165,11 @@ export class Entity {
             if (this.chase)
                 this.moveTowardsMap();
             if(this.travelMap.aimX != -1){
+                if (this.fightTime == 0 && this.attacks[this.attackIndex][0] != "speech"){
+                    this.fightTime = gameTime;
+                }
                 this.attackInfo.preformAttack(this.attacks[this.attackIndex][0], this.attackIndex, bullets, entities, entity, gameTime,
-                    this.travelMap.aimX, this.travelMap.aimY);
+                    this.travelMap.aimX, this.travelMap.aimY, particles,game, walls);
             }
         }
     }
@@ -217,17 +228,17 @@ export class Entity {
     moveTowardsMap(){
         if (this.travelMap.x != -1 && this.travelMap.y != -1){
             if (this.x + this.length/2 + this.engageRange < this.travelMap.x){
-                this.xAccel = this.xOrigA;
+                this.move("right");
             } else if (this.x + this.length/2 - this.engageRange > this.travelMap.x){
-                this.xAccel = -this.xOrigA;
+                this.move("left");
+            } else if (this.x + this.length/2 + this.engageRange > this.travelMap.x && this.x + this.length/2 < this.travelMap.x){
+                this.move("left");
+            }else if (this.x + this.length/2 - this.engageRange < this.travelMap.x && this.x + this.length/2 > this.travelMap.x){
+                this.move("right");
             }
-            // else if (this.x + this.length/2 < this.travelMap.x) {
-            //     this.xAccel = this.xOrigA;
-            // }
 
             if ((this.xSpeed == 0||this.y + this.width/2> this.travelMap.y) && this.canJump && this.randint(1,40) == 1){
-                this.yAccel = -this.yOrigA;
-                this.canJump = false
+                this.move("jump");
             }
         }
     }
@@ -240,7 +251,7 @@ export class Entity {
                  entities[key].x + entities[key].length/2, entities[key].y + entities[key].width/2);
             if ((distanceBetween < closestDistance || closestDistance < 0) && entities[key].stats.hp[1] > 0
             && entities[key].team != entity.team 
-            && entities[key].team != -1 && entity.travelMap.detectRange >= distanceBetween){
+            && entity.travelMap.detectRange >= distanceBetween){
                 closest = key;
                 closestDistance = distanceBetween;
             }
@@ -260,66 +271,68 @@ export class Entity {
     }
 
     checkDeath(entities, gameTime, interactables, particles){
-        if (this.stats.hp[1] < 0){
-            this.stats.hp[1] = 0
-        } else if (this.stats.hp[1] > this.stats.maxHp[1]){
-            this.stats.hp[1] = this.stats.maxHp[1];
-        } else if (this.stats.hp[1] > 0){
-            this.stats.hp[1] += 0.01 + 0.01*this.stats.vit[1];
-        }
-
-        if (this.stats.mana[1] > this.stats.maxMana[1]){
-            this.stats.mana[1] = this.stats.maxMana[1]
-        } else {
-            this.stats.mana[1] += 0.02 + 0.02*this.stats.wis[1];
-        }
-
-        if (this.stats.hp[1] <= 0 && this.deathTime == 0){
-            for (var i = 0; i < 5; i++){
-                particles.push(new Particle("","blood", this.x, this.y, 10, 10, 700, gameTime,"darkred",
-                this.randint(-10, 10), this.randint(-10, 10)));
+        if (this != null){
+            if (this.stats.hp[1] < 0){
+                this.stats.hp[1] = 0
+            } else if (this.stats.hp[1] > this.stats.maxHp[1]){
+                this.stats.hp[1] = this.stats.maxHp[1];
+            } else if (this.stats.hp[1] > 0){
+                this.stats.hp[1] += 0.01 + 0.01*this.stats.vit[1];
             }
-
-            if (entities[entities[this.id].lastHurtBy] != null){
-                entities[entities[this.id].lastHurtBy].shake.shakeStart = gameTime;
-                entities[entities[this.id].lastHurtBy].shake.shakeDuration = 100;
+    
+            if (this.stats.mana[1] > this.stats.maxMana[1]){
+                this.stats.mana[1] = this.stats.maxMana[1]
+            } else {
+                this.stats.mana[1] += 0.02 + 0.02*this.stats.wis[1];
             }
-
-            if (entities[this.id].type != "Player"){
-                var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
-                entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag", gameTime)
-
-                for (var i = 0; i < entities[this.id].drops.length; i ++){
-                    if (this.randint(1, 100) <= entities[this.id].drops[i][1]){
-                        lootDrop.addToInventory(entities[this.id].drops[i][0]);
+    
+            if (this.stats.hp[1] <= 0 && this.deathTime == 0){
+                for (var i = 0; i < 5; i++){
+                    particles.push(new Particle("","blood", this.x, this.y, 10, 10, 700, gameTime,"darkred",
+                    this.randint(-10, 10), this.randint(-10, 10)));
+                }
+    
+                if (entities[entities[this.id].lastHurtBy] != null){
+                    entities[entities[this.id].lastHurtBy].shake.shakeStart = gameTime;
+                    entities[entities[this.id].lastHurtBy].shake.shakeDuration = 100;
+                }
+    
+                if (entities[this.id].type != "Player"){
+                    var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
+                    entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag", gameTime)
+    
+                    for (var i = 0; i < entities[this.id].drops.length; i ++){
+                        if (this.randint(1, 100) <= entities[this.id].drops[i][1]){
+                            lootDrop.addToInventory(entities[this.id].drops[i][0]);
+                        }
                     }
+    
+                    if (!lootDrop.checkEmpty()){
+                        interactables.push(lootDrop)
+                    }
+    
+                    if (entities[this.id].boss){
+                        interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y, 
+                        30, 40, "blue", "portal", gameTime, -2))
+                    }
+    
+                    delete entities[this.id];
+    
+                } else if (entities[this.id].deathTime == 0){
+                    this.deathTime = gameTime;
+                    var temp = entities[this.id].width;
+                    entities[this.id].width = entities[this.id].length;
+                    entities[this.id].length = temp;
+                    entities[this.id].inventory.inventoryOpen = false;
                 }
-
-                if (!lootDrop.checkEmpty()){
-                    interactables.push(lootDrop)
-                }
-
-                if (entities[this.id].boss){
-                    interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y, 
-                    30, 40, "blue", "portal", gameTime, -2))
-                }
-
-                delete entities[this.id];
-
-            } else if (entities[this.id].deathTime == 0){
-                this.deathTime = gameTime;
-                var temp = entities[this.id].width;
-                entities[this.id].width = entities[this.id].length;
-                entities[this.id].length = temp;
-                entities[this.id].inventory.inventoryOpen = false;
+            } else if ((gameTime - this.deathTime) > this.deathDuration && this.deathTime != 0){
+                entities[this.id] = new Entity(this.name, "Player", 100 + this.randint(-20, 20), 100, 20, 30, 100, ["Adventurer's Sword", ""], 
+                "purple", 0, gameTime, this.id,1,6)
             }
-        } else if ((gameTime - this.deathTime) > this.deathDuration && this.deathTime != 0){
-            entities[this.id] = new Entity(this.name, "Player", 100 + this.randint(-20, 20), 100, 20, 30, 100, ["Adventurer's Sword", ""], 
-            "purple", 0, gameTime, this.id,1,6)
-        }
-
-        if (this.expireTime != -1 && gameTime - this.creationTime > this.expireTime){
-            delete entities[this.id];
+    
+            if (this.expireTime != -1 && gameTime - this.creationTime > this.expireTime){
+                delete entities[this.id];
+            }
         }
     }
 
@@ -336,13 +349,13 @@ export class Entity {
 
     move(dir){
         if (dir == "left"){
-            this.xAccel = -this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount));
+            this.xAccel = -this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount));
             this.dir = dir
         } else if (dir == "right"){
-            this.xAccel = this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount));
+            this.xAccel = this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount));
             this.dir = dir
         }else if (dir == "jump" && this.canJump){
-            this.yAccel = -this.yOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount));
+            this.yAccel = -this.yOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount));
             this.canJump = false;
         }
     }
@@ -367,7 +380,7 @@ export class Entity {
             });
 
             if (!bossFound){
-                entity.closestBoss == null;
+                entity.closestBoss = null;
             }
         }
     }
@@ -418,11 +431,11 @@ export class Entity {
         }
 
         if (this.type != "blood"){
-            if (this.xSpeed > 5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))){
-                this.xSpeed = 5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))
+            if (this.xSpeed > 5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))){
+                this.xSpeed = 5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))
             }
-            if (this.xSpeed < -5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))){
-                this.xSpeed = -5*(1+0.1*(this.stats.spd[1] + this.effects.bonusSpd.bonusAmount))
+            if (this.xSpeed < -5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))){
+                this.xSpeed = -5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))
             }
         }
     }

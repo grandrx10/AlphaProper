@@ -11,7 +11,7 @@ export class LevelGeneration {
         var possibleMobs = [];
         var finalPortal = "lobby"
         var bossRoom = false;
-        var roomsToNotSpawnExit = ["lobby", "Warlord's Lair"]
+        var roomsToNotSpawnExit = ["lobby", "Warlord's Lair", "High Priest's Quarters"]
         var enemyNumber = {
             max: 0,
             min: 0
@@ -30,9 +30,9 @@ export class LevelGeneration {
                 segmentLength = 1000;
                 segmentHeight = 500;
                 listOfRooms = ["checkpoint", "camp", "highWall"];
-                possibleMobs = ["Silver Knight"]
-                finalPortal = "lobby"
-                enemyNumber.min = 1;
+                possibleMobs = ["Silver Knight", "Recruiter", "Ranger"]
+                finalPortal = "High Priest's Quarters"
+                enemyNumber.min = 2;
                 enemyNumber.max = 3;
                 break;
             case "lobby":
@@ -57,6 +57,15 @@ export class LevelGeneration {
                 walls.push(new Wall("wall", x + 800, y - 100, 200, 100, "silver"));
                 walls.push(new Wall("wall", x + 550, y - 300, 100, 20, "silver"));
                 this.summonEnemy("Goblin Warlord", x+ 600, y-60, x+ 600, y-60, game, entities, gameTime, walls)
+                break;
+            case "High Priest's Quarters":
+                segmentLength = 2000;
+                segmentHeight = 500;
+                walls.push(new Wall("wall", x + 300, y - 150, 50, 150, "silver"));
+                walls.push(new Wall("wall", x + 800, y - 150, 50, 150, "silver"));
+                walls.push(new Wall("wall", x + 1600, y - 200, 400, 200, "silver"));
+                bossRoom = true;
+                this.summonEnemy("High Priest", x+ 1800, y-250, x+ 1800, y-250, game, entities, gameTime, walls)
                 break;
         }
 

@@ -150,6 +150,8 @@ function draw(){
                             break;
                     }
                 }
+            } else if (entities[entity].type == "npc" && entities[entity].stats.hp[1] > 0){
+                drawEnemy(entities[entity].name, entities[entity].x- xRange, entities[entity].y- yRange, entity)
             }
 
             drawEffects();
@@ -278,7 +280,7 @@ function randint(min, max){
 function displayDeathScreen(){
     fill("red");
     textSize(30);
-    text("YOU ARE DEAD", LENGTH/2, 100)
+    text("YOU ARE DEAD", LENGTH/2, 150)
     textSize(20);
     text("Respawning In: " + (entities[socket.id].deathDuration -(gameTime - entities[socket.id].deathTime))/1000 + " seconds", LENGTH/2, 200)
 }
@@ -351,11 +353,14 @@ function displayInventory(){
         textAlign(LEFT)
         if (stat != "maxMana" && stat != "maxHp"){
             if (num < 4){
-                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + num*75, 470)
+                text(entities[socket.id].stats[stat][0] + ": " + 
+                Math.round(entities[socket.id].stats[stat][1] + entities[socket.id].effects[stat].bonusAmount), 160 + num*75, 470)
             } else if (num < 8) {
-                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-4)*75, 500)
+                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1] + 
+                    entities[socket.id].effects[stat].bonusAmount), 160 + (num-4)*75, 500)
             } else {
-                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1]), 160 + (num-8)*75, 530)
+                text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1] + 
+                    entities[socket.id].effects[stat].bonusAmount), 160 + (num-8)*75, 530)
             }
             num ++;
         }
@@ -383,6 +388,26 @@ function update(returnList){
     particles = returnList[5];
 }
 
+function drawEnemy(enemyName, x, y,id){
+    push();
+    if (entities[id].dir == "left"){
+        scale(-1, 1)
+        x = -x - 20
+    }
+
+    if (enemyName == "Paladin Of The Order"){
+        fill("rgb(237, 133, 133)")
+        rect(x  - 2, y, 24, 12)
+        rect(x - 7, y - 5, 10, 10)
+        rect(x - 13, y - 2, 8, 20)
+        fill("black")
+        rect(x + 5, y+ 12, 4, 4)
+        fill("black")
+        rect(x + 15, y + 12, 4, 4)
+    }
+    pop();
+}
+
 function drawItem(itemName, x, y, flip, id, slot){
     push();
     if (entities[id].dir == "left" && flip){
@@ -405,9 +430,26 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x, y - 8, 20, 8);
             rect(x, y, 25, 5);
             break;
+        case "Knight's Helm":
+            fill("silver");
+            rect(x, y, 20, 12);
+            fill("gray")
+            rect(x + 5, y + 2, 18, 6);
+            break;
         case "Leather Tunic":
             fill(138, 50, 0);
             rect(x, y, 20, 20);
+            break;
+        case "Steel Armour":
+            fill("silver");
+            rect(x, y, 20, 20);
+            break;
+        case "Ranger's Cloak":
+            fill("black");
+            rect(x, y, 20, 4);
+            fill("rgb(161, 102, 179)");
+            rect(x, y, 8, 20);
+            rect(x+12, y, 8, 20);
             break;
         case "Warlord's Vest":
             fill(150, 150, 150);
@@ -420,6 +462,14 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x, y + entities[id].width/2, 5, 5);
             fill("silver");
             rect(x + 5, y, 4, 15);
+            fill("brown");
+            rect(x + 5, y + 15, 4, 6);
+            break;
+        case "Silver Longsword":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 5, 5);
+            fill("white");
+            rect(x + 5, y - 5, 4, 20);
             fill("brown");
             rect(x + 5, y + 15, 4, 6);
             break;
@@ -452,6 +502,18 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x+3, y-2, 10, 15);
             fill(entities[id].colour)
             rect(x-5, y +2, 5, 8);
+            break;
+        case "Legion Shield":
+            fill("red");
+            rect(x - 3, y, 15, 20);
+            fill("gray");
+            rect(x-1, y+2, 11, 16)
+            break;
+        case "Summoning Banner":
+            fill("gray");
+            rect(x-3, y-5, 4, 22);
+            fill("white");
+            rect(x-7, y - 2, 12, 10)
             break;
         case "Minor Health Potion":
             fill("gray");

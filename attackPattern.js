@@ -1,8 +1,11 @@
 import { Bullet } from "./bullet.js";
+import { Particle } from "./particle.js";
+import { EnemyStats } from "./enemyStats.js";
+import { Entity } from "./entity.js";
 
 export class AttackPattern {
 
-    preformAttack(attack, weaponIndex, bullets, entities, entity, gameTime, aimX, aimY){
+    preformAttack(attack, weaponIndex, bullets, entities, entity, gameTime, aimX, aimY, particles, game, walls){
         if (gameTime - entity.weapons[weaponIndex].lastFired > entity.weapons[weaponIndex].cooldown*(1- 0.1*entity.stats.dex[1])
         && entity.stats.mana[1] >= entity.weapons[weaponIndex].manaCost){
             entity.stats.mana[1] -= entity.weapons[weaponIndex].manaCost
@@ -54,17 +57,72 @@ export class AttackPattern {
                     // bullet to the right
                     this.createBullet(entity, "circle", weaponIndex,entity.x + entity.length, entity.y +entity.width/2, bullets, gameTime)
                     break;
-                // END OF GOBLIN WARLORD BOSS 
-                case "chaseKnight":
+                // END OF GOBLIN WARLORD BOSS
+                case "knightChase":
                     entity.chase = true;
                     this.createBullet(entity, "circle",weaponIndex, aimX, aimY, bullets, gameTime)
                     break;
                 case "armourUp":
                     entity.chase = false;
-                    entity.effects.bonusDef.bonusAmount = 10;
-                    entity.effects.bonusDef.duration = 5000;
-                    entity.effects.bonusDef.startTime = gameTime;
+                    entity.effects.def.bonusAmount = 10;
+                    entity.effects.def.duration = 3000;
+                    entity.effects.def.startTime = gameTime;
+                    particles.push(new Particle("+ DEF", "text", entity.x + entity.length/2, entity.y + entity.width/2, 0, 0, 700,
+                    gameTime, "WHITE", 0, -5));
                     break;
+                case "shieldArmour":
+                    entity.effects.def.bonusAmount = 5;
+                    entity.effects.def.duration = 4000;
+                    entity.effects.def.startTime = gameTime;
+                    particles.push(new Particle("+ DEF", "text", entity.x + entity.length/2, entity.y + entity.width/2, 0, 0, 700,
+                    gameTime, "WHITE", 0, -5));
+                    break;
+                case "summonSquire":
+                    this.summonEnemy("Squire", entity.x, entity.y, entity.x, entity.y, game, entities, gameTime,walls, entity.team)
+                    break;
+                case "summonMinion":
+                    if (entity.location != "lobby")
+                        this.summonEnemy("Minion", entity.x, entity.y, entity.x, entity.y, game, entities, gameTime,walls, entity.team)
+                    break;
+                case "tripleStraight":
+                    for (var i = 1; i < 4; i ++){
+                        this.createBulletComplex(entity.x + entity.length/2, entity.y + entity.width/2, "circle",
+                        weaponIndex, aimX, aimY, 
+                        bullets, gameTime, entity, entity.weapons[weaponIndex].speed*i)
+                    }
+                    break;
+                // PALADIN BOSS FIGHT ------------------------------------------------------------------------------
+                case "summonPaladinBoss":
+                    this.summonEnemy("Paladin Of The Order", entity.x - 100, entity.y - 100, entity.x, entity.y, game, entities
+                    , gameTime,walls, entity.team)
+                    delete entities[entity.id];
+                    break;
+                case "paladinChase":
+                    entity.chase = true;
+                    entity.effects.spd.bonusAmount = 3;
+                    entity.effects.spd.startTime = gameTime;
+                    entity.effects.spd.duration = 1000;
+                    this.createBullet(entity, "circle",weaponIndex, aimX, aimY, bullets, gameTime)
+                    for(var i = 0; i < 5; i ++){
+                        this.createBullet(entity, "circle",weaponIndex, entity.x + entity.length/2+ this.randint(-20, 20)
+                        , entity.y + entity.width/2+ this.randint(-20, 20), bullets, gameTime)
+                    }
+                    break;
+                case "jump":
+                    entity.chase = false;
+                    entity.yAccel = -entity.yOrigA*3
+                    break;
+                case "explosion":
+                    entity.chase = false;
+                    for(var i = 0; i < 50; i ++){
+                        this.createBulletComplex(entity.x + entity.length/2, entity.y + entity.width/2, "circle",
+                        weaponIndex, entity.x + entity.length/2+ this.randint(-20, 20)
+                        , entity.y + entity.width/2+ this.randint(-20, 20), 
+                        bullets, gameTime, entity, entity.weapons[weaponIndex].speed*(this.randint(1, 6)));
+                    }
+                    break;
+
+                // SPEECH DEFAULT. DO NOT TOUCH
                 case "speech":
                     entity.invincible = true;
                     entity.chase = false;
@@ -120,5 +178,50 @@ export class AttackPattern {
 
     randint(min, max){
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+
+    summonEnemy(name, x, y, xLimit, yLimit, game, entities, gameTime, walls, team){
+        if (xLimit == null){
+            xLimit = x;
+            yLimit = y;
+        }
+    
+        var enemyStats = new EnemyStats().getStats(name);
+        entities[game.n] = new Entity(name, "npc", this.randint(x, xLimit), this.randint(y, yLimit), enemyStats.length, enemyStats.width, 
+        enemyStats.hp, enemyStats.weaponName, enemyStats.colour,
+        team, gameTime, game.n, enemyStats.xSpeed, enemyStats.ySpeed, enemyStats.engageRange);
+        entities[game.n].attacks = enemyStats.attacks
+        entities[game.n].drops = enemyStats.drops
+        entities[game.n].speechList = enemyStats.speechList
+        entities[game.n].boss = enemyStats.boss
+        entities[game.n].travelMap.detectRange = enemyStats.detectRange
+        while (!this.checkAvailable(entities[game.n], walls)){
+            entities[game.n].x = this.randint(x, xLimit);
+            entities[game.n].y = this.randint(y, yLimit);  
+        }
+    
+        game.n ++;
+    }
+
+    checkAvailable (rect, arrayOfRect){
+        for(var i = 0; i < arrayOfRect.length; i ++){
+            if (this.rectRectDetect(rect, arrayOfRect[i]) && rect != arrayOfRect[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    rectRectDetect(rect, rect2){
+        var leftSide = rect.x;
+        var rightSide = rect.x + rect.length;
+        var topSide = rect.y;
+        var botSide = rect.y + rect.width;
+        if (rect2.x + rect2.length > leftSide && rect2.x < rightSide && rect2.y + rect2.width> topSide && rect2.y < botSide){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
