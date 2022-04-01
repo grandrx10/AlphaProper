@@ -13,6 +13,8 @@ export class EnemyStats {
         var speechList = []
         var boss = false;
         var detectRange = 500;
+        var deathAttack;
+        var setHp;
         switch(name){
             case "Goblin Grunt":
                 length = 20;
@@ -119,7 +121,8 @@ export class EnemyStats {
                         ["Summoning Banner", 5],
                         ["Knight's Helm", 12],
                         ["Steel Armour", 10],
-                        ["Ranger's Cloak", 3]]
+                        ["Ranger's Cloak", 3],
+                        ["Silver Longsword", 10]]
                 break;
             case "Recruiter":
                 length = 20;
@@ -137,7 +140,8 @@ export class EnemyStats {
                         ["Summoning Banner", 10],
                         ["Knight's Helm", 6],
                         ["Steel Armour", 5],
-                        ["Ranger's Cloak", 5]]
+                        ["Ranger's Cloak", 5],
+                        ["Silver Longsword", 5]]
                 break;
             case "Squire":
                 length = 20;
@@ -153,7 +157,8 @@ export class EnemyStats {
                         ["Minor Mana Potion", 2],
                         ["Legion Shield", 1],
                         ["Steel Armour", 2],
-                        ["Ranger's Cloak", 2]]
+                        ["Ranger's Cloak", 1],
+                        ["Silver Longsword", 1]]
                 break;
             case "Minion":
                 length = 15;
@@ -183,7 +188,8 @@ export class EnemyStats {
                         ["Summoning Banner", 4],
                         ["Knight's Helm", 6],
                         ["Steel Armour", 3],
-                        ["Ranger's Cloak", 15]]
+                        ["Ranger's Cloak", 15],
+                        ["Silver Longsword", 3]]
                 break;
             // HIGH PRIEST BOSS FIGHT
             case "High Priest":
@@ -206,7 +212,7 @@ export class EnemyStats {
                 ["Maybe he hasn't intervened because\nwe aren't worth his attention.", 3000],
                 ["I'll show him a display\nhe'll HAVE to notice.", 2000],
                 ["Sadly, that means I cannot stay\nhere to entertain you scoundrels.",3000],
-                ["PALADIN! TO MY AID!", 1000],
+                ["PALADIN! TO MY AID!", 1500],
                 ["Goodbye.", 1000]]
                 drops = []
                 break;
@@ -214,16 +220,58 @@ export class EnemyStats {
                 length = 20;
                 width = 40;
                 hp = 1500;
-                weaponName = ["", "holyBlade", "oneTime", "explosion"];
+                weaponName = ["", "oneTime", "explosion","holyBlade", "futureBullets"];
                 colour = "rgb(196, 100, 35)"
                 xSpeed = 0.5;
                 ySpeed = 6;
                 engageRange = 0;
-                attacks = [["speech", -1], ["paladinChase", 5000], ["jump", 1000], ["explosion", 1000]]
+                attacks = [["speech", -1], ["jump", 1000], ["explosion", 1000], ["paladinChase", 5000], ["warningShots", 1000]]
                 speechList = [["Halt. I will not allow you\nto harm the High Priest.",3000], 
                 ["I do not know why you have chosen\nthe path of evil.", 3000],
                 ["But I will stop you right where\nyou stand.", 2500],]
-                drops = []
+                deathAttack = "phase2Paladin"
+                boss = true;
+                detectRange = 1500;
+                break;
+            case "Fallen Paladin":
+                length = 20;
+                width = 40;
+                hp = 15000;
+                weaponName = ["", "oneTime"];
+                colour = "rgb(153, 76, 24)"
+                attacks = [["speech", -1], ["rise", -1]]
+                speechList = [["I... lost?",3000], 
+                ["How can God allow monsters such as\nyourselves to grow so powerful?", 3000],
+                ["Please, Lord, grant me the power\nto strike these monsters down.", 3000],
+                ["Grant me the power to exact\njustice in your name.", 3000],
+                ["...", 3000],
+                ["No answer, huh?", 2000],
+                ["No. That was God's answer.", 2000],
+                ["I understand now. I do not\nneed his help to exact justice.", 3000],
+                ["I have the power to do so inside\nof me.", 2500],
+                ["Prepare for a reckoning, evildoers.", 3000]]
+                setHp = 1000;
+                break;
+            case "The Ascended Paladin":
+                length = 20;
+                width = 40;
+                hp = 2000;
+                weaponName = ["", "oneTime", "explosion","holyBlade", "futureBullets"];
+                colour = "rgb(153, 76, 24)"
+                xSpeed = 0.6;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["speech", -1], ["jump", 1000], ["explosionV2", 1000], ["paladinChaseV2", 5000], ["warningShotsV2", 1000]]
+                speechList = [["Disappear.",1000]]
+                drops = [["Minor Health Potion", 50],
+                        ["Minor Mana Potion", 50],
+                        ["Legion Shield", 40],
+                        ["Summoning Banner", 40],
+                        ["Knight's Helm", 40],
+                        ["Steel Armour", 40],
+                        ["Ranger's Cloak", 40],
+                        ["Silver Longsword", 40],
+                        ["Holy Blade", 10]]
                 boss = true;
                 detectRange = 1500;
                 break;
@@ -241,7 +289,9 @@ export class EnemyStats {
             drops: drops,
             speechList: speechList,
             boss: boss,
-            detectRange: detectRange
+            detectRange: detectRange,
+            deathAttack: deathAttack,
+            setHp: setHp
         }
     }
 }

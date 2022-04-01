@@ -1,3 +1,4 @@
+
 var socket;
 
 var gameStart = [false, ""];
@@ -25,6 +26,8 @@ var currentSong = [""]
 
 let goblinWarlordSong;
 let goblinForestSong;
+let crusadeSong;
+let paladinSong;
 var songList = [];
 
 let song;
@@ -43,7 +46,10 @@ function preload(){
     clientFont = loadFont('RedHatMono-Regular.ttf')
     goblinWarlordSong = createAudio("Assets/WarlordBossTheme.mp3")
     goblinForestSong = createAudio("Assets/GoblinForestTheme.mp3")
-    songList = [[goblinForestSong, "Goblin Forest"], [goblinWarlordSong, "Warlord's Lair"]]
+    crusadeSong = createAudio("Assets/CrusadeTheme.mp3")
+    paladinSong = createAudio("Assets/PaladinTheme.mp3")
+    songList = [[goblinForestSong, "Goblin Forest"], [goblinWarlordSong, "Warlord's Lair"],
+    [crusadeSong, "Crusader Encampment"], [paladinSong, "High Priest's Quarters"]]
 }
 
 function playMusic(){
@@ -92,11 +98,18 @@ function draw(){
 
         for (let i = bullets.length-1; i >= 0; i --){
             if (bullets[i] != null){
-                fill(bullets[i].colour)
-                if (bullets[i].type == "circle")
-                    ellipse(bullets[i].x -xRange, bullets[i].y -yRange, bullets[i].r, bullets[i].r)
-                else {
-                    rect(bullets[i].x -xRange, bullets[i].y -yRange, bullets[i].length, bullets[i].width)
+                if (bullets[i].delay != null){
+                    fill("WHITE");
+                    strokeWeight(20)
+                    line(bullets[i].x-xRange, bullets[i].y-yRange, bullets[i].aimX-xRange, bullets[i].aimY-yRange)
+                    strokeWeight(1)
+                } else {
+                    fill(bullets[i].colour)
+                    if (bullets[i].type == "circle")
+                        ellipse(bullets[i].x -xRange, bullets[i].y -yRange, bullets[i].r, bullets[i].r)
+                    else {
+                        rect(bullets[i].x -xRange, bullets[i].y -yRange, bullets[i].length, bullets[i].width)
+                    }
                 }
             }
         }
@@ -395,12 +408,21 @@ function drawEnemy(enemyName, x, y,id){
         x = -x - 20
     }
 
-    if (enemyName == "Paladin Of The Order"){
+    if (enemyName == "Paladin Of The Order" || enemyName == "Fallen Paladin"){
         fill("rgb(237, 133, 133)")
         rect(x  - 2, y, 24, 12)
         rect(x - 7, y - 5, 10, 10)
         rect(x - 13, y - 2, 8, 20)
         fill("black")
+        rect(x + 5, y+ 12, 4, 4)
+        fill("black")
+        rect(x + 15, y + 12, 4, 4)
+    } else if (enemyName == "The Ascended Paladin"){
+        fill("rgb(237, 133, 133)")
+        rect(x  - 2, y, 24, 12)
+        rect(x - 7, y - 5, 10, 10)
+        rect(x - 13, y - 2, 8, 20)
+        fill("red")
         rect(x + 5, y+ 12, 4, 4)
         fill("black")
         rect(x + 15, y + 12, 4, 4)
@@ -469,6 +491,14 @@ function drawItem(itemName, x, y, flip, id, slot){
             fill(entities[id].colour)
             rect(x, y + entities[id].width/2, 5, 5);
             fill("white");
+            rect(x + 5, y - 5, 4, 20);
+            fill("brown");
+            rect(x + 5, y + 15, 4, 6);
+            break;
+        case "Holy Blade":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 5, 5);
+            fill("gold");
             rect(x + 5, y - 5, 4, 20);
             fill("brown");
             rect(x + 5, y + 15, 4, 6);
@@ -603,7 +633,6 @@ function drawEffects(){
         if (entities[entity].effects[effect].bonusAmount > 0){
             fill(entities[entity].effects[effect].colour);
             rect(entities[entity].x + entities[entity].length/2 - xRange - 8*(count-1) - 4, entities[entity].y - yRange - 60, 8, 8)
-            console.log("OK")
             count -= 2;
         }
     }

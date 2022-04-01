@@ -31,6 +31,13 @@ export class Weapon {
                 this.expireTime = 150; // 200
                 this.colour = "silver"
                 break;
+            case "Holy Blade":
+                this.cooldown = 100; // 100
+                this.damage = 22;
+                this.speed = 22;
+                this.expireTime = 150; // 200
+                this.colour = "gold"
+                break;
             case "Hearthwood Bow":
                 this.cooldown = 150;
                 this.damage = 25;
@@ -163,7 +170,7 @@ export class Weapon {
                 this.bulletWidth = 10
                 break;
             case "oneTime":
-                this.cooldown = 1000000;
+                this.cooldown = 1500;
                 break;
             case "holyBlade":
                 this.cooldown = 200;
@@ -174,11 +181,20 @@ export class Weapon {
                 this.bulletLength = 12
                 this.bulletWidth = 12
                 break;
+            case "futureBullets":
+                this.cooldown = 300;
+                this.damage = 6;
+                this.speed = 5;
+                this.expireTime = 10000;
+                this.colour = "cyan"
+                this.bulletLength = 12
+                this.bulletWidth = 12
+                break;
             case "explosion":
                 this.cooldown = 10000;
                 this.damage = 8;
                 this.speed = 5;
-                this.expireTime = 1200;
+                this.expireTime = 10000;
                 this.colour = "rgb(255, 234, 173)"
                 this.bulletLength = 15
                 this.bulletWidth = 15

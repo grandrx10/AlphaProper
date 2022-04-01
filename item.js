@@ -69,10 +69,20 @@ export class Item {
                 this.description = "A finely crafted bow made by the\nfinest goblin smiths."
                 this.attackType = "shoot"
                 break;
+            case "dev":
+                this.slot = "Weapon"
+                this.description = "dev"
+                this.attackType = "shoot"
+                break;
             case "Silver Longsword":
                 this.slot = "Weapon"
                 this.description = "A quality blade that will cut through\ncountless forces before it bends."
                 this.attackType = "shoot"
+                break;
+            case "Holy Blade":
+                this.slot = "Weapon"
+                this.description = "A legendary weapon that serves to\neradicate evil from this land."
+                this.attackType = "doubleShot"
                 break;
             case "Hefty Club":
                 this.slot = "Weapon"

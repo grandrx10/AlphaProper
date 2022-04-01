@@ -2,7 +2,7 @@ import { Particle } from "./particle.js";
 
 // This is the start of combat program
 export class Bullet {
-    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour, length, width, gravity, stay) {
+    constructor (x, y, aimX, aimY, speed, damage, type, duration, team, gameTime,id, colour, length, width, gravity, stay, delay) {
         this.x = x; // required
         this.y = y; // required
         this.aimX = aimX;
@@ -23,23 +23,27 @@ export class Bullet {
         this.stay = stay;
         this.xSpeed = 0;
         this.ySpeed = 0;
+        this.delay = delay;// required
     }
 
     updateBulletLocation (entities, walls, bullets, gameTime, particles){
-        this.x = this.x + this.speed*this.travel[0]
-        /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
-        this.y = this.y + this.speed*this.travel[1]
-        /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
+        if (this.delay == null){
+            this.x = this.x + this.speed*this.travel[0]
+            /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
+            this.y = this.y + this.speed*this.travel[1]
+            /Math.sqrt(Math.pow(this.travel[0],2) + Math.pow(this.travel[1],2));
 
-        if (this.gravity){
-            this.deaccelerate();
-            this.update(walls)
+            if (this.gravity){
+                this.deaccelerate();
+                this.update(walls)
+            }
+
+            this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
+
+            this.checkBulletCollision(walls, bullets);
+        } else if (gameTime - this.startTime > this.delay){
+            this.delay = null;
         }
-
-        this.checkBulletCollisionEntities(entities, bullets, this, particles, gameTime);
-
-        this.checkBulletCollision(walls, bullets);
-
     }
 
     show(){

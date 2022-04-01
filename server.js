@@ -250,7 +250,7 @@ function update(){
 
                     for (var i = 0; i < bullets.length; i ++){
                         simpleBullets.push(new SimpleBullet(bullets[i].x, bullets[i].y, bullets[i].colour,
-                            bullets[i].length, bullets[i].width));
+                            bullets[i].length, bullets[i].width, bullets[i].aimX, bullets[i].aimY, bullets[i].delay));
                     }
 
 
@@ -265,7 +265,7 @@ function update(){
                     entities[key].checkInteract(interactables);
                     entities[key].aiMovement(entities, entities[key], bullets, gameTime, particles,game, walls);
                     if (entities[key] != null)
-                        entities[key].checkDeath(entities, gameTime, interactables, particles);
+                        entities[key].checkDeath(entities, gameTime, interactables, particles, bullets, walls, game);
                     game.n ++;
                 }
             });
@@ -401,7 +401,7 @@ function createSection(name, x, y, id){
         var width = 500;
     }else if (name == "High Priest's Quarters"){
         var length = 2000;
-        var width = 500;
+        var width = 1000;
     }
     rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){

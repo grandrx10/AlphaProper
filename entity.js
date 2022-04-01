@@ -47,6 +47,7 @@ export class Entity {
         this.attackInfo = new AttackPattern();
         this.attackIndex = 0
         this.attacks = [["shoot", -1], ["", -1]]
+        this.deathAttack;
         this.speech = ""; // REQUIRED
     
 
@@ -112,7 +113,7 @@ export class Entity {
             }
 
             var i = 3
-            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Silver Longsword",
+            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
             // var i = 2
@@ -270,7 +271,7 @@ export class Entity {
         }
     }
 
-    checkDeath(entities, gameTime, interactables, particles){
+    checkDeath(entities, gameTime, interactables, particles, bullets, walls, game){
         if (this != null){
             if (this.stats.hp[1] < 0){
                 this.stats.hp[1] = 0
@@ -298,22 +299,27 @@ export class Entity {
                 }
     
                 if (entities[this.id].type != "Player"){
-                    var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
-                    entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag", gameTime)
-    
-                    for (var i = 0; i < entities[this.id].drops.length; i ++){
-                        if (this.randint(1, 100) <= entities[this.id].drops[i][1]){
-                            lootDrop.addToInventory(entities[this.id].drops[i][0]);
+                    if (this.deathAttack == null){
+                        var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
+                        entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag", gameTime)
+        
+                        for (var i = 0; i < entities[this.id].drops.length; i ++){
+                            if (this.randint(1, 100) <= entities[this.id].drops[i][1]){
+                                lootDrop.addToInventory(entities[this.id].drops[i][0]);
+                            }
                         }
-                    }
-    
-                    if (!lootDrop.checkEmpty()){
-                        interactables.push(lootDrop)
-                    }
-    
-                    if (entities[this.id].boss){
-                        interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y, 
-                        30, 40, "blue", "portal", gameTime, -2))
+                        
+                        if (!lootDrop.checkEmpty()){
+                            interactables.push(lootDrop)
+                        }
+        
+                        if (entities[this.id].boss){
+                            interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y, 
+                            30, 40, "blue", "portal", gameTime, -2))
+                        }
+                    } else {
+                        this.attackInfo.preformAttack(this.deathAttack, -1, bullets, entities, this, gameTime,
+                            this.travelMap.aimX, this.travelMap.aimY, particles,game, walls);
                     }
     
                     delete entities[this.id];

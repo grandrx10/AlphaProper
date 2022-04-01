@@ -33,7 +33,7 @@ export class LevelGeneration {
                 possibleMobs = ["Silver Knight", "Recruiter", "Ranger"]
                 finalPortal = "High Priest's Quarters"
                 enemyNumber.min = 2;
-                enemyNumber.max = 3;
+                enemyNumber.max = 4;
                 break;
             case "lobby":
                 segmentLength = 1650;
@@ -60,12 +60,17 @@ export class LevelGeneration {
                 break;
             case "High Priest's Quarters":
                 segmentLength = 2000;
-                segmentHeight = 500;
-                walls.push(new Wall("wall", x + 300, y - 150, 50, 150, "silver"));
-                walls.push(new Wall("wall", x + 800, y - 150, 50, 150, "silver"));
+                segmentHeight = 1000;
+                walls.push(new Wall("wall", x, y - 200, 300, 200, "silver"));
+                walls.push(new Wall("wall", x + 300, y - 150, 500, 150, "silver"));
+                walls.push(new Wall("wall", x + 800, y - 100, 800, 100, "silver"));
                 walls.push(new Wall("wall", x + 1600, y - 200, 400, 200, "silver"));
+
+                walls.push(new Wall("wall", x + 350, y - 400, 200, 20, "silver"));
+                walls.push(new Wall("wall", x + 750, y - 450, 200, 20, "silver"));
+                walls.push(new Wall("wall", x + 1350, y - 400, 200, 20, "silver"));
                 bossRoom = true;
-                this.summonEnemy("High Priest", x+ 1800, y-250, x+ 1800, y-250, game, entities, gameTime, walls)
+                this.summonEnemy("High Priest", x+ 1800, y-250, x+ 1800, y-250, game, entities, gameTime, walls)// High Priest
                 break;
         }
 
@@ -195,6 +200,13 @@ export class LevelGeneration {
         entities[game.n].speechList = enemyStats.speechList
         entities[game.n].boss = enemyStats.boss
         entities[game.n].travelMap.detectRange = enemyStats.detectRange
+        entities[game.n].deathAttack = enemyStats.deathAttack;
+        if (entities[game.n].attacks[0][0] == "speech"){
+            entities[game.n].invincible = true;
+        }
+        if (enemyStats.setHp != null){
+            entities[game.n].stats.hp[1] = enemyStats.setHp;
+        }
         while (!this.checkAvailable(entities[game.n], walls)){
             entities[game.n].x = this.randint(x, xLimit);
             entities[game.n].y = this.randint(y, yLimit);  
