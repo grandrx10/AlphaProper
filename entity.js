@@ -341,6 +341,8 @@ export class Entity {
                 entities[this.id].stats.hp[1] = 100;
                 entities[this.id].length = 20;
                 entities[this.id].width = 30;
+                this.deathTime = 0;
+                this.deathDuration = 5000;
             }
     
             if (this.expireTime != -1 && gameTime - this.creationTime > this.expireTime){
