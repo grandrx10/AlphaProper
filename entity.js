@@ -125,6 +125,10 @@ export class Entity {
 
     checkEffects(gameTime){
         if (this != null){
+            if (this.room != null && this.room.name == "lobby"){
+                this.stats.mana[1] += 1;
+            }
+
             for (var effect in this.effects){
                 if (gameTime - this.effects[effect].startTime > this.effects[effect].duration){
                     this.effects[effect].bonusAmount = 0;
@@ -332,8 +336,11 @@ export class Entity {
                     entities[this.id].inventory.inventoryOpen = false;
                 }
             } else if ((gameTime - this.deathTime) > this.deathDuration && this.deathTime != 0){
-                entities[this.id] = new Entity(this.name, "Player", 100 + this.randint(-20, 20), 100, 20, 30, 100, ["Adventurer's Sword", ""], 
-                "purple", 0, gameTime, this.id,1,6)
+                entities[this.id].x = 100 + this.randint(-20, 20)
+                entities[this.id].y = 100
+                entities[this.id].stats.hp[1] = 100;
+                entities[this.id].length = 20;
+                entities[this.id].width = 30;
             }
     
             if (this.expireTime != -1 && gameTime - this.creationTime > this.expireTime){

@@ -143,15 +143,6 @@ export class AttackPattern {
                         bullets, gameTime, entity, entity.weapons[weaponIndex].speed*(this.randint(1, 6)));
                     }
                     break;
-                case "explosionV2":
-                    entity.chase = false;
-                    for(var i = 0; i < 150; i ++){
-                        this.createBulletComplex(entity.x + entity.length/2, entity.y + entity.width/2, "circle",
-                        weaponIndex, entity.x + entity.length/2+ this.randint(-20, 20)
-                        , entity.y + entity.width/2+ this.randint(-20, 20), 
-                        bullets, gameTime, entity, entity.weapons[weaponIndex].speed*(this.randint(1, 6)));
-                    }
-                    break;
                 case "warningShots":
                     entity.effects.def.bonusAmount = 3;
                     entity.effects.def.duration = 1000;
@@ -178,7 +169,7 @@ export class AttackPattern {
                     }
                     break;
                 case "warningShotsV2":
-                    for (var i = 0; i < 10; i ++){
+                    for (var i = 0; i < 3; i ++){
                         entity.attackInfo.preformAttack("warningShots", entity.attackIndex, bullets, entities,entity, gameTime,aimX, aimY,
                         particles, game, walls)
                         entity.weapons[weaponIndex].lastFired = 1;

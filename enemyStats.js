@@ -219,13 +219,13 @@ export class EnemyStats {
             case "Paladin Of The Order":
                 length = 20;
                 width = 40;
-                hp = 1500;
-                weaponName = ["", "oneTime", "explosion","holyBlade", "futureBullets"];
+                hp = 1200;
+                weaponName = ["","holyBlade", "futureBullets"];
                 colour = "rgb(196, 100, 35)"
                 xSpeed = 0.5;
                 ySpeed = 6;
                 engageRange = 0;
-                attacks = [["speech", -1], ["jump", 1000], ["explosion", 1000], ["paladinChase", 5000], ["warningShots", 1000]]
+                attacks = [["speech", -1], ["paladinChase", 5000], ["warningShots", 1000]]
                 speechList = [["Halt. I will not allow you\nto harm the High Priest.",3000], 
                 ["I do not know why you have chosen\nthe path of evil.", 3000],
                 ["But I will stop you right where\nyou stand.", 2500],]
@@ -255,13 +255,13 @@ export class EnemyStats {
             case "The Ascended Paladin":
                 length = 20;
                 width = 40;
-                hp = 2000;
+                hp = 1200;
                 weaponName = ["", "oneTime", "explosion","holyBlade", "futureBullets"];
                 colour = "rgb(153, 76, 24)"
-                xSpeed = 0.6;
+                xSpeed = 0.5;
                 ySpeed = 6;
                 engageRange = 0;
-                attacks = [["speech", -1], ["jump", 1000], ["explosionV2", 1000], ["paladinChaseV2", 5000], ["warningShotsV2", 1000]]
+                attacks = [["speech", -1], ["jump", 1000], ["explosion", 1000], ["paladinChaseV2", 5000], ["warningShotsV2", 1000]]
                 speechList = [["Disappear.",1000]]
                 drops = [["Minor Health Potion", 50],
                         ["Minor Mana Potion", 50],
