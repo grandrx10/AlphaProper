@@ -168,13 +168,6 @@ export class AttackPattern {
                         bullets, gameTime, entity, entity.weapons[weaponIndex].speed*i, 1000);
                     }
                     break;
-                case "warningShotsV2":
-                    for (var i = 0; i < 3; i ++){
-                        entity.attackInfo.preformAttack("warningShots", entity.attackIndex, bullets, entities,entity, gameTime,aimX, aimY,
-                        particles, game, walls)
-                        entity.weapons[weaponIndex].lastFired = 1;
-                    }
-                    break;
                 case "phase2Paladin":
                     this.summonEnemy("Fallen Paladin", entity.x, entity.y, entity.x, entity.y, game, entities
                     , gameTime,walls, entity.team)

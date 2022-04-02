@@ -255,13 +255,13 @@ export class EnemyStats {
             case "The Ascended Paladin":
                 length = 20;
                 width = 40;
-                hp = 1200;
+                hp = 2000;
                 weaponName = ["", "oneTime", "explosion","holyBlade", "futureBullets"];
                 colour = "rgb(153, 76, 24)"
                 xSpeed = 0.5;
                 ySpeed = 6;
                 engageRange = 0;
-                attacks = [["speech", -1], ["jump", 1000], ["explosion", 1000], ["paladinChaseV2", 5000], ["warningShotsV2", 1000]]
+                attacks = [["speech", -1], ["jump", 1000], ["explosion", 1000], ["paladinChaseV2", 5000], ["warningShots", 1000]]
                 speechList = [["Disappear.",1000]]
                 drops = [["Minor Health Potion", 50],
                         ["Minor Mana Potion", 50],
