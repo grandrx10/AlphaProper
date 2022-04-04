@@ -45,6 +45,15 @@ export class Interactable {
         }
     }
 
+    touching(rectList){
+        for(var i = 0; i < rectList.length; i++){
+            if (this.rectRectDetect(this, rectList[i]) && this != rectList[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+
     checkExpire(gameTime, interactables){
         if (gameTime - this.creationTime > this.expireTime && this.expireTime != -1){
             interactables.splice(interactables.indexOf(this), 1)

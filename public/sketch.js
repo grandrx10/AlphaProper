@@ -511,6 +511,14 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x+3, y + 2, 4, 4);
             rect(x+3, y+26, 4, 4);
             break;
+        case "Ranger's Bow":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 8, 5);
+            fill("rgb(121, 93, 133)");
+            rect(x + 8, y+6, 4, 20);
+            rect(x+3, y + 2, 4, 4);
+            rect(x+3, y+26, 4, 4);
+            break;
         case "Hefty Club":
             fill(entities[id].colour)
             rect(x, y + entities[id].width/2, 5, 5);

@@ -137,6 +137,14 @@ function newConnection(socket){
                         returnedItem = true;
                     }
                 }
+
+                if (!returnedItem){
+                    interactables.push(new Interactable("Loot", entities[id].x,
+                    entities[id].y, 15, 15, "brown", "bag", gameTime));
+                    interactables[interactables.length -1].addToInventory(entities[id].inventory.itemSelected)
+                    entities[id].inventory.itemSelected = null
+                    entities[id].updateStats();
+                }
             }
             entities[id].inventory.inventoryOpen = !entities[id].inventory.inventoryOpen;
             entities[id].inventory.itemSelected = null;
@@ -300,6 +308,9 @@ function update(){
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
+                    while (interactables[interactables.length-1].touching(interactables)){
+                        interactables[interactables.length-1].x = randint(1000, 1300);
+                    }
                     game.n ++;
                 }
             }
@@ -364,7 +375,7 @@ function findPortalDestination(id){
             entities[id].x = rooms[i].x + 100
             entities[id].y = rooms[i].y + 50;
             // CHANGE THIS LATER DO NOT DO THIS!
-            if (rooms[i].name != "lobby" && rooms[i].name != "Warlord's Lair"){
+            if (rooms[i].name != "lobby" && rooms[i].name != "Warlord's Lair"&& rooms[i].name != "High Priest's Quarters"){
                 entities[id].interact.expireTime = 10000;
                 entities[id].interact.creationTime = gameTime;
             }
@@ -386,22 +397,32 @@ function checkAvailable (rect, arrayOfRect){
 }
 
 function createSection(name, x, y, id){
-    if (name == "lobby"){
-        var length = 1650;
-        var width = 500;
-        var id = -2
-    } else if (name == "Goblin Forest"){
-        var length = 6400;
-        var width = 500;
-    } else if (name == "Warlord's Lair"){
-        var length = 1200;
-        var width = 500;
-    } else if (name == "Crusader Encampment"){
-        var length = 6000;
-        var width = 500;
-    }else if (name == "High Priest's Quarters"){
-        var length = 2000;
-        var width = 1000;
+    switch(name){
+        case "lobby":
+            var length = 1650;
+            var width = 500;
+            var id = -2
+            break;
+        case "Goblin Forest":
+            var length = 6400;
+            var width = 500;
+            break;
+        case "Warlord's Lair":
+            var length = 1200;
+            var width = 500;
+            break;
+        case "Crusader Encampment":
+            var length = 7000;
+            var width = 500;
+            break;
+        case "High Priest's Quarters":
+            var length = 2000;
+            var width = 1000;
+            break;
+        case "The Theatre":
+            var length = 8000;
+            var width = 600;
+            break; 
     }
     rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){

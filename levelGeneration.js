@@ -35,6 +35,19 @@ export class LevelGeneration {
                 enemyNumber.min = 2;
                 enemyNumber.max = 4;
                 break;
+            case "The Theatre":
+                segmentLength = 800;
+                segmentHeight = 600;
+                listOfRooms = ["curtains"];
+                possibleMobs = []
+                finalPortal = "lobby"
+                enemyNumber.min = 4;
+                enemyNumber.max = 6;
+                walls.push(new Wall("wall", x + 300, y - 600, 20, 300, "rgb(49, 114, 130)"));
+                walls.push(new Wall("wall", x + 300, y - 300, 300, 20, "rgb(49, 114, 130)"));
+                walls.push(new Wall("wall", x + 580, y - 600, 20, 300, "rgb(49, 114, 130)"));
+                this.summonEnemy("Captive Damsel", x+ 450, y - 500, x+ 450, y - 500, game, entities, gameTime, walls);
+                break;
             case "lobby":
                 segmentLength = 1650;
                 walls.push(new Wall("wall", x, y, 1600, 50, "silver"));

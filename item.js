@@ -39,14 +39,14 @@ export class Item {
                 break;
             case "Knight's Helm":
                 this.stats = {
-                    def: ["DEF", 1]
+                    def: ["DEF", 2]
                 }
                 this.slot = "Head"
                 this.description = "Steel has made this item a perfect choice\nfor protecting one's head."
                 break;
             case "Steel Armour":
                 this.stats = {
-                    def: ["DEF", 2]
+                    def: ["DEF", 3]
                 }
                 this.slot = "Chest"
                 this.description = "Crafted from the finest crusader steel,\nthis will provide you great protection."
@@ -68,6 +68,11 @@ export class Item {
                 this.slot = "Weapon"
                 this.description = "A finely crafted bow made by the\nfinest goblin smiths."
                 this.attackType = "shoot"
+                break;
+            case "Ranger's Bow":
+                this.slot = "Weapon"
+                this.description = "A bow capable of reverberating shots.\nExtremely deadly in the right hands."
+                this.attackType = "tripleStraight"
                 break;
             case "dev":
                 this.slot = "Weapon"
@@ -105,16 +110,21 @@ export class Item {
                 this.slot = "Ability"
                 this.description = "A solid steel shield that will protect its users.\nGrants increased defence on use."
                 this.attackType = "shieldArmour"
-                this.manaCost = 40;
+                this.manaCost = 30;
                 this.stats = {
-                    def: ["DEF", 1]
+                    def: ["DEF", 1],
+                    maxHp: ["MAXHP", 20]
                 }
                 break;
             case "Summoning Banner":
                 this.slot = "Ability"
                 this.description = "They cannot resist the urge to answer the call.\nJust one call and they will come\nto your aid."
                 this.attackType = "summonMinion"
-                this.manaCost = 35;
+                this.stats = {
+                    wis: ["WIS", 1],
+                    maxMana: ["MAXMANA", 1]
+                }
+                this.manaCost = 30;
                 break;
             
             // CONSUMABLES --------------------------------------------------------------------------------------------

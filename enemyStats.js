@@ -74,7 +74,7 @@ export class EnemyStats {
             case "Goblin Warlord":
                 length = 30;
                 width = 40;
-                hp = 1500; // 1500
+                hp = 1750; // 1500
                 weaponName = ["none","Warlord's Club", "Warlord's Stomp"];
                 colour = "darkgreen"
                 xSpeed = 0.5;
@@ -122,7 +122,7 @@ export class EnemyStats {
                         ["Knight's Helm", 12],
                         ["Steel Armour", 10],
                         ["Ranger's Cloak", 3],
-                        ["Silver Longsword", 10]]
+                        ["Silver Longsword", 10],["Ranger's Bow",3]]
                 break;
             case "Recruiter":
                 length = 20;
@@ -141,7 +141,7 @@ export class EnemyStats {
                         ["Knight's Helm", 6],
                         ["Steel Armour", 5],
                         ["Ranger's Cloak", 5],
-                        ["Silver Longsword", 5]]
+                        ["Silver Longsword", 5],["Ranger's Bow", 5]]
                 break;
             case "Squire":
                 length = 20;
@@ -163,7 +163,7 @@ export class EnemyStats {
             case "Minion":
                 length = 15;
                 width = 25;
-                hp = 40;
+                hp = 80;
                 weaponName = ["squireBlade"];
                 colour = "rgb(159, 113, 199)"
                 xSpeed = 0.5;
@@ -189,7 +189,8 @@ export class EnemyStats {
                         ["Knight's Helm", 6],
                         ["Steel Armour", 3],
                         ["Ranger's Cloak", 15],
-                        ["Silver Longsword", 3]]
+                        ["Silver Longsword", 3],
+                        ["Ranger Hat", 10],["Ranger's Bow", 12],]
                 break;
             // HIGH PRIEST BOSS FIGHT
             case "High Priest":
@@ -214,12 +215,11 @@ export class EnemyStats {
                 ["Sadly, that means I cannot stay\nhere to entertain you scoundrels.",3000],
                 ["PALADIN! TO MY AID!", 1500],
                 ["Goodbye.", 1000]]
-                drops = []
                 break;
             case "Paladin Of The Order":
                 length = 20;
                 width = 40;
-                hp = 1200;
+                hp = 1500;
                 weaponName = ["","holyBlade", "futureBullets"];
                 colour = "rgb(196, 100, 35)"
                 xSpeed = 0.5;
@@ -255,7 +255,7 @@ export class EnemyStats {
             case "The Ascended Paladin":
                 length = 20;
                 width = 40;
-                hp = 2000;
+                hp = 2200;
                 weaponName = ["", "oneTime", "explosion","holyBlade", "futureBullets"];
                 colour = "rgb(153, 76, 24)"
                 xSpeed = 0.5;
@@ -271,9 +271,31 @@ export class EnemyStats {
                         ["Steel Armour", 40],
                         ["Ranger's Cloak", 40],
                         ["Silver Longsword", 40],
+                        ["Ranger's Bow", 40],
                         ["Holy Blade", 10]]
                 boss = true;
                 detectRange = 1500;
+                break;
+            // ------------------------------------------------------------------
+            // ---- THE THEATRE -------------------------------------------------
+            // ------------------------------------------------------------------
+            case "Captive Damsel":
+                length = 20;
+                width = 30;
+                hp = 1000;
+                weaponName = ["", "forever"];
+                colour = "rgb(212, 70, 188)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["speech", -1], ["", -1]]
+                speechList = [["Is... is someone there?",2000],
+                ["Help me! Please, help me! I've been trapped\nin here for a few days!", 3000],
+                ["There's a crazed man living in\nthis theatre. He chained me up like this.", 3000],
+                ["Please, brave adventurers, you must defeat\nhim and set me free!", 3000],
+                ["The adventurering party I came with were all\ncaptured. He turned them all into...", 3000],
+                ["Monsters.", 2000],
+                ["Good luck, adventurers. Don't forget me!", 3000]]
                 break;
         }
         return {

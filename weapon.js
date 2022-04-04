@@ -39,11 +39,20 @@ export class Weapon {
                 this.colour = "gold"
                 break;
             case "Hearthwood Bow":
-                this.cooldown = 150;
+                this.cooldown = 180;
                 this.damage = 25;
                 this.speed = 22;
                 this.expireTime = 300; // 200
                 this.colour = "rgb(110, 245, 76)"
+                this.bulletLength = 12
+                this.bulletWidth = 12
+                break;
+            case "Ranger's Bow":
+                this.cooldown = 200;
+                this.damage = 20;
+                this.speed = 8;
+                this.expireTime = 300; // 200
+                this.colour = "rgb(210, 105, 255)"
                 this.bulletLength = 12
                 this.bulletWidth = 12
                 break;
@@ -191,7 +200,7 @@ export class Weapon {
                 this.bulletWidth = 12
                 break;
             case "explosion":
-                this.cooldown = 10000;
+                this.cooldown = 1000;
                 this.damage = 8;
                 this.speed = 5;
                 this.expireTime = 10000;

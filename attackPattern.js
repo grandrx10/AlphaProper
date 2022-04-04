@@ -112,7 +112,7 @@ export class AttackPattern {
                     entity.effects.spd.startTime = gameTime;
                     entity.effects.spd.duration = 1000;
                     this.createBullet(entity, "circle",weaponIndex, aimX, aimY, bullets, gameTime)
-                    for(var i = 0; i < 5; i ++){
+                    for(var i = 0; i < 3; i ++){
                         this.createBullet(entity, "circle",weaponIndex, entity.x + entity.length/2+ this.randint(-20, 20)
                         , entity.y + entity.width/2+ this.randint(-20, 20), bullets, gameTime)
                     }
@@ -256,16 +256,20 @@ export class AttackPattern {
     }
 
 
-    summonEnemy(name, x, y, xLimit, yLimit, game, entities, gameTime, walls){
+    summonEnemy(name, x, y, xLimit, yLimit, game, entities, gameTime, walls, team){
         if (xLimit == null){
             xLimit = x;
             yLimit = y;
+        }
+
+        if (team == null){
+            team = -1;
         }
     
         var enemyStats = new EnemyStats().getStats(name);
         entities[game.n] = new Entity(name, "npc", this.randint(x, xLimit), this.randint(y, yLimit), enemyStats.length, enemyStats.width, 
         enemyStats.hp, enemyStats.weaponName, enemyStats.colour,
-        -1, gameTime, game.n, enemyStats.xSpeed, enemyStats.ySpeed, enemyStats.engageRange);
+        team, gameTime, game.n, enemyStats.xSpeed, enemyStats.ySpeed, enemyStats.engageRange);
         entities[game.n].attacks = enemyStats.attacks
         entities[game.n].drops = enemyStats.drops
         entities[game.n].speechList = enemyStats.speechList
