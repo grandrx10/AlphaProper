@@ -9,7 +9,7 @@ export class AttackPattern {
         if (weaponIndex == -1 || 
             (gameTime - entity.weapons[weaponIndex].lastFired > entity.weapons[weaponIndex].cooldown*(1- 0.1*entity.stats.dex[1])
         && entity.stats.mana[1] >= entity.weapons[weaponIndex].manaCost)){
-            if (weaponIndex != -1){
+            if (weaponIndex != null){
                 entity.stats.mana[1] -= entity.weapons[weaponIndex].manaCost
                 entity.weapons[weaponIndex].lastFired = gameTime;
             }

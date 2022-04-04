@@ -48,6 +48,7 @@ export class Entity {
         this.attackIndex = 0
         this.attacks = [["shoot", -1], ["", -1]]
         this.deathAttack;
+        this.deathWeaponIndex;
         this.speech = ""; // REQUIRED
     
 
@@ -322,7 +323,7 @@ export class Entity {
                             30, 40, "blue", "portal", gameTime, -2))
                         }
                     } else {
-                        this.attackInfo.preformAttack(this.deathAttack, -1, bullets, entities, this, gameTime,
+                        this.attackInfo.preformAttack(this.deathAttack, this.deathWeaponIndex, bullets, entities, this, gameTime,
                             this.travelMap.aimX, this.travelMap.aimY, particles,game, walls);
                     }
     

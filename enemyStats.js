@@ -290,12 +290,28 @@ export class EnemyStats {
                 engageRange = 0;
                 attacks = [["speech", -1], ["", -1]]
                 speechList = [["Is... is someone there?",2000],
-                ["Help me! Please, help me! I've been trapped\nin here for a few days!", 3000],
-                ["There's a crazed man living in\nthis theatre. He chained me up like this.", 3000],
-                ["Please, brave adventurers, you must defeat\nhim and set me free!", 3000],
-                ["The adventurering party I came with were all\ncaptured. He turned them all into...", 3000],
+                ["Help me! Please, help me! I've\nbeen trapped in here for a few days!", 3000],
+                ["There's a crazed man living in this\ntheatre. He chained me up like this.", 3000],
+                ["Please, brave adventurers, you\nmust defeat him and set me free!", 3000],
+                ["The adventurering party I came\nwith were all captured.", 3000],
+                ["He turned them all into...", 2000],
                 ["Monsters.", 2000],
-                ["Good luck, adventurers. Don't forget me!", 3000]]
+                ["Good luck, adventurers.\nDon't forget me!", 3000]]
+                break;
+            case "Puppet of Gluttony":
+                length = 30;
+                width = 35;
+                hp = 200;
+                weaponName = ["glutton"];
+                colour = "rgb(62, 94, 59)"
+                xSpeed = 0.45;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["tripleShot", 500]]
+                drops = [["Minor Health Potion", 7],
+                        ["Minor Mana Potion", 7]]
+                deathAttack = "martyr"
+                deathWeaponIndex = 0
                 break;
         }
         return {
@@ -313,7 +329,8 @@ export class EnemyStats {
             boss: boss,
             detectRange: detectRange,
             deathAttack: deathAttack,
-            setHp: setHp
+            setHp: setHp,
+            deathWeaponIndex: deathWeaponIndex
         }
     }
 }

@@ -38,14 +38,15 @@ export class LevelGeneration {
             case "The Theatre":
                 segmentLength = 800;
                 segmentHeight = 600;
-                listOfRooms = ["curtains"];
-                possibleMobs = []
+                listOfRooms = ["curtains", "stage", "audience"];
+                possibleMobs = ["Puppet of Gluttony"]
                 finalPortal = "lobby"
                 enemyNumber.min = 4;
                 enemyNumber.max = 6;
                 walls.push(new Wall("wall", x + 300, y - 600, 20, 300, "rgb(49, 114, 130)"));
                 walls.push(new Wall("wall", x + 300, y - 300, 300, 20, "rgb(49, 114, 130)"));
                 walls.push(new Wall("wall", x + 580, y - 600, 20, 300, "rgb(49, 114, 130)"));
+                walls.push(new Wall("wall", x + 300, y - 150, 300, 150, "rgb(49, 114, 130)"));
                 this.summonEnemy("Captive Damsel", x+ 450, y - 500, x+ 450, y - 500, game, entities, gameTime, walls);
                 break;
             case "lobby":
@@ -185,8 +186,30 @@ export class LevelGeneration {
                         interactables.push(new Interactable("Switch", xLocation + 450, y - 40, 30, 20,
                         "rgb(136, 189, 181)", "button", gameTime, game.n))
                         game.n ++;
-                    break;
-
+                        break;
+                    case "curtains":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "rgb(55, 89, 110)"));
+                        walls.push(new Wall("wall", xLocation + 150, y - 200, 20, 200 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 50, y - 200, 100, 20 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 350, y - segmentHeight, 20, 150 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 250, y - segmentHeight+ 200, 220, 20 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 550, y - 200, 20, 200 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 570, y - 200, 100, 20 , "rgb(49, 114, 130)"));
+                        break;
+                    case "stage":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "rgb(55, 89, 110)"));
+                        walls.push(new Wall("wall", xLocation + 50, y - 150, 100, 150 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 150, y - 250, 500, 250 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 650, y - 150, 100, 150 , "rgb(49, 114, 130)"));
+                        break;
+                    case "audience":
+                        walls.push(new Wall("wall", xLocation, y, segmentLength, 50, "rgb(55, 89, 110)"));
+                        walls.push(new Wall("wall", xLocation, y - 150, 150, 150 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 650, y - 150, 150, 150 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 250, y - 300, 150, 150 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 400, y - 300, 150, 150 , "rgb(49, 114, 130)"));
+                        walls.push(new Wall("wall", xLocation + 325, y - 450, 150, 150 , "rgb(49, 114, 130)"));
+                        break;
                 }
             }
             if (roomToGenerate != "empty" && i != 0 && i != lastRoom){
@@ -214,6 +237,7 @@ export class LevelGeneration {
         entities[game.n].boss = enemyStats.boss
         entities[game.n].travelMap.detectRange = enemyStats.detectRange
         entities[game.n].deathAttack = enemyStats.deathAttack;
+        entities[game.n].deathWeaponIndex = enemyStats.deathWeaponIndex;
         if (entities[game.n].attacks[0][0] == "speech"){
             entities[game.n].invincible = true;
         }
