@@ -15,6 +15,7 @@ export class EnemyStats {
         var detectRange = 500;
         var deathAttack;
         var setHp;
+        var deathWeaponIndex;
         switch(name){
             case "Goblin Grunt":
                 length = 20;
@@ -122,7 +123,7 @@ export class EnemyStats {
                         ["Knight's Helm", 12],
                         ["Steel Armour", 10],
                         ["Ranger's Cloak", 3],
-                        ["Silver Longsword", 10],["Ranger's Bow",3]]
+                        ["Silver Longsword", 10],["Ranger's Bow",1]]
                 break;
             case "Recruiter":
                 length = 20;
@@ -141,7 +142,7 @@ export class EnemyStats {
                         ["Knight's Helm", 6],
                         ["Steel Armour", 5],
                         ["Ranger's Cloak", 5],
-                        ["Silver Longsword", 5],["Ranger's Bow", 5]]
+                        ["Silver Longsword", 5],["Ranger's Bow", 1]]
                 break;
             case "Squire":
                 length = 20;
@@ -190,7 +191,7 @@ export class EnemyStats {
                         ["Steel Armour", 3],
                         ["Ranger's Cloak", 15],
                         ["Silver Longsword", 3],
-                        ["Ranger Hat", 10],["Ranger's Bow", 12],]
+                        ["Ranger Hat", 10],["Ranger's Bow", 2],]
                 break;
             // HIGH PRIEST BOSS FIGHT
             case "High Priest":
@@ -271,8 +272,9 @@ export class EnemyStats {
                         ["Steel Armour", 40],
                         ["Ranger's Cloak", 40],
                         ["Silver Longsword", 40],
-                        ["Ranger's Bow", 40],
-                        ["Holy Blade", 10]]
+                        ["Ranger's Bow", 20],
+                        ["Holy Blade", 20],["Minor Health Potion", 50],
+                        ["Minor Mana Potion", 50],]
                 boss = true;
                 detectRange = 1500;
                 break;
@@ -293,25 +295,120 @@ export class EnemyStats {
                 ["Help me! Please, help me! I've\nbeen trapped in here for a few days!", 3000],
                 ["There's a crazed man living in this\ntheatre. He chained me up like this.", 3000],
                 ["Please, brave adventurers, you\nmust defeat him and set me free!", 3000],
+                ["The curtains at the end are locked\nclosed until you destroy all", 3000],
+                ["of the Puppets of Pride.", 2000],
                 ["The adventurering party I came\nwith were all captured.", 3000],
                 ["He turned them all into...", 2000],
                 ["Monsters.", 2000],
+                ["Don't let that happen to you.", 2000],
                 ["Good luck, adventurers.\nDon't forget me!", 3000]]
                 break;
             case "Puppet of Gluttony":
                 length = 30;
                 width = 35;
-                hp = 200;
+                hp = 150;
                 weaponName = ["glutton"];
                 colour = "rgb(62, 94, 59)"
                 xSpeed = 0.45;
                 ySpeed = 6;
                 engageRange = 0;
-                attacks = [["tripleShot", 500]]
+                attacks = [["tripleShot", -1]]
                 drops = [["Minor Health Potion", 7],
-                        ["Minor Mana Potion", 7]]
+                        ["Minor Mana Potion", 7],
+                        ["Gluttonous Coat", 7],
+                        ["Vomit", 7]]
                 deathAttack = "martyr"
                 deathWeaponIndex = 0
+                break;
+            case "Puppet of Sloth":
+                length = 20;
+                width = 30;
+                hp = 80;
+                weaponName = ["sloth"];
+                colour = "rgb(147, 196, 182)"
+                xSpeed = 0.6;
+                ySpeed = 6;
+                engageRange = 0;
+                attacks = [["shoot", -1]]
+                drops = [["Minor Health Potion", 7],
+                        ["Minor Mana Potion", 7],
+                        ["Puppet's Robes", 7],
+                        ["Puppet's Wig", 7],["Gluttonous Coat", 4],]
+                break;
+            case "Puppet of Pride":
+                length = 20;
+                width = 30;
+                hp = 80;
+                weaponName = [""];
+                colour = "rgb(153, 26, 62)"
+                xSpeed = 0.6;
+                ySpeed = 6;
+                engageRange = 300;
+                attacks = [["", -1]]
+                drops = [["Minor Health Potion", 7],
+                        ["Minor Mana Potion", 7], ["Teleportation Crystal", 10]]
+                break;
+            case "Puppet of Envy":
+                length = 20;
+                width = 30;
+                hp = 80;
+                weaponName = ["envy"];
+                colour = "rgb(102, 65, 12)"
+                xSpeed = 0.5;
+                ySpeed = 5;
+                engageRange = 100;
+                attacks = [["shoot", -1]]
+                drops = [["Minor Health Potion", 7],
+                        ["Minor Mana Potion", 7],
+                        ["Puppet's Wig", 7],
+                        ["Flamestrike Spell", 7],["Gluttonous Coat", 4],]
+                break;
+            case "The Puppeteer":
+                length = 20;
+                width = 30;
+                hp = 2500;
+                weaponName = ["", "once", "once", "once", "once"];
+                colour = "rgb(161, 166, 71)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                boss = true;
+                attacks = [["speech", -1], ["summonPuppetWave1", 10000], ["summonPuppetWave2", 15000], ["summonPuppetWave3", 15000], ["puppetPhase2", 1000]]
+                speechList = [["Take your seats, adventurers.",2000],
+                ["You are the fifth group of\nwarriors to come to kill me.", 2000],
+                ["What makes you think you're\nany different from those", 2000],
+                ["before you? You will end\nup dead just like them.", 2000],
+                ["Though, I will admit, it\ngets so lonely here.", 2000],
+                ["When I was young, I chased\nafter a young princess.", 2000],
+                ["She rejected me.", 1000],
+                ["But I didn't want to let her\ngo, so I locked her up.", 2000],
+                ["Then the hands of 'justice'\nimprisoned me.", 2000],
+                ["I hate it when people leave\nme. They should stay.", 2000],
+                ["You won't leave me, right?", 2000]]
+                break;
+            case " The Puppeteer ":
+                length = 20;
+                width = 30;
+                hp = 2500;
+                weaponName = ["", "teleport", "bleedWeapon", "teleport", "puppetSpawnRate"];
+                colour = "rgb(161, 166, 71)"
+                xSpeed = 0.5;
+                ySpeed = 6;
+                engageRange = 0;
+                boss = true;
+                detectRange = 2000;
+                attacks = [["speech", -1], ["teleport", 1000], ["puppetSideTarget", 3000], ["teleport", 1000], ["spawnPuppets", 3000]]
+                speechList = [["Still alive, huh?",2000],
+                ["...",2000],
+                ["We'll see how long you last.",2000],
+                ["They all break eventually.",2000]]
+                drops = [["Minor Health Potion", 50],
+                ["Minor Mana Potion", 50],
+                ["Gluttonous Coat", 40],
+                ["Vomit", 40],["Puppet's Robes", 40],
+                ["Puppet's Wig", 40], ["Flamestrike Spell", 40], ["Teleportation Crystal", 40],
+                ["Minor Health Potion", 50],
+                ["Minor Mana Potion", 50],];
                 break;
         }
         return {

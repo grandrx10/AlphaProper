@@ -24,6 +24,8 @@ export class Bullet {
         this.xSpeed = 0;
         this.ySpeed = 0;
         this.delay = delay;// required
+        this.negativeEffects;
+        this.teleport;
     }
 
     updateBulletLocation (entities, walls, bullets, gameTime, particles){
@@ -51,9 +53,15 @@ export class Bullet {
         ellipse(this.x -xRange, this.y -yRange, this.r, this.r)
     }
 
-    checkBulletDuration(bullets, gameTime){
+    checkBulletDuration(bullets, gameTime, entities){
         if (this != null){
             if(gameTime - this.startTime > this.duration && this.duration != -1){
+
+                if (this.teleport != null && entities[this.id] != null){
+                    entities[this.id].x = this.x - entities[this.id].length/2
+                    entities[this.id].y = this.y - entities[this.id].width/2
+                }
+
                 bullets.splice(bullets.indexOf(this), 1)
             }
         }
@@ -79,7 +87,8 @@ export class Bullet {
                 && entities[key].team != bullet.team) {
                     if (entities[key].stats.hp[1] != null){
                         if (bullet.damage > 0){
-                            var bulletDamage = bullet.damage*(1 - 0.05*(entities[key].stats.def[1] + entities[key].effects.def.bonusAmount));
+                            var bulletDamage = bullet.damage*(1 - 0.05*(entities[key].stats.def[1] + entities[key].effects.def.amount 
+                                - entities[key].negativeEffects.vulnerable.amount));
                         } else{
                             var bulletDamage = bullet.damage
                         }
@@ -89,6 +98,16 @@ export class Bullet {
                             bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
                             entities[key].randint(-5, -1)));
                             entities[key].lastHurtBy = bullet.id;
+
+                            if (bullet.negativeEffects !=null){
+                                for (var effect in bullet.negativeEffects){
+                                    entities[key].negativeEffects[effect] = JSON.parse(JSON.stringify(bullet.negativeEffects[effect]));
+                                    entities[key].negativeEffects[effect].startTime = gameTime;
+                                    particles.push(new Particle(effect.toUpperCase() + "!", "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
+                                    bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 900, gameTime, "white", entities[key].randint(-10, 10),
+                                    entities[key].randint(-5, -1)));
+                                }
+                            }
                         }
                     }
                     if (!bullet.stay){

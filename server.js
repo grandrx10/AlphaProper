@@ -249,7 +249,7 @@ function update(){
                                     entities[id].width, entities[id].dir, entities[id].stats,
                                     entities[id].colour, entities[id].location, entities[id].interact,
                                     entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration,
-                                    entities[id].speech, entities[id].closestBoss, entities[id].effects);
+                                    entities[id].speech, entities[id].closestBoss, entities[id].effects, entities[id].negativeEffects);
                             }
                         });
                     }
@@ -284,9 +284,12 @@ function update(){
         }
 
         for (var i = 0; i < bullets.length; i ++){
-            bullets[i].checkBulletDuration(bullets, gameTime);
+            bullets[i].checkBulletDuration(bullets, gameTime, entities);
         }
 
+        for (var i = 0; i < walls.length; i ++){
+            walls[i].checkExist(entities, walls);
+        }
 
         for (var i = particles.length-1; i >= 0; i --){
             particles[i].accelerate();
@@ -423,8 +426,12 @@ function createSection(name, x, y, id){
             var length = 8000;
             var width = 600;
             break; 
+        case "The Stage":
+            var length = 1600;
+            var width = 800;
+            break; 
     }
-    rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));
+    rooms.push(new Room(name, x, y, length + 50, width, gameTime, id));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){
         rooms[rooms.length-1].x = randint(0, 1000);
         rooms[rooms.length-1].y = randint(0, 1000);
@@ -437,7 +444,7 @@ function createSection(name, x, y, id){
     walls.push(new Wall("wall", x, y + width, length, 20,"silver"));
     walls.push(new Wall("wall", x+ length - 20, y, 20, width,"silver"));
     var levelGeneration = new LevelGeneration();
-    levelGeneration.generateLevel(name, x, y + width, length, walls, entities, game, interactables, gameTime);
+    levelGeneration.generateLevel(name, x, y + width, length, walls, entities, game, interactables, gameTime, rooms[rooms.length-1]);
 }
 
 function sortList(list, keyInBack){

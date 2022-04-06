@@ -59,6 +59,33 @@ export class Item {
                 this.slot = "Chest"
                 this.description = "A ranger's cloak may lack speed, but it\n allows for good mobility and damage."
                 break;
+
+            case "Gluttonous Coat":
+                this.stats = {
+                    maxHp: ["MAXHP", 30],
+                    vit: ["VIT", 2]
+                }
+                this.slot = "Chest"
+                this.description = "A putrid coat that is in size\nXXL."
+                break;
+            case "Puppet's Robes":
+                this.stats = {
+                    maxMana: ["MAXMANA", 40],
+                    wis: ["WIS", 1]
+                }
+                this.slot = "Chest"
+                this.description = "Magically enchanted robes that\nresonate with mana."
+                break;
+            case "Puppet's Wig":
+                this.stats = {
+                    wis: ["WIS", 2]
+                }
+                this.slot = "Head"
+                this.description = "A wig flowing with magical\nenergy, waiting to be unleashed."
+                break;
+        
+            // END OF ARMOURS
+        
             case "Adventurer's Sword":
                 this.slot = "Weapon"
                 this.description = "A useful blade for any adventurer."
@@ -83,15 +110,31 @@ export class Item {
                 this.slot = "Weapon"
                 this.description = "A quality blade that will cut through\ncountless forces before it bends."
                 this.attackType = "shoot"
+                this.stats = {
+                    atk: ["ATK", 1]
+                }
                 break;
             case "Holy Blade":
                 this.slot = "Weapon"
                 this.description = "A legendary weapon that serves to\neradicate evil from this land."
                 this.attackType = "doubleShot"
+                this.stats = {
+                    atk: ["ATK", 1],
+                    vit: ["VIT", 1]
+                }
                 break;
             case "Hefty Club":
                 this.slot = "Weapon"
                 this.description = "A really big stick of wood."
+                this.attackType = "tripleShot"
+                break;
+            case "Vomit":
+                this.stats = {
+                    vit: ["VIT", 1]
+                }
+                this.manaCost = 1
+                this.slot = "Weapon"
+                this.description = "A disgusting pile of\nregenerating vomit."
                 this.attackType = "tripleShot"
                 break;
             case "Spell of Mending":
@@ -100,11 +143,32 @@ export class Item {
                 this.attackType = "healPool"
                 this.manaCost = 20;
                 break;
+            case "Flamestrike Spell":
+                this.slot = "Ability"
+                this.description = "This arcane spell will unleash a\nmassive storm of crimson fire."
+                this.attackType = "flameBurst"
+                this.manaCost = 30;
+                this.stats = {
+                    wis: ["WIS", 1]
+                }
+                break;
+            case "Teleportation Crystal":
+                this.slot = "Ability"
+                this.description = "This ability will allow the user to\nflash away in an instant."
+                this.attackType = "shoot"
+                this.manaCost = 20;
+                this.stats = {
+                    wis: ["WIS", 1]
+                }
+                break;
             case "Steel Hammer":
                 this.slot = "Ability"
                 this.description = "A large steel hammer that provides great\nslamming force. You slam the ground on use."
                 this.attackType = "hammerFall"
                 this.manaCost = 20;
+                this.stats = {
+                    atk: ["ATK", 2]
+                }
                 break;
             case "Legion Shield":
                 this.slot = "Ability"

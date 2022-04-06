@@ -9,6 +9,7 @@ export class Weapon {
         this.gravity = false
         this.cooldown = 0 
         this.stay = false
+        this.teleport;
         switch(name){
             case "none":
                 this.cooldown = 0; // 100
@@ -47,6 +48,14 @@ export class Weapon {
                 this.bulletLength = 12
                 this.bulletWidth = 12
                 break;
+            case "Vomit":
+                this.manaCost = 1
+                this.cooldown = 90;
+                this.damage = 15;
+                this.speed = 5;
+                this.expireTime = 1000; // 200
+                this.colour = "rgb(139, 189, 134)"
+                break;
             case "Ranger's Bow":
                 this.cooldown = 200;
                 this.damage = 20;
@@ -65,6 +74,14 @@ export class Weapon {
                 this.colour = "rgb(103, 179, 55)"
                 this.bulletLength = 12
                 this.bulletWidth = 12
+                break;
+            case "Flamestrike Spell":
+                this.cooldown = 500;
+                this.damage = 30;
+                this.manaCost = 30;
+                this.speed = 7;
+                this.expireTime = 2000; // 200
+                this.colour = "red"
                 break;
             case "Spell of Mending":
                 this.cooldown = 1000;
@@ -95,7 +112,18 @@ export class Weapon {
                 break;
             case "Summoning Banner":
                 this.cooldown = 1000;
-                this.manaCost = 35;
+                this.manaCost = 30;
+                break;
+            case "Teleportation Crystal":
+                this.cooldown = 1000;
+                this.damage = 50;
+                this.speed = 10;
+                this.manaCost = 20;
+                this.expireTime = 500;
+                this.colour = "yellow"
+                this.bulletLength = 30
+                this.bulletWidth = 30
+                this.teleport = true;
                 break;
             case "dev":
                 this.cooldown = 1; // 100
@@ -181,6 +209,9 @@ export class Weapon {
             case "oneTime":
                 this.cooldown = 1500;
                 break;
+            case "once":
+                this.cooldown = 100000;
+                break;
             case "holyBlade":
                 this.cooldown = 200;
                 this.damage = 8;
@@ -207,6 +238,59 @@ export class Weapon {
                 this.colour = "rgb(255, 234, 173)"
                 this.bulletLength = 15
                 this.bulletWidth = 15
+                break;
+            case "glutton":
+                this.cooldown = 800;
+                this.damage = 5;
+                this.speed = 8;
+                this.expireTime = 200;
+                this.colour = "rgb(139, 189, 134)"
+                this.bulletLength = 15
+                this.bulletWidth = 15
+                break;
+            case "sloth":
+                this.cooldown = 600;
+                this.damage = 6;
+                this.speed = 10;
+                this.expireTime = 300;
+                this.colour = "rgb(159, 252, 226)"
+                this.negativeEffects = {
+                    slow: {amount: 3, startTime: 0, duration: 2000, colour: "rgb(139, 189, 134)"}
+                }
+                break;
+            case "envy":
+                this.cooldown = 900;
+                this.damage = 6;
+                this.speed = 10;
+                this.expireTime = 400;
+                this.colour = "rgb(255, 56, 69)"
+                this.negativeEffects = {
+                    vulnerable: {amount: 3, startTime: 0, duration: 2000, colour: "rgb(255, 56, 69)"}
+                }
+                break;
+            case "bleedWeapon":
+                this.cooldown = 200;
+                this.damage = 3;
+                this.speed = 6;
+                this.expireTime = 2000;
+                this.colour = "red"
+                this.negativeEffects = {
+                    bleed: {amount: 1, startTime: 0, duration: 1000, colour: "rgb(153, 0, 0)"}
+                }
+                break;
+            case "puppetSpawnRate":
+                this.cooldown = 800;
+                break;
+            case "teleport":
+                this.cooldown = 1000;
+                this.damage = 0.1;
+                this.speed = 0;
+                this.expireTime = 1000;
+                this.colour = "rgb(255, 251, 0)"
+                this.stay = true;
+                this.bulletLength = 30
+                this.bulletWidth = 30
+                this.teleport = true;
                 break;
             
         }

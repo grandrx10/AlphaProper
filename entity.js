@@ -67,17 +67,23 @@ export class Entity {
         }
 
         this.effects = { // required
-            atk: {bonusAmount: 0, startTime: 0, duration: 0, colour: "red"},
-            spd: {bonusAmount: 0, startTime: 0, duration: 0, colour: "green"},
-            def: {bonusAmount: 0, startTime: 0, duration: 0, colour: "gray"},
-            hp: {bonusAmount: 0, startTime: 0, duration: 0, colour: "pink"},
-            dex: {bonusAmount: 0, startTime: 0, duration: 0, colour: "orange"},
-            mana: {bonusAmount: 0, startTime: 0, duration: 0, colour: "blue"},
-            wis: {bonusAmount: 0, startTime: 0, duration: 0, colour: "cyan"},
-            maxHp: {bonusAmount: 0, startTime: 0, duration: 0, colour: "darkred"},
-            maxMana: {bonusAmount: 0, startTime: 0, duration: 0, colour: "yellow"},
-            vit: {bonusAmount: 0, startTime: 0, duration: 0, colour: "darkred"},
-            gold: {bonusAmount: 0, startTime: 0, duration: 0, colour: ""},
+            atk: {amount: 0, startTime: 0, duration: 0, colour: "red"},
+            spd: {amount: 0, startTime: 0, duration: 0, colour: "green"},
+            def: {amount: 0, startTime: 0, duration: 0, colour: "gray"},
+            hp: {amount: 0, startTime: 0, duration: 0, colour: "pink"},
+            dex: {amount: 0, startTime: 0, duration: 0, colour: "orange"},
+            mana: {amount: 0, startTime: 0, duration: 0, colour: "blue"},
+            wis: {amount: 0, startTime: 0, duration: 0, colour: "cyan"},
+            maxHp: {amount: 0, startTime: 0, duration: 0, colour: "darkred"},
+            maxMana: {amount: 0, startTime: 0, duration: 0, colour: "yellow"},
+            vit: {amount: 0, startTime: 0, duration: 0, colour: "darkred"},
+            gold: {amount: 0, startTime: 0, duration: 0, colour: ""},
+        }
+
+        this.negativeEffects = { // required
+            slow: {amount: 0, startTime: 0, duration: 0, colour: "rgb(139, 189, 134)"},
+            vulnerable: {amount: 0, startTime: 0, duration: 0, colour: "rgb(255, 56, 69)"},
+            bleed:{amount: 0, startTime: 0, duration: 0, colour: "rgb(153, 0, 0)"}
         }
 
         if (this.type == "npc"){
@@ -118,7 +124,7 @@ export class Entity {
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
             // var i = 2
-            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Knight's Helm",
+            // this.inventory.items[this.inventory.items.length-2] = new ItemFrame("Teleportation Crystal",
             // equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
             this.updateStats()
         }
@@ -131,8 +137,16 @@ export class Entity {
             }
 
             for (var effect in this.effects){
-                if (gameTime - this.effects[effect].startTime > this.effects[effect].duration){
-                    this.effects[effect].bonusAmount = 0;
+                if (gameTime - this.effects[effect].startTime > this.effects[effect].duration && this.effects[effect].startTime != 0){
+                    this.effects[effect].amount = 0;
+                    this.effects[effect].startTime = 0
+                }
+            }
+            for (var effect in this.negativeEffects){
+                if (gameTime - this.negativeEffects[effect].startTime > this.negativeEffects[effect].duration 
+                    && this.negativeEffects[effect].startTime != 0){
+                    this.negativeEffects[effect].amount = 0;
+                    this.negativeEffects[effect].startTime = 0
                 }
             }
         }
@@ -285,6 +299,13 @@ export class Entity {
             } else if (this.stats.hp[1] > 0){
                 this.stats.hp[1] += 0.01 + 0.01*this.stats.vit[1];
             }
+
+            if (this.negativeEffects.bleed.amount > 0){
+                this.stats.hp[1] -= 0.1*this.negativeEffects.bleed.amount;
+                particles.push(new Particle(0.1*this.negativeEffects.bleed.amount, "text", this.x + this.length/2,
+                            this.y + this.width/2, 10, 10, 300, gameTime, "white", this.randint(-10, 10),
+                            this.randint(-5, -1)));
+            }
     
             if (this.stats.mana[1] > this.stats.maxMana[1]){
                 this.stats.mana[1] = this.stats.maxMana[1]
@@ -305,7 +326,7 @@ export class Entity {
     
                 if (entities[this.id].type != "Player"){
                     if (this.deathAttack == null){
-                        var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2,
+                        var lootDrop = new Interactable("Loot", entities[this.id].x + entities[this.id].length/2 - 7,
                         entities[this.id].y + entities[this.id].width/2, 15, 15, "brown", "bag", gameTime)
         
                         for (var i = 0; i < entities[this.id].drops.length; i ++){
@@ -323,8 +344,10 @@ export class Entity {
                             30, 40, "blue", "portal", gameTime, -2))
                         }
                     } else {
-                        this.attackInfo.preformAttack(this.deathAttack, this.deathWeaponIndex, bullets, entities, this, gameTime,
-                            this.travelMap.aimX, this.travelMap.aimY, particles,game, walls);
+                        if (this != null){
+                            this.attackInfo.preformAttack(this.deathAttack, this.deathWeaponIndex, bullets, entities, this, gameTime,
+                                this.travelMap.aimX, this.travelMap.aimY, particles,game, walls, true);
+                        }
                     }
     
                     delete entities[this.id];
@@ -365,13 +388,13 @@ export class Entity {
 
     move(dir){
         if (dir == "left"){
-            this.xAccel = -this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount));
+            this.xAccel = -this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.amount- this.negativeEffects.slow.amount));
             this.dir = dir
         } else if (dir == "right"){
-            this.xAccel = this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount));
+            this.xAccel = this.xOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.amount- this.negativeEffects.slow.amount));
             this.dir = dir
         }else if (dir == "jump" && this.canJump){
-            this.yAccel = -this.yOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount));
+            this.yAccel = -this.yOrigA*(1 + 0.1*(this.stats.spd[1] + this.effects.spd.amount - this.negativeEffects.slow.amount));
             this.canJump = false;
         }
     }
@@ -447,11 +470,11 @@ export class Entity {
         }
 
         if (this.type != "blood"){
-            if (this.xSpeed > 5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))){
-                this.xSpeed = 5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))
+            if (this.xSpeed > 5*(1+0.1*(this.stats.spd[1] + this.effects.spd.amount - this.negativeEffects.slow.amount))){
+                this.xSpeed = 5*(1+0.1*(this.stats.spd[1] + this.effects.spd.amount - this.negativeEffects.slow.amount))
             }
-            if (this.xSpeed < -5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))){
-                this.xSpeed = -5*(1+0.1*(this.stats.spd[1] + this.effects.spd.bonusAmount))
+            if (this.xSpeed < -5*(1+0.1*(this.stats.spd[1] + this.effects.spd.amount - this.negativeEffects.slow.amount))){
+                this.xSpeed = -5*(1+0.1*(this.stats.spd[1] + this.effects.spd.amount - this.negativeEffects.slow.amount))
             }
         }
     }

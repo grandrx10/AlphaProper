@@ -28,6 +28,8 @@ let goblinWarlordSong;
 let goblinForestSong;
 let crusadeSong;
 let paladinSong;
+let theatreSong;
+let stageSong;
 var songList = [];
 
 let song;
@@ -48,8 +50,11 @@ function preload(){
     goblinForestSong = createAudio("Assets/GoblinForestTheme.mp3")
     crusadeSong = createAudio("Assets/CrusadeTheme.mp3")
     paladinSong = createAudio("Assets/PaladinTheme.mp3")
+    theatreSong = createAudio("Assets/TheatreTheme.mp3")
+    stageSong = createAudio("Assets/StageTheme.mp3")
     songList = [[goblinForestSong, "Goblin Forest"], [goblinWarlordSong, "Warlord's Lair"],
-    [crusadeSong, "Crusader Encampment"], [paladinSong, "High Priest's Quarters"]]
+    [crusadeSong, "Crusader Encampment"], [paladinSong, "High Priest's Quarters"],
+    [theatreSong, "The Theatre"], [stageSong, "The Stage"],]
 }
 
 function playMusic(){
@@ -167,7 +172,8 @@ function draw(){
                 drawEnemy(entities[entity].name, entities[entity].x- xRange, entities[entity].y- yRange, entity)
             }
 
-            drawEffects();
+            drawEffects(entities[entity].effects, 50);
+            drawEffects(entities[entity].negativeEffects, 70);
 
             // Health Bars
             fill("grey");
@@ -367,13 +373,13 @@ function displayInventory(){
         if (stat != "maxMana" && stat != "maxHp"){
             if (num < 4){
                 text(entities[socket.id].stats[stat][0] + ": " + 
-                Math.round(entities[socket.id].stats[stat][1] + entities[socket.id].effects[stat].bonusAmount), 160 + num*75, 470)
+                Math.round(entities[socket.id].stats[stat][1] + entities[socket.id].effects[stat].amount), 160 + num*75, 470)
             } else if (num < 8) {
                 text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1] + 
-                    entities[socket.id].effects[stat].bonusAmount), 160 + (num-4)*75, 500)
+                    entities[socket.id].effects[stat].amount), 160 + (num-4)*75, 500)
             } else {
                 text(entities[socket.id].stats[stat][0] + ": " + Math.round(entities[socket.id].stats[stat][1] + 
-                    entities[socket.id].effects[stat].bonusAmount), 160 + (num-8)*75, 530)
+                    entities[socket.id].effects[stat].amount), 160 + (num-8)*75, 530)
             }
             num ++;
         }
@@ -458,9 +464,22 @@ function drawItem(itemName, x, y, flip, id, slot){
             fill("gray")
             rect(x + 5, y + 2, 18, 6);
             break;
+        case "Puppet's Wig":
+            fill("brown");
+            rect(x, y-10, 20, 13);
+            rect(x-2, y, 2, 6);
+            rect(x + 20, y, 2, 6);
+            break;
         case "Leather Tunic":
             fill(138, 50, 0);
             rect(x, y, 20, 20);
+            break;
+        case "Puppet's Robes":
+            fill(147, 196, 182);
+            rect(x, y, 20, 20);
+            fill("black");
+            rect(x + 5, y + 5, 10, 3);
+            rect(x + 5, y + 12, 10, 3);
             break;
         case "Steel Armour":
             fill("silver");
@@ -470,6 +489,11 @@ function drawItem(itemName, x, y, flip, id, slot){
             fill("black");
             rect(x, y, 20, 4);
             fill("rgb(161, 102, 179)");
+            rect(x, y, 8, 20);
+            rect(x+12, y, 8, 20);
+            break;
+        case "Gluttonous Coat":
+            fill("rgb(62, 94, 59)");
             rect(x, y, 8, 20);
             rect(x+12, y, 8, 20);
             break;
@@ -525,10 +549,24 @@ function drawItem(itemName, x, y, flip, id, slot){
             fill("brown");
             rect(x + 5, y+1, 6, 20);
             break;
+        case "Vomit":
+            fill(entities[id].colour)
+            rect(x, y + entities[id].width/2, 5, 5);
+            fill("green");
+            rect(x + 5, y+4, 20, 20);
+            break;
         case "Spell of Mending":
             fill("white");
             rect(x-3, y, 10, 15);
             fill("gray");
+            rect(x-1, y+2, 6, 2);
+            rect(x-1, y+6, 6, 2);
+            rect(x-1, y+10, 6, 2);
+            break;
+        case "Flamestrike Spell":
+            fill("white");
+            rect(x-3, y, 10, 15);
+            fill("red");
             rect(x-1, y+2, 6, 2);
             rect(x-1, y+6, 6, 2);
             rect(x-1, y+10, 6, 2);
@@ -546,6 +584,10 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x - 3, y, 15, 20);
             fill("gray");
             rect(x-1, y+2, 11, 16)
+            break;
+        case "Teleportation Crystal":
+            fill("rgb(215, 217, 115)");
+            rect(x - 3, y, 10, 10);
             break;
         case "Summoning Banner":
             fill("gray");
@@ -629,19 +671,20 @@ function displayBossBar(){
     }
 }
 
-function drawEffects(){
+function drawEffects(effects, yLevel){
     var count = 0;
-    for (var effect in entities[entity].effects){
-        if (entities[entity].effects[effect].bonusAmount > 0){
+    for (var effect in effects){
+        if (effects[effect].amount > 0){
             count ++;
         }
     }
 
-    for (var effect in entities[entity].effects){
-        if (entities[entity].effects[effect].bonusAmount > 0){
-            fill(entities[entity].effects[effect].colour);
-            rect(entities[entity].x + entities[entity].length/2 - xRange - 8*(count-1) - 4, entities[entity].y - yRange - 60, 8, 8)
+    for (var effect in effects){
+        if (effects[effect].amount > 0){
+            fill(effects[effect].colour);
+            rect(entities[entity].x + entities[entity].length/2 - xRange - 8*(count-1) - 4, entities[entity].y - yRange - yLevel, 8, 8)
             count -= 2;
         }
     }
+    
 }

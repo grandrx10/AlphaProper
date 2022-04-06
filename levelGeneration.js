@@ -4,14 +4,14 @@ import { Interactable } from "./interactable.js"
 import { EnemyStats } from "./enemyStats.js"
 
 export class LevelGeneration {
-    generateLevel(levelName, x, y, length, walls, entities, game, interactables, gameTime) {
+    generateLevel(levelName, x, y, length, walls, entities, game, interactables, gameTime, room) {
         var segmentLength;
         var segmentHeight;
         var listOfRooms = [];
         var possibleMobs = [];
         var finalPortal = "lobby"
         var bossRoom = false;
-        var roomsToNotSpawnExit = ["lobby", "Warlord's Lair", "High Priest's Quarters"]
+        var roomsToNotSpawnExit = ["lobby", "Warlord's Lair", "High Priest's Quarters", "The Stage"]
         var enemyNumber = {
             max: 0,
             min: 0
@@ -39,15 +39,17 @@ export class LevelGeneration {
                 segmentLength = 800;
                 segmentHeight = 600;
                 listOfRooms = ["curtains", "stage", "audience"];
-                possibleMobs = ["Puppet of Gluttony"]
-                finalPortal = "lobby"
-                enemyNumber.min = 4;
-                enemyNumber.max = 6;
+                possibleMobs = ["Puppet of Gluttony", "Puppet of Sloth", "Puppet of Envy", "Puppet of Pride"]
+                finalPortal = "The Stage"
+                enemyNumber.min = 5;
+                enemyNumber.max = 7;
                 walls.push(new Wall("wall", x + 300, y - 600, 20, 300, "rgb(49, 114, 130)"));
                 walls.push(new Wall("wall", x + 300, y - 300, 300, 20, "rgb(49, 114, 130)"));
                 walls.push(new Wall("wall", x + 580, y - 600, 20, 300, "rgb(49, 114, 130)"));
                 walls.push(new Wall("wall", x + 300, y - 150, 300, 150, "rgb(49, 114, 130)"));
-                this.summonEnemy("Captive Damsel", x+ 450, y - 500, x+ 450, y - 500, game, entities, gameTime, walls);
+                walls.push(new Wall("wall", x + length - 600, y - segmentHeight, 50, segmentHeight, 
+                "rgb(112, 49, 53)", null, room, "Puppet of Pride"));
+                this.summonEnemy("Captive Damsel", x+ 450, y - 500, x+ 450, y - 500, game, entities, gameTime, walls, -1, room);
                 break;
             case "lobby":
                 segmentLength = 1650;
@@ -70,7 +72,7 @@ export class LevelGeneration {
                 walls.push(new Wall("wall", x + 200, y - 100, 200, 100, "silver"));
                 walls.push(new Wall("wall", x + 800, y - 100, 200, 100, "silver"));
                 walls.push(new Wall("wall", x + 550, y - 300, 100, 20, "silver"));
-                this.summonEnemy("Goblin Warlord", x+ 600, y-60, x+ 600, y-60, game, entities, gameTime, walls)
+                this.summonEnemy("Goblin Warlord", x+ 600, y-60, x+ 600, y-60, game, entities, gameTime, walls, -1, room)
                 break;
             case "High Priest's Quarters":
                 segmentLength = 2000;
@@ -79,12 +81,32 @@ export class LevelGeneration {
                 walls.push(new Wall("wall", x + 300, y - 150, 500, 150, "silver"));
                 walls.push(new Wall("wall", x + 800, y - 100, 800, 100, "silver"));
                 walls.push(new Wall("wall", x + 1600, y - 200, 400, 200, "silver"));
-
                 walls.push(new Wall("wall", x + 350, y - 400, 200, 20, "silver"));
                 walls.push(new Wall("wall", x + 750, y - 450, 200, 20, "silver"));
                 walls.push(new Wall("wall", x + 1350, y - 400, 200, 20, "silver"));
                 bossRoom = true;
-                this.summonEnemy("High Priest", x+ 1800, y-250, x+ 1800, y-250, game, entities, gameTime, walls)// High Priest
+                this.summonEnemy("High Priest", x+ 1800, y-250, x+ 1800, y-250, game, entities, gameTime, walls,-1, room)// High Priest
+                break;
+            case "The Stage":
+                segmentLength = 1600;
+                segmentHeight = 800;
+                walls.push(new Wall("wall", x + 700, y - segmentHeight + 200, 20, 200, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 700, y - segmentHeight + 200, 220, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 700, y - segmentHeight + 400, 220, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 900, y - segmentHeight + 200, 20, 200, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 700, y - 300, 200, 100, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x , y - 650, 200, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + segmentLength - 200, y - 650, 200, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 400, y - 200, 820, 200, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x , y - 400, 200, 400, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 200, y - 200, 50, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + segmentLength -250, y - 200, 50, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x, y - 100, segmentLength, 100, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + segmentLength - 200 , y - 400, 200, 400, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + segmentLength - 680, y - 450, 200, 20, "rgb(112, 49, 53)"));
+                walls.push(new Wall("wall", x + 500, y - 450, 200, 20, "rgb(112, 49, 53)"));
+                bossRoom = true;
+                this.summonEnemy("The Puppeteer", x+ 800, y-550, x+ 800, y-550, game, entities, gameTime, walls,-1, room)
                 break;
         }
 
@@ -215,13 +237,14 @@ export class LevelGeneration {
             if (roomToGenerate != "empty" && i != 0 && i != lastRoom){
                 for (var c =0; c < this.randint(enemyNumber.min,enemyNumber.max); c ++){
                     this.summonEnemy(possibleMobs[this.randint(0, possibleMobs.length-1)], xLocation, y,
-                    x+segmentLength*(i+1), y- segmentHeight, game, entities, gameTime, walls);
+                    x+segmentLength*(i+1), y- segmentHeight, game, entities, gameTime, walls,-1, room);
                 }
             }
         }
     }
 
-    summonEnemy(name, x, y, xLimit, yLimit, game, entities, gameTime, walls){
+    // YOU MUST UPDATE THIS FUNCTION AS WELL THIS IS DUMB
+    summonEnemy(name, x, y, xLimit, yLimit, game, entities, gameTime, walls, team, room, range){
         if (xLimit == null){
             xLimit = x;
             yLimit = y;
@@ -230,7 +253,7 @@ export class LevelGeneration {
         var enemyStats = new EnemyStats().getStats(name);
         entities[game.n] = new Entity(name, "npc", this.randint(x, xLimit), this.randint(y, yLimit), enemyStats.length, enemyStats.width, 
         enemyStats.hp, enemyStats.weaponName, enemyStats.colour,
-        -1, gameTime, game.n, enemyStats.xSpeed, enemyStats.ySpeed, enemyStats.engageRange);
+        team, gameTime, game.n, enemyStats.xSpeed, enemyStats.ySpeed, enemyStats.engageRange);
         entities[game.n].attacks = enemyStats.attacks
         entities[game.n].drops = enemyStats.drops
         entities[game.n].speechList = enemyStats.speechList
@@ -238,13 +261,16 @@ export class LevelGeneration {
         entities[game.n].travelMap.detectRange = enemyStats.detectRange
         entities[game.n].deathAttack = enemyStats.deathAttack;
         entities[game.n].deathWeaponIndex = enemyStats.deathWeaponIndex;
+        if (range != null){
+            entities[game.n].travelMap.detectRange = range
+        }
         if (entities[game.n].attacks[0][0] == "speech"){
             entities[game.n].invincible = true;
         }
         if (enemyStats.setHp != null){
             entities[game.n].stats.hp[1] = enemyStats.setHp;
         }
-        while (!this.checkAvailable(entities[game.n], walls)){
+        while (!this.checkAvailable(entities[game.n], walls) || !this.contains(entities[game.n].x, entities[game.n].y, room, 0)){
             entities[game.n].x = this.randint(x, xLimit);
             entities[game.n].y = this.randint(y, yLimit);  
         }
@@ -252,7 +278,14 @@ export class LevelGeneration {
         game.n ++;
     }
 
-    randint(min, max){
+    contains(x, y, rect, distance){
+        if (distance == null){
+            return (x >= rect.x && x <= rect.x + rect.length && y >= rect.y && y <= rect.y + rect.width)
+        }
+        return (x + distance >= rect.x && x-distance <= rect.x + rect.length && y + distance >= rect.y && y - distance <= rect.y + rect.width)
+    }
+
+    randint(min, max){  
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
