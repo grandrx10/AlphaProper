@@ -431,7 +431,7 @@ function createSection(name, x, y, id){
             var width = 800;
             break; 
     }
-    rooms.push(new Room(name, x, y, length + 50, width, gameTime, id));
+    rooms.push(new Room(name, x, y, length + 100, width + 50, gameTime, id));
     while(!checkAvailable(rooms[rooms.length-1], rooms)){
         rooms[rooms.length-1].x = randint(0, 1000);
         rooms[rooms.length-1].y = randint(0, 1000);
