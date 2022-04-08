@@ -198,12 +198,12 @@ export class AttackPattern {
                 // THE PUPPETEER BOSS
                 case "summonPuppetWave1":
                     var listOfEnemies = ["Puppet of Gluttony", "Puppet of Sloth", "Puppet of Envy"];
-                    for(var i = 0; i < 3; i ++){
+                    for(var i = 0; i < 2; i ++){
                         var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
                         this.summonEnemy(randomEnemy, entity.x - 800, entity.y- 200, entity.x- 400, entity.y + 200, game, entities
                         , gameTime,walls, entity.team,entity.room, 2000)
                     }
-                    for(var i = 0; i < 3; i ++){
+                    for(var i = 0; i < 2; i ++){
                         var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
                         this.summonEnemy(randomEnemy, entity.x + 400, entity.y- 200, entity.x + 800, entity.y + 200, game, entities
                         , gameTime,walls, entity.team,entity.room, 2000)
@@ -211,12 +211,12 @@ export class AttackPattern {
                     break;
                 case "summonPuppetWave2":
                     var listOfEnemies = ["Puppet of Gluttony", "Puppet of Sloth", "Puppet of Envy"];
-                    for(var i = 0; i < 5; i ++){
+                    for(var i = 0; i < 3; i ++){
                         var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
                         this.summonEnemy(randomEnemy, entity.x - 800, entity.y- 200, entity.x- 400, entity.y+ 200, game, entities
                         , gameTime,walls, entity.team,entity.room, 2000)
                     }
-                    for(var i = 0; i < 5; i ++){
+                    for(var i = 0; i < 3; i ++){
                         var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
                         this.summonEnemy(randomEnemy, entity.x + 400, entity.y- 200, entity.x + 800, entity.y+ 200, game, entities
                         , gameTime,walls, entity.team,entity.room, 2000)
@@ -224,12 +224,12 @@ export class AttackPattern {
                     break;
                 case "summonPuppetWave3":
                     var listOfEnemies = ["Puppet of Gluttony", "Puppet of Sloth", "Puppet of Envy"];
-                    for(var i = 0; i < 7; i ++){
+                    for(var i = 0; i < 4; i ++){
                         var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
                         this.summonEnemy(randomEnemy, entity.x - 800, entity.y- 200, entity.x- 400, entity.y+ 200, game, entities
                         , gameTime,walls, entity.team,entity.room, 2000)
                     }
-                    for(var i = 0; i < 7; i ++){
+                    for(var i = 0; i < 4; i ++){
                         var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
                         this.summonEnemy(randomEnemy, entity.x + 400, entity.y- 200, entity.x + 800, entity.y+ 200, game, entities
                         , gameTime,walls, entity.team,entity.room, 2000)
