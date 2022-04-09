@@ -93,7 +93,7 @@ export class Bullet {
                             var bulletDamage = bullet.damage
                         }
                         if (!entities[key].invincible){
-                            entities[key].stats.hp[1] -= bullet.damage;
+                            entities[key].stats.hp[1] -= bulletDamage;
                             particles.push(new Particle(Math.round(bulletDamage*10)/10.0, "text", bullet.x + bullet.length/2 + entities[key].randint(-10, 10),
                             bullet.y + bullet.width/2 + entities[key].randint(-10, 10), 10, 10, 300, gameTime, "white", entities[key].randint(-10, 10),
                             entities[key].randint(-5, -1)));

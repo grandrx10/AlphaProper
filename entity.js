@@ -60,7 +60,19 @@ export class Entity {
             maxHp: ["MAXHP", health],
             hp: ["HP", health],
             vit: ["VIT", 0],
-            gold: ["GOLD", 0],
+            mana: ["MANA", 100],
+            maxMana: ["MAXMANA", 100],
+            wis: ["WIS", 0],
+        }
+
+        this.defaultStats = {
+            atk: ["ATK", 0],
+            spd: ["SPD", 0],
+            dex: ["DEX", 0],
+            def: ["DEF", 0],
+            maxHp: ["MAXHP", health],
+            hp: ["HP", health],
+            vit: ["VIT", 0],
             mana: ["MANA", 100],
             maxMana: ["MAXMANA", 100],
             wis: ["WIS", 0],
@@ -210,19 +222,9 @@ export class Entity {
         if (this.type == "Player"){
             var healthTemp = this.stats.hp[1];
             var manaTemp = this.stats.mana[1];
-            this.stats = { // required
-                atk: ["ATK", 0],
-                spd: ["SPD", 0],
-                dex: ["DEX", 0],
-                def: ["DEF", 0],
-                maxHp: ["MAXHP", 100],
-                hp: ["HP", healthTemp],
-                vit: ["VIT", 0],
-                gold: ["GOLD", 0],
-                mana: ["MANA", manaTemp],
-                maxMana: ["MAXMANA", 100],
-                wis: ["WIS", 0],
-            }
+            this.stats = JSON.parse(JSON.stringify(this.defaultStats));
+            this.stats.hp[1] = healthTemp;
+            this.stats.mana[1] = manaTemp;
 
             for (var i = this.inventory.items.length-1; i > this.inventory.items.length-5; i --){
                 

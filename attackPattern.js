@@ -52,12 +52,37 @@ export class AttackPattern {
                         bullets, gameTime, entity, entity.weapons[weaponIndex].speed*i)
                     }
                     break;
+                // ONE TIME USE CONSUMABLES
                 case "minorHeal":
                     entity.stats.hp[1] += 50;
                     entity.clearInventorySlot("Ability");
                     break;
                 case "minorMana":
                     entity.stats.mana[1] += 50;
+                    entity.clearInventorySlot("Ability");
+                    break;
+                case "gainAtk":
+                    entity.defaultStats.atk[1] += 1;
+                    entity.clearInventorySlot("Ability");
+                    particles.push(new Particle("+ PERMANENT ATK", "text", entity.x + entity.length/2, entity.y + entity.width/2, 0, 0, 700,
+                    gameTime, "WHITE", 0, -5));
+                    break;
+                case "gainVit":
+                    entity.defaultStats.vit[1] += 1;
+                    particles.push(new Particle("+ PERMANENT VIT", "text", entity.x + entity.length/2, entity.y + entity.width/2, 0, 0, 700,
+                    gameTime, "WHITE", 0, -5));
+                    entity.clearInventorySlot("Ability");
+                    break;
+                case "gainDef":
+                    entity.defaultStats.def[1] += 1;
+                    particles.push(new Particle("+ PERMANENT DEF", "text", entity.x + entity.length/2, entity.y + entity.width/2, 0, 0, 700,
+                    gameTime, "WHITE", 0, -5));
+                    entity.clearInventorySlot("Ability");
+                    break;
+                case "gainSpd":
+                    entity.defaultStats.spd[1] += 1;
+                    particles.push(new Particle("+ PERMANENT SPD", "text", entity.x + entity.length/2, entity.y + entity.width/2, 0, 0, 700,
+                    gameTime, "WHITE", 0, -5));
                     entity.clearInventorySlot("Ability");
                     break;
                 // BEGINNING OF GOBLIN WARLORD BOSS -----------------------------------------------------------------//
@@ -249,7 +274,7 @@ export class AttackPattern {
                 case "spawnPuppets":
                     var listOfEnemies = ["Puppet of Gluttony", "Puppet of Sloth", "Puppet of Envy"];
                     var randomEnemy = listOfEnemies[this.randint(0, listOfEnemies.length-1)]
-                    this.summonEnemy(randomEnemy, entity.x - 100, entity.y- 100, entity.x + 100, entity.y+ 100, game, entities
+                    this.summonEnemy(randomEnemy, entity.x - 300, entity.y- 300, entity.x + 300, entity.y+ 300, game, entities
                     , gameTime,walls, entity.team,entity.room, 2000)
                     break;
                 case "teleport":

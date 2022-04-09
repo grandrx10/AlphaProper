@@ -202,6 +202,26 @@ export class Item {
                 this.description = "A mixture of insects and ink that\nincreases one's ability to use magic.\nOne time use."
                 this.attackType = "minorMana"
                 break;
+            case "Fruit of Strength":
+                this.slot = "Ability"
+                this.description = "A fruit that grants permenant\nstrength (ATK) to those who eat it.\nOne time use."
+                this.attackType = "gainAtk"
+                break;
+            case "Fruit of Vitality":
+                this.slot = "Ability"
+                this.description = "A fruit that grants permenant\nvitality (VIT) to those who eat it.\nOne time use."
+                this.attackType = "gainVit"
+                break;
+            case "Fruit of Durability":
+                this.slot = "Ability"
+                this.description = "A fruit that grants permenant\ndurability (DEF) to those who eat it.\nOne time use."
+                this.attackType = "gainDef"
+                break;
+            case "Fruit of Quickness":
+                this.slot = "Ability"
+                this.description = "A fruit that grants permenant\nquickness (SPD) to those who eat it.\nOne time use."
+                this.attackType = "gainSpd"
+                break;
         }
     }
 }

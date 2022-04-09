@@ -82,7 +82,8 @@ export class EnemyStats {
                 ySpeed = 7;
                 engageRange = 0;
                 attacks = [["speech", -1],["warlordShot", 5000], ["warlordSpray", 2000]]
-                drops = [["Leather Tunic", 40],
+                drops = [["Fruit of Vitality", 50],
+                        ["Leather Tunic", 40],
                         ["Mercenary Cap", 40],
                         ["Ranger Hat", 40],
                         ["Hearthwood Bow", 40],
@@ -264,7 +265,8 @@ export class EnemyStats {
                 engageRange = 0;
                 attacks = [["speech", -1], ["jump", 1000], ["explosion", 1000], ["paladinChaseV2", 5000], ["warningShots", 1000]]
                 speechList = [["Disappear.",1000]]
-                drops = [["Minor Health Potion", 50],
+                drops = [["Fruit of Durability", 100],
+                        ["Fruit of Quickness", 50],["Minor Health Potion", 50],
                         ["Minor Mana Potion", 50],
                         ["Legion Shield", 40],
                         ["Summoning Banner", 40],
@@ -402,7 +404,9 @@ export class EnemyStats {
                 ["...",2000],
                 ["We'll see how long you last.",2000],
                 ["They all break eventually.",2000]]
-                drops = [["Minor Health Potion", 50],
+                drops = [["Fruit of Vitality", 100],
+                ["Fruit of Strength", 50],
+                ["Minor Health Potion", 50],
                 ["Minor Mana Potion", 50],
                 ["Gluttonous Coat", 40],
                 ["Vomit", 40],["Puppet's Robes", 40],

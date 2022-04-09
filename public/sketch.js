@@ -595,6 +595,7 @@ function drawItem(itemName, x, y, flip, id, slot){
             fill("white");
             rect(x-7, y - 2, 12, 10)
             break;
+        // CONSUMABLES
         case "Minor Health Potion":
             fill("gray");
             rect(x-5, y + 2, 10, 12);
@@ -607,6 +608,24 @@ function drawItem(itemName, x, y, flip, id, slot){
             rect(x-5, y + 2, 10, 12);
             rect(x-3, y - 2, 4, 4);
             fill("cyan");
+            rect(x-3, y + 4, 6, 8);
+            break;
+        case "Fruit of Strength":
+            fill("gray");
+            rect(x-5, y + 2, 10, 12);
+            fill("rgb(250, 117, 60)");
+            rect(x-3, y + 4, 6, 8);
+            break;
+        case "Fruit of Durability":
+            fill("gray");
+            rect(x-5, y + 2, 10, 12);
+            fill("rgb(112, 112, 112)");
+            rect(x-3, y + 4, 6, 8);
+            break;
+        case "Fruit of Vitality":
+            fill("gray");
+            rect(x-5, y + 2, 10, 12);
+            fill("rgb(84, 0, 0)");
             rect(x-3, y + 4, 6, 8);
             break;
     }

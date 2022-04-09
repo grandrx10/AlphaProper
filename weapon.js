@@ -108,7 +108,7 @@ export class Weapon {
 
             case "Legion Shield":
                 this.cooldown = 4000;
-                this.manaCost = 40;
+                this.manaCost = 30;
                 break;
             case "Summoning Banner":
                 this.cooldown = 1000;
