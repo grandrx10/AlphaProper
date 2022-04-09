@@ -120,7 +120,7 @@ export class Entity {
             }
 
             var i = 3
-            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("Adventurer's Sword",
+            this.inventory.items[this.inventory.items.length-1] = new ItemFrame("dev",
             equipSpot[i], 125 + i*(350/(this.inventory.inventorySize/2)), 310, 80, 80)
 
             // var i = 2
@@ -340,7 +340,7 @@ export class Entity {
                         }
         
                         if (entities[this.id].boss){
-                            interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y, 
+                            interactables.push(new Interactable("lobby", entities[this.id].x, entities[this.id].y - 20, 
                             30, 40, "blue", "portal", gameTime, -2))
                         }
                     } else {

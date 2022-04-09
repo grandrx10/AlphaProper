@@ -307,7 +307,7 @@ function update(){
         }
 
         for (var i = rooms.length-1; i >= 0; i --){
-            var listOfDungeons = ["Goblin Forest", "Crusader Encampment", "The Theatre"] // "Crusader Encampment"
+            var listOfDungeons = ["Goblin Forest", "Crusader Encampment", "The Theatre", "The Stage"] // "Crusader Encampment"
             for (var c = 0; c < listOfDungeons.length; c ++){
                 if (rooms[i].name == "lobby" && !rooms[i].checkForPortal(interactables, listOfDungeons[c]) && randint(1, 1000) < 5){
                     interactables.push(new Interactable(listOfDungeons[c], randint(1000, 1300), 230, 30, 40, "cyan", "portal", gameTime, game.n))
@@ -441,8 +441,8 @@ function createSection(name, x, y, id){
     
     walls.push(new Wall("wall", x, y, length, 20,"silver"));
     walls.push(new Wall("wall", x, y, 20, width,"silver"));
-    walls.push(new Wall("wall", x, y + width, length, 20,"silver"));
-    walls.push(new Wall("wall", x+ length - 20, y, 20, width,"silver"));
+    walls.push(new Wall("wall", x, y + width, length, 70,"silver"));
+    walls.push(new Wall("wall", x+ length, y, 100, width,"silver"));
     var levelGeneration = new LevelGeneration();
     levelGeneration.generateLevel(name, x, y + width, length, walls, entities, game, interactables, gameTime, rooms[rooms.length-1]);
 }
