@@ -3,6 +3,7 @@ var socket;
 
 var gameStart = [false, ""];
 var gameTime;
+var oldTime;
 
 var entities = {}
 var walls = []
@@ -223,6 +224,9 @@ function draw(){
         }
 
         if (entities[socket.id] != null){
+            fill("white")
+            text((gameTime - oldTime) + " ms", 1300, 50);
+
             if (entities[socket.id].deathTime != 0){
                 displayDeathScreen();
             }
@@ -399,8 +403,9 @@ function displayInventory(){
 }
 
 function update(returnList){
-    entities = returnList[1];
+    oldTime = gameTime;
     gameTime = returnList[0];
+    entities = returnList[1];
     walls = returnList[2];
     bullets = returnList[3];
     interactables = returnList[4];
