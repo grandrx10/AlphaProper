@@ -50,6 +50,7 @@ export class Entity {
         this.deathAttack;
         this.deathWeaponIndex;
         this.speech = ""; // REQUIRED
+        this.gold = 0; // required
     
 
         this.stats = { // required
@@ -89,7 +90,6 @@ export class Entity {
             maxHp: {amount: 0, startTime: 0, duration: 0, colour: "darkred"},
             maxMana: {amount: 0, startTime: 0, duration: 0, colour: "yellow"},
             vit: {amount: 0, startTime: 0, duration: 0, colour: "darkred"},
-            gold: {amount: 0, startTime: 0, duration: 0, colour: ""},
         }
 
         this.negativeEffects = { // required
@@ -318,6 +318,11 @@ export class Entity {
             if (this.stats.hp[1] <= 0 && this.deathTime == 0){
                 for (var i = 0; i < 5; i++){
                     particles.push(new Particle("","blood", this.x, this.y, 10, 10, 700, gameTime,"darkred",
+                    this.randint(-10, 10), this.randint(-10, 10)));
+                }
+
+                for (var i = 0; i < 5; i++){
+                    particles.push(new Particle("","gold", this.x, this.y, 10, 10, 10000, gameTime,"gold",
                     this.randint(-10, 10), this.randint(-10, 10)));
                 }
     

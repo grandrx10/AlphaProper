@@ -15,9 +15,23 @@ export class Particle {
         this.ySpeed = 0;
     }
 
-    checkExpire(gameTime, particles){
-        if (gameTime - this.creationTime > this.expireTime){
-            particles.splice(particles.indexOf(this), 1);
+    checkExpire(gameTime, particles, particle, entities){
+        if (this != null){
+            var remove = false;
+            if (this.type == "gold"){
+                Object.keys(entities).forEach(function(key) {
+                    if (particle.rectRectDetect(particle, entities[key]) && entities[key].type == "Player"){
+                        remove = true;
+                        entities[key].gold ++;
+                    }
+                });
+            }
+            if (gameTime - this.creationTime > this.expireTime){
+                remove = true;
+            }
+
+            if (remove)
+                particles.splice(particles.indexOf(this), 1);
         }
     }
 

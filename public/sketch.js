@@ -389,6 +389,7 @@ function displayInventory(){
         }
         textAlign(CENTER)
     }
+    text("Gold: " + entities[socket.id].gold, 300, 530)
 
     //describe items when hovering
     for(var i = 0; i < entities[socket.id].inventory.items.length; i++){

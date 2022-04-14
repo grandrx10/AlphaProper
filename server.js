@@ -249,7 +249,8 @@ function update(){
                                     entities[id].width, entities[id].dir, entities[id].stats,
                                     entities[id].colour, entities[id].location, entities[id].interact,
                                     entities[id].shake, entities[id].inventory, entities[id].deathTime, entities[id].deathDuration,
-                                    entities[id].speech, entities[id].closestBoss, entities[id].effects, entities[id].negativeEffects);
+                                    entities[id].speech, entities[id].closestBoss, entities[id].effects, entities[id].negativeEffects,
+                                    entities[id].gold);
                             }
                         });
                     }
@@ -294,7 +295,7 @@ function update(){
         for (var i = particles.length-1; i >= 0; i --){
             particles[i].accelerate();
             particles[i].update(walls)
-            particles[i].checkExpire(gameTime, particles);
+            particles[i].checkExpire(gameTime, particles,particles[i], entities);
         }
 
         sortList(interactables, "bag")
